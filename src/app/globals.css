@@ -11,7 +11,6 @@
   --font-mono: var(--font-mono);
   --font-heading: var(--font-heading);
 
-  /* shadcn 语义色 */
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -29,14 +28,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* 项目自定义色 */
-  --color-violet: #7C3AED;
-  --color-cyan: #06B6D4;
-  --color-amber: #F59E0B;
+  --color-warm: var(--warm);
+  --color-warm-light: var(--warm-light);
+  --color-orange: var(--orange);
+  --color-rose: var(--rose);
   --color-surface: var(--surface);
   --color-text-secondary: var(--text-secondary);
 
-  /* 圆角 */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,53 +44,58 @@
 
 /* ===== 暗色主题（默认） ===== */
 :root {
-  --background: #0A0A0F;
-  --foreground: #E2E8F0;
-  --surface: #111118;
-  --text-secondary: #94A3B8;
+  --background: #0C0A09;
+  --foreground: #FEF3C7;
+  --surface: #1C1410;
+  --text-secondary: #A8937A;
 
-  --card: #111118;
-  --card-foreground: #E2E8F0;
-  --popover: #111118;
-  --popover-foreground: #E2E8F0;
-  --primary: #7C3AED;
-  --primary-foreground: #FFFFFF;
-  --secondary: #1E1E2A;
-  --secondary-foreground: #E2E8F0;
-  --muted: #1E1E2A;
-  --muted-foreground: #94A3B8;
-  --accent: #F59E0B;
-  --accent-foreground: #0A0A0F;
+  --warm: #F59E0B;
+  --warm-light: #FCD34D;
+  --orange: #F97316;
+  --rose: #EC4899;
+
+  --card: #1C1410;
+  --card-foreground: #FEF3C7;
+  --popover: #1C1410;
+  --popover-foreground: #FEF3C7;
+  --primary: #F59E0B;
+  --primary-foreground: #0C0A09;
+  --secondary: #1C1410;
+  --secondary-foreground: #FEF3C7;
+  --muted: #1C1410;
+  --muted-foreground: #A8937A;
+  --accent: #EC4899;
+  --accent-foreground: #0C0A09;
   --destructive: #EF4444;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #7C3AED;
+  --border: rgba(245, 158, 11, 0.08);
+  --input: rgba(245, 158, 11, 0.1);
+  --ring: #F59E0B;
   --radius: 0.75rem;
 }
 
 /* ===== 亮色主题 ===== */
 .light {
-  --background: #FAFAFA;
-  --foreground: #0F172A;
+  --background: #FFFBF0;
+  --foreground: #1C1410;
   --surface: #FFFFFF;
-  --text-secondary: #64748B;
+  --text-secondary: #8B7355;
 
   --card: #FFFFFF;
-  --card-foreground: #0F172A;
+  --card-foreground: #1C1410;
   --popover: #FFFFFF;
-  --popover-foreground: #0F172A;
-  --primary: #7C3AED;
+  --popover-foreground: #1C1410;
+  --primary: #D97706;
   --primary-foreground: #FFFFFF;
-  --secondary: #F1F5F9;
-  --secondary-foreground: #0F172A;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #F59E0B;
-  --accent-foreground: #0F172A;
+  --secondary: #FEF3C7;
+  --secondary-foreground: #1C1410;
+  --muted: #FEF3C7;
+  --muted-foreground: #8B7355;
+  --accent: #EC4899;
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.08);
-  --ring: #7C3AED;
+  --border: rgba(28, 20, 16, 0.08);
+  --input: rgba(28, 20, 16, 0.08);
+  --ring: #D97706;
 }
 
 @layer base {
@@ -109,48 +112,32 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  /* 滚动条 */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(124, 58, 237, 0.3);
+    background: rgba(245, 158, 11, 0.2);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(124, 58, 237, 0.5);
+    background: rgba(245, 158, 11, 0.4);
   }
 
-  /* 选中文字 */
   ::selection {
-    background: rgba(124, 58, 237, 0.3);
-    color: #E2E8F0;
+    background: rgba(245, 158, 11, 0.25);
+    color: #FEF3C7;
   }
 }
 
-/* ===== 渐变工具类 ===== */
 @layer utilities {
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #7C3AED, #06B6D4);
-  }
-
-  .gradient-border {
-    border-image: linear-gradient(135deg, #7C3AED, #06B6D4) 1;
+    background-image: linear-gradient(135deg, #F59E0B, #F97316);
   }
 
   .glass {
-    @apply bg-surface/80 backdrop-blur-xl border border-border;
-  }
-
-  .glow-violet {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
-  }
-
-  .glow-cyan {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+    background: rgba(28, 20, 16, 0.6);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(245, 158, 11, 0.06);
   }
 }

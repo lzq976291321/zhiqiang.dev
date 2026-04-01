@@ -7,35 +7,32 @@ import { useEffect, useState } from "react"
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-
   useEffect(() => setMounted(true), [])
 
-  if (!mounted) {
-    return <div className="w-9 h-9" />
-  }
+  if (!mounted) return <div className="w-8 h-8" />
 
   const isDark = theme === "dark"
 
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
-      aria-label={isDark ? "切换到亮色模式" : "切换到暗色模式"}
+      className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/5 transition-colors"
+      aria-label={isDark ? "亮色模式" : "暗色模式"}
     >
       <motion.svg
-        key={isDark ? "moon" : "sun"}
-        initial={{ rotate: -90, opacity: 0 }}
-        animate={{ rotate: 0, opacity: 1 }}
-        exit={{ rotate: 90, opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        width="18"
-        height="18"
+        key={isDark ? "sun" : "moon"}
+        initial={{ scale: 0.5, opacity: 0, rotate: -60 }}
+        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        width="15"
+        height="15"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        className="text-foreground/50"
       >
         {isDark ? (
           <>
