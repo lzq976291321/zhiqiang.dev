@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { BackHome } from "./BackHome"
 
@@ -8,12 +9,12 @@ interface PageShellProps {
   title: string
   subtitle?: string
   accent?: string
+  parentLink?: { href: string; label: string }
 }
 
-export function PageShell({ children, title, subtitle, accent = "#C8A97E" }: PageShellProps) {
+export function PageShell({ children, title, subtitle, accent = "#C8A97E", parentLink }: PageShellProps) {
   return (
     <div className="min-h-screen bg-background">
-      {/* 顶部背景光晕 */}
       <div className="absolute top-0 left-0 right-0 h-[40vh] -z-10 overflow-hidden">
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[50vh] rounded-full opacity-[0.04]"
@@ -25,10 +26,22 @@ export function PageShell({ children, title, subtitle, accent = "#C8A97E" }: Pag
       </div>
 
       <div className="max-w-5xl mx-auto px-5 sm:px-8 pt-8 pb-20">
-        {/* 返回 */}
-        <BackHome />
+        {/* 导航：返回首页 + 可选的上级链接 */}
+        <div className="flex items-center gap-2 text-[13px] text-foreground/30">
+          <BackHome />
+          {parentLink && (
+            <>
+              <span className="text-foreground/10">/</span>
+              <Link
+                href={parentLink.href}
+                className="hover:text-foreground/60 transition-colors"
+              >
+                {parentLink.label}
+              </Link>
+            </>
+          )}
+        </div>
 
-        {/* 页头 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -45,7 +58,6 @@ export function PageShell({ children, title, subtitle, accent = "#C8A97E" }: Pag
           )}
         </motion.div>
 
-        {/* 内容 */}
         {children}
       </div>
     </div>

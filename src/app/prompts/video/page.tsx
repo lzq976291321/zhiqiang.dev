@@ -7,7 +7,11 @@ export const metadata = { title: "生视频 Prompt" }
 export default function VideoPromptsPage() {
   const prompts = getAllPrompts("prompt-video")
   return (
-    <PageShell title="生视频 Prompt" subtitle="Sora · Runway · Veo · Kling 通用模板" accent="#FB923C">
+    <PageShell
+      title="生视频 Prompt"
+      subtitle="Sora · Runway · Veo · Kling 通用模板"
+      parentLink={{ href: "/prompts", label: "Prompts" }}
+    >
       <PromptList prompts={prompts} type="prompt-video" />
     </PageShell>
   )

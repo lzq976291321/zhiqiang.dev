@@ -18,23 +18,6 @@ const SKILLS = [
   { name: "AI 工具链", level: 85 },
 ]
 
-const SOCIALS = [
-  {
-    label: "GitHub",
-    href: "https://github.com/linzhiqiang",
-    icon: <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />,
-  },
-  {
-    label: "Twitter / X",
-    href: "https://x.com/linzhiqiang",
-    icon: <path d="M4 4l11.733 16h4.267l-11.733 -16h-4.267zm6.617 6.911l-6.617 9.089h4.267l4.617 -6.34" />,
-  },
-  {
-    label: "Email",
-    href: "mailto:hi@zhiqiang.dev",
-    icon: <><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></>,
-  },
-]
 
 function SkillBar({ name, level, index }: { name: string; level: number; index: number }) {
   return (
@@ -99,35 +82,6 @@ export default function AboutPage() {
             ))}
           </div>
 
-          {/* 社交链接 */}
-          <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-foreground/20 mt-14 mb-6">
-            联系
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {SOCIALS.map((s, i) => (
-              <motion.a
-                key={s.label}
-                href={s.href}
-                target={s.href.startsWith("http") ? "_blank" : undefined}
-                rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05, duration: 0.4 }}
-                whileHover={{ y: -2 }}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.05] hover:border-gold/15 bg-surface/30 hover:bg-surface/50 transition-all duration-300"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-                  className="text-foreground/25 group-hover:text-gold/60 transition-colors"
-                >
-                  {s.icon}
-                </svg>
-                <span className="text-sm text-foreground/35 group-hover:text-foreground/60 transition-colors">
-                  {s.label}
-                </span>
-              </motion.a>
-            ))}
-          </div>
         </div>
 
         {/* 右侧：技能 */}
