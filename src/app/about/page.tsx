@@ -51,7 +51,7 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
       <div className="h-1 rounded-full bg-foreground/[0.04] overflow-hidden">
         <motion.div
           className="h-full rounded-full"
-          style={{ background: "linear-gradient(90deg, #00D4FF, #7B61FF)" }}
+          style={{ background: "linear-gradient(90deg, #C8A97E, #C8A97E)" }}
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
           viewport={{ once: true }}
@@ -84,9 +84,9 @@ export default function AboutPage() {
                 {/* 圆点 */}
                 <div
                   className="absolute left-0 top-1 w-2 h-2 rounded-full -translate-x-[4.5px]"
-                  style={{ background: i === 0 ? "#00D4FF" : "rgba(0,212,255,0.2)" }}
+                  style={{ background: i === 0 ? "#C8A97E" : "rgba(200,169,126,0.2)" }}
                 />
-                <span className="text-[11px] font-mono tracking-wider text-ice/50 block mb-1">
+                <span className="text-[11px] font-mono tracking-wider text-gold/50 block mb-1">
                   {item.year}
                 </span>
                 <h3 className="text-base font-heading font-bold text-foreground/75 mb-1.5">
@@ -115,10 +115,10 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05, duration: 0.4 }}
                 whileHover={{ y: -2 }}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.05] hover:border-ice/15 bg-surface/30 hover:bg-surface/50 transition-all duration-300"
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.05] hover:border-gold/15 bg-surface/30 hover:bg-surface/50 transition-all duration-300"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-                  className="text-foreground/25 group-hover:text-ice/60 transition-colors"
+                  className="text-foreground/25 group-hover:text-gold/60 transition-colors"
                 >
                   {s.icon}
                 </svg>

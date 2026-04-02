@@ -15,10 +15,10 @@ function PostCard({ post, index }: { post: Post; index: number }) {
     >
       <Link
         href={`/blog/${post.slug}`}
-        className="group block p-6 rounded-xl border border-foreground/[0.04] hover:border-ice/10 bg-surface/30 hover:bg-surface/50 transition-all duration-300"
+        className="group block p-6 rounded-xl border border-foreground/[0.04] hover:border-gold/10 bg-surface/30 hover:bg-surface/50 transition-all duration-300"
       >
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-[11px] font-mono tracking-wider text-ice/50">
+          <span className="text-[11px] font-mono tracking-wider text-gold/50">
             {post.date}
           </span>
           <span className="text-foreground/10">·</span>
@@ -59,7 +59,7 @@ export function BlogList({ posts }: { posts: Post[] }) {
   const filtered = active === "全部" ? posts : posts.filter((p) => p.category === active)
 
   return (
-    <PageShell title="博客" subtitle="前端、后端、AI 与独立开发随笔" accent="#00D4FF">
+    <PageShell title="博客" subtitle="前端、后端、AI 与独立开发随笔" accent="#C8A97E">
       {/* 分类筛选 */}
       <div className="flex flex-wrap gap-2 mb-10">
         {categories.map((cat) => (
@@ -68,7 +68,7 @@ export function BlogList({ posts }: { posts: Post[] }) {
             onClick={() => setActive(cat)}
             className={`px-3 py-1 rounded-lg text-[12px] font-mono tracking-wider transition-all duration-200 ${
               active === cat
-                ? "bg-ice/10 text-ice"
+                ? "bg-gold/10 text-gold"
                 : "text-foreground/25 hover:text-foreground/40 hover:bg-foreground/[0.03]"
             }`}
           >

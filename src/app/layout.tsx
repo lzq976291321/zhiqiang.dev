@@ -1,15 +1,15 @@
 import type { Metadata } from "next"
-import { Work_Sans, Outfit, JetBrains_Mono } from "next/font/google"
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
 
-const workSans = Work_Sans({
+const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 })
 
-const outfit = Outfit({
+const playfair = Playfair_Display({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${workSans.variable} ${outfit.variable} ${jetbrainsMono.variable} dark`}
+      className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} dark`}
     >
       <body className="min-h-screen antialiased bg-background text-foreground">
         {children}

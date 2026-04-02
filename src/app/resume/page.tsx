@@ -27,7 +27,7 @@ export default function ResumePage() {
         {/* 头部 */}
         <Reveal className="mt-12 mb-10">
           <h1 className="text-4xl font-heading font-black text-foreground/90">林志强</h1>
-          <p className="text-lg text-ice/70 font-medium mt-1">全栈 Agent 开发工程师</p>
+          <p className="text-lg text-gold/70 font-medium mt-1">全栈 Agent 开发工程师</p>
           <p className="text-sm text-foreground/25 mt-2 font-mono">男 · 28岁 · 深圳  |  13544042869  |  sz976291321@gmail.com</p>
           <p className="text-sm text-foreground/35 mt-2">6年经验 · 擅长 AI Agent 驱动的全栈产品研发 · OpenClaw 多智能体平台作者</p>
         </Reveal>
@@ -185,7 +185,7 @@ function Item({ title, children }: { title: string; children: React.ReactNode })
 
 function Li({ children }: { children: React.ReactNode }) {
   return (
-    <li className="text-xs text-foreground/25 leading-relaxed pl-3 relative before:content-['·'] before:absolute before:left-0 before:text-ice/30">
+    <li className="text-xs text-foreground/25 leading-relaxed pl-3 relative before:content-['·'] before:absolute before:left-0 before:text-gold/30">
       {children}
     </li>
   )
@@ -209,12 +209,12 @@ function Job({ company, role, time, current, children }: {
   return (
     <div className="relative pl-5 border-l border-foreground/[0.06] mb-5">
       <div className="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full -translate-x-[3.5px]"
-        style={{ background: current ? "#00D4FF" : "rgba(0,212,255,0.2)" }} />
+        style={{ background: current ? "#C8A97E" : "rgba(200,169,126,0.2)" }} />
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5">
         <h3 className="text-sm font-bold text-foreground/70">{company}</h3>
         <span className="text-[11px] font-mono text-foreground/20">{time}</span>
       </div>
-      <p className="text-xs text-ice/40 mt-0.5">{role}</p>
+      <p className="text-xs text-gold/40 mt-0.5">{role}</p>
       {children && <p className="text-xs text-foreground/25 mt-1.5 leading-relaxed">{children}</p>}
     </div>
   )
