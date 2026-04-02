@@ -8,9 +8,9 @@ import { PageShell } from "@/components/shared/PageShell"
 const ROLES = ["全部", "前端开发者", "后端开发者", "独立开发者", "产品经理", "安全合规"]
 
 const sourceColor: Record<string, string> = {
-  official: "text-warm/60 bg-warm/8",
+  official: "text-ice/60 bg-ice/8",
   community: "text-foreground/30 bg-foreground/[0.04]",
-  vendor: "text-orange/60 bg-orange/8",
+  vendor: "text-violet/60 bg-violet/8",
 }
 
 function SkillCard({ skill, index }: { skill: Skill; index: number }) {
@@ -105,7 +105,7 @@ export function SkillsList({ skills }: { skills: Skill[] }) {
             onClick={() => setRole(r)}
             className={`px-3 py-1 rounded-lg text-[12px] font-mono tracking-wider transition-all duration-200 ${
               role === r
-                ? "bg-orange/10 text-orange"
+                ? "bg-violet/10 text-violet"
                 : "text-foreground/25 hover:text-foreground/40 hover:bg-foreground/[0.03]"
             }`}
           >

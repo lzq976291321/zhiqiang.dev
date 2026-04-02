@@ -34,7 +34,7 @@ export function Navbar() {
           backdropFilter: scrolled ? "blur(16px) saturate(1.3)" : "none",
           WebkitBackdropFilter: scrolled ? "blur(16px) saturate(1.3)" : "none",
           borderBottom: scrolled
-            ? "1px solid rgba(245, 158, 11, 0.06)"
+            ? "1px solid rgba(0, 212, 255, 0.06)"
             : "1px solid transparent",
         }}
       >
@@ -61,7 +61,7 @@ export function Navbar() {
                     <motion.div
                       layoutId="nav-active"
                       className="absolute inset-0 rounded-md"
-                      style={{ background: "rgba(245, 158, 11, 0.08)" }}
+                      style={{ background: "rgba(0, 212, 255, 0.08)" }}
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -127,7 +127,7 @@ export function Navbar() {
                     href={item.href}
                     className={`text-xl font-heading tracking-wide transition-colors ${
                       isActive(item.href)
-                        ? "text-warm"
+                        ? "text-ice"
                         : "text-foreground/40 hover:text-foreground/70"
                     }`}
                   >

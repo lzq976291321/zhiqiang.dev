@@ -10,7 +10,7 @@ interface PageShellProps {
   accent?: string
 }
 
-export function PageShell({ children, title, subtitle, accent = "#F59E0B" }: PageShellProps) {
+export function PageShell({ children, title, subtitle, accent = "#00D4FF" }: PageShellProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* 顶部背景光晕 */}

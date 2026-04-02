@@ -15,7 +15,7 @@ function McpCard({ server, index }: { server: McpServer; index: number }) {
       transition={{ delay: index * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className={`p-6 rounded-xl border transition-all duration-300 ${
         isEssential
-          ? "border-warm/10 bg-warm/[0.02]"
+          ? "border-ice/10 bg-ice/[0.02]"
           : "border-foreground/[0.04] bg-surface/30"
       }`}
     >
@@ -26,7 +26,7 @@ function McpCard({ server, index }: { server: McpServer; index: number }) {
               {server.title}
             </h3>
             {isEssential && (
-              <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-warm/10 text-warm/70">
+              <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-ice/10 text-ice/70">
                 必装
               </span>
             )}
@@ -45,7 +45,7 @@ function McpCard({ server, index }: { server: McpServer; index: number }) {
 
       {/* 安装命令 */}
       <div className="relative">
-        <pre className="text-[13px] text-warm/60 bg-[#0F0D0B] rounded-lg px-4 py-3 font-mono overflow-x-auto">
+        <pre className="text-[13px] text-ice/60 bg-[#0A0A18] rounded-lg px-4 py-3 font-mono overflow-x-auto">
           {server.installCommand}
         </pre>
         <div className="absolute top-2 right-2">
@@ -73,8 +73,8 @@ export function McpList({ servers }: { servers: McpServer[] }) {
       accent="#FCD34D"
     >
       {/* 安全提醒 */}
-      <div className="mb-10 p-4 rounded-xl border border-rose/10 bg-rose/[0.02]">
-        <p className="text-[12px] text-rose/50 leading-relaxed">
+      <div className="mb-10 p-4 rounded-xl border border-magenta/10 bg-magenta/[0.02]">
+        <p className="text-[12px] text-magenta/50 leading-relaxed">
           <span className="font-bold">⚠ 安全提醒：</span>66% 公开 MCP Server 有安全问题。永远不要复用生产凭据，优先选择官方维护的 Server，生产环境先只读。
         </p>
       </div>
@@ -82,7 +82,7 @@ export function McpList({ servers }: { servers: McpServer[] }) {
       {/* 必装 */}
       {essential.length > 0 && (
         <div className="mb-10">
-          <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-warm/40 mb-5">
+          <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-ice/40 mb-5">
             必装第一梯队
           </h2>
           <div className="flex flex-col gap-3">

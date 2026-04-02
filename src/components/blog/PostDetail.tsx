@@ -13,7 +13,7 @@ export function PostDetail({ post }: { post: Post }) {
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[60vw] h-[40vh] rounded-full opacity-[0.04]"
           style={{
-            background: "radial-gradient(ellipse, #F59E0B, transparent 70%)",
+            background: "radial-gradient(ellipse, #00D4FF, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
@@ -30,7 +30,7 @@ export function PostDetail({ post }: { post: Post }) {
           className="mt-12 mb-12"
         >
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-[11px] font-mono tracking-wider text-warm/50">
+            <span className="text-[11px] font-mono tracking-wider text-ice/50">
               {post.date}
             </span>
             <span className="text-foreground/10">·</span>
@@ -65,10 +65,10 @@ export function PostDetail({ post }: { post: Post }) {
           className="prose prose-invert prose-sm max-w-none
             prose-headings:font-heading prose-headings:font-bold prose-headings:text-foreground/80
             prose-p:text-foreground/45 prose-p:leading-relaxed
-            prose-a:text-warm prose-a:no-underline hover:prose-a:text-warm-light
+            prose-a:text-ice prose-a:no-underline hover:prose-a:text-ice-light
             prose-strong:text-foreground/60
-            prose-code:text-warm/70 prose-code:bg-foreground/[0.04] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[13px]
-            prose-pre:bg-[#0F0D0B] prose-pre:border prose-pre:border-foreground/[0.04] prose-pre:rounded-xl
+            prose-code:text-ice/70 prose-code:bg-foreground/[0.04] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[13px]
+            prose-pre:bg-[#0A0A18] prose-pre:border prose-pre:border-foreground/[0.04] prose-pre:rounded-xl
             prose-th:text-foreground/50 prose-td:text-foreground/35
             prose-li:text-foreground/40
             prose-hr:border-foreground/[0.06]

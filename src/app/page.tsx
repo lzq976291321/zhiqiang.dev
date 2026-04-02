@@ -11,16 +11,123 @@ import {
 import Link from "next/link"
 
 /* ==========================================================================
-   背景：暖色极光（仅 Hero 用）
+   SVG 动画背景（Hero 用）
+   ========================================================================== */
+function SvgBackground() {
+  // 随机漂浮元素
+  const floatingElements = useMemo(() =>
+    Array.from({ length: 18 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      type: i % 3 === 0 ? "cross" : "dot",
+      size: Math.random() * 4 + 2,
+      dur: Math.random() * 12 + 10,
+      del: Math.random() * 5,
+      color: i % 2 === 0 ? "rgba(0,212,255,0.07)" : "rgba(123,97,255,0.07)",
+    })), [])
+
+  return (
+    <div className="absolute inset-0 -z-10 overflow-hidden">
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 1000 1000"
+        preserveAspectRatio="xMidYMid slice"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          {/* 同心圆环旋转动画 */}
+          <style>{`
+            @keyframes dashSpin1 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -300; } }
+            @keyframes dashSpin2 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 400; } }
+            @keyframes dashSpin3 { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -500; } }
+            @keyframes rotateCW { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            @keyframes rotateCCW { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+          `}</style>
+        </defs>
+
+        {/* 同心圆环 */}
+        <g style={{ transformOrigin: "500px 500px", animation: "rotateCW 120s linear infinite" }}>
+          <circle cx="500" cy="500" r="180" fill="none" stroke="rgba(0,212,255,0.06)" strokeWidth="0.5"
+            strokeDasharray="20 30" style={{ animation: "dashSpin1 40s linear infinite" }} />
+        </g>
+        <g style={{ transformOrigin: "500px 500px", animation: "rotateCCW 90s linear infinite" }}>
+          <circle cx="500" cy="500" r="280" fill="none" stroke="rgba(123,97,255,0.05)" strokeWidth="0.5"
+            strokeDasharray="40 20 10 20" style={{ animation: "dashSpin2 50s linear infinite" }} />
+        </g>
+        <g style={{ transformOrigin: "500px 500px", animation: "rotateCW 150s linear infinite" }}>
+          <circle cx="500" cy="500" r="400" fill="none" stroke="rgba(0,212,255,0.04)" strokeWidth="0.5"
+            strokeDasharray="60 40 20 30" style={{ animation: "dashSpin3 60s linear infinite" }} />
+        </g>
+        <g style={{ transformOrigin: "500px 500px", animation: "rotateCCW 180s linear infinite" }}>
+          <circle cx="500" cy="500" r="480" fill="none" stroke="rgba(123,97,255,0.03)" strokeWidth="0.5"
+            strokeDasharray="15 50 30 40" style={{ animation: "dashSpin1 70s linear infinite" }} />
+        </g>
+
+        {/* 贝塞尔曲线路径 */}
+        <motion.path
+          d="M100,700 C250,400 400,600 500,300 S750,100 900,400"
+          fill="none" stroke="rgba(0,212,255,0.06)" strokeWidth="0.8"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 4, delay: 1, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M50,300 C200,500 350,200 500,500 S700,800 950,500"
+          fill="none" stroke="rgba(123,97,255,0.05)" strokeWidth="0.8"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 5, delay: 1.5, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M200,900 C350,600 500,800 650,400 S800,200 950,350"
+          fill="none" stroke="rgba(0,212,255,0.04)" strokeWidth="0.6"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 6, delay: 2, ease: "easeInOut" }}
+        />
+      </svg>
+
+      {/* 漂浮的十字和圆点 */}
+      {floatingElements.map((el) => (
+        <motion.div
+          key={el.id}
+          className="absolute"
+          style={{ left: `${el.x}%`, top: `${el.y}%` }}
+          animate={{
+            y: [0, -(15 + Math.random() * 20), 0],
+            x: [0, (Math.random() - 0.5) * 20, 0],
+            opacity: [0.3, 0.8, 0.3],
+          }}
+          transition={{ duration: el.dur, delay: el.del, repeat: Infinity, ease: "easeInOut" }}
+        >
+          {el.type === "cross" ? (
+            <svg width={el.size * 2} height={el.size * 2} viewBox="0 0 10 10">
+              <line x1="5" y1="1" x2="5" y2="9" stroke={el.color} strokeWidth="0.8" />
+              <line x1="1" y1="5" x2="9" y2="5" stroke={el.color} strokeWidth="0.8" />
+            </svg>
+          ) : (
+            <svg width={el.size} height={el.size} viewBox="0 0 10 10">
+              <circle cx="5" cy="5" r="3" fill={el.color} />
+            </svg>
+          )}
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+/* ==========================================================================
+   背景：冰蓝极光（仅 Hero 用）
    ========================================================================== */
 function Aurora() {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[#0C0A09]" />
+      <div className="absolute inset-0 bg-[#050510]" />
       <motion.div
         className="absolute -top-[40%] -left-[20%] w-[140vw] h-[140vh] opacity-[0.10]"
         style={{
-          background: "conic-gradient(from 200deg at 50% 50%, #F59E0B 0deg, #F97316 100deg, #EC4899 180deg, #F59E0B 280deg, #FCD34D 360deg)",
+          background: "conic-gradient(from 200deg at 50% 50%, #00D4FF 0deg, #7B61FF 100deg, #FF3CAC 180deg, #00D4FF 280deg, #7B61FF 360deg)",
           filter: "blur(130px)",
         }}
         animate={{ rotate: [0, 360] }}
@@ -29,7 +136,7 @@ function Aurora() {
       <motion.div
         className="absolute -bottom-[30%] -right-[20%] w-[110vw] h-[110vh] opacity-[0.06]"
         style={{
-          background: "conic-gradient(from 60deg at 40% 60%, #EC4899 0deg, #F97316 120deg, #F59E0B 240deg, #EC4899 360deg)",
+          background: "conic-gradient(from 60deg at 40% 60%, #FF3CAC 0deg, #7B61FF 120deg, #00D4FF 240deg, #FF3CAC 360deg)",
           filter: "blur(100px)",
         }}
         animate={{ rotate: [360, 0] }}
@@ -38,36 +145,25 @@ function Aurora() {
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[50vw] h-[40vh] rounded-full"
         style={{
-          background: "radial-gradient(ellipse, rgba(245,158,11,0.12), transparent 80%)",
+          background: "radial-gradient(ellipse, rgba(0,212,255,0.12), transparent 80%)",
           filter: "blur(50px)",
         }}
         animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "linear-gradient(rgba(245,158,11,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,158,11,0.04) 1px, transparent 1px)",
-          backgroundSize: "70px 70px",
-          maskImage: "radial-gradient(ellipse 60% 45% at 50% 52%, black 10%, transparent 65%)",
-          WebkitMaskImage: "radial-gradient(ellipse 60% 45% at 50% 52%, black 10%, transparent 65%)",
-          transform: "perspective(600px) rotateX(40deg) scale(2.5)",
-          transformOrigin: "center 65%",
-        }}
       />
       <div className="absolute inset-0 opacity-[0.025]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         backgroundSize: "128px 128px",
       }} />
       <div className="absolute inset-0" style={{
-        background: "radial-gradient(ellipse 55% 50% at 50% 46%, transparent 15%, #0C0A09 72%)",
+        background: "radial-gradient(ellipse 55% 50% at 50% 46%, transparent 15%, #050510 72%)",
       }} />
     </div>
   )
 }
 
 /* ==========================================================================
-   粒子（Hero 用）
+   粒子（Hero 用）- 冰蓝/紫/白
    ========================================================================== */
 function Particles() {
   const dots = useMemo(() =>
@@ -81,7 +177,7 @@ function Particles() {
         <motion.div key={d.id} className="absolute rounded-full"
           style={{
             left: `${d.x}%`, top: `${d.y}%`, width: d.size, height: d.size,
-            background: d.id % 3 === 0 ? "rgba(245,158,11,0.5)" : d.id % 3 === 1 ? "rgba(249,115,22,0.4)" : "rgba(254,243,199,0.2)",
+            background: d.id % 3 === 0 ? "rgba(0,212,255,0.5)" : d.id % 3 === 1 ? "rgba(123,97,255,0.4)" : "rgba(224,230,240,0.2)",
           }}
           animate={{ opacity: [0, 0.8, 0], y: [0, -(20 + Math.random() * 25)] }}
           transition={{ duration: d.dur, delay: d.del, repeat: Infinity, ease: "easeOut" }}
@@ -99,7 +195,7 @@ function HeroTitle() {
   return (
     <div className="relative mb-5">
       <motion.div className="absolute inset-0 -z-10 blur-[90px] opacity-20"
-        style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.6), rgba(249,115,22,0.3))" }}
+        style={{ background: "linear-gradient(135deg, rgba(0,212,255,0.6), rgba(123,97,255,0.3))" }}
         animate={{ opacity: [0.15, 0.3, 0.15], scale: [1, 1.08, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -108,7 +204,7 @@ function HeroTitle() {
           {name.split("").map((char, i) => (
             <motion.span key={i} className="inline-block"
               style={{
-                backgroundImage: "linear-gradient(135deg, #FCD34D, #F59E0B, #F97316, #F59E0B)",
+                backgroundImage: "linear-gradient(135deg, #00D4FF, #7B61FF, #FF3CAC, #7B61FF)",
                 backgroundSize: "300% 100%",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
               }}
@@ -141,8 +237,8 @@ const ROUTES = [
     title: "博客",
     en: "Blog",
     desc: "前端、后端、AI 与独立开发随笔。用文字记录每一次技术探索和踩坑经验。",
-    accent: "#F59E0B",
-    accentRgb: "245,158,11",
+    accent: "#00D4FF",
+    accentRgb: "0,212,255",
     icon: <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />,
     num: "01",
   },
@@ -151,8 +247,8 @@ const ROUTES = [
     title: "Skills",
     en: "工具库",
     desc: "Claude Code Skills 按角色分类收集。前端、后端、独立开发者、产品经理各取所需。",
-    accent: "#F97316",
-    accentRgb: "249,115,22",
+    accent: "#7B61FF",
+    accentRgb: "123,97,255",
     icon: <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />,
     num: "02",
   },
@@ -161,8 +257,8 @@ const ROUTES = [
     title: "Prompts",
     en: "提示词库",
     desc: "生图与生视频 Prompt 模板。Midjourney、Sora、Runway、Kling 各平台通用技巧。",
-    accent: "#EC4899",
-    accentRgb: "236,72,153",
+    accent: "#FF3CAC",
+    accentRgb: "255,60,172",
     icon: <path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z" />,
     num: "03",
   },
@@ -171,8 +267,8 @@ const ROUTES = [
     title: "MCP",
     en: "服务推荐",
     desc: "从 20000+ MCP Server 中精选真正好用的。GitHub、Context7、Supabase、Figma。",
-    accent: "#FCD34D",
-    accentRgb: "252,211,77",
+    accent: "#00F5D4",
+    accentRgb: "0,245,212",
     icon: <><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 9h18" /><path d="M9 21V9" /></>,
     num: "04",
   },
@@ -181,8 +277,8 @@ const ROUTES = [
     title: "项目",
     en: "Projects",
     desc: "个人作品与开源项目展示。从想法到上线的完整记录。",
-    accent: "#FB923C",
-    accentRgb: "251,146,60",
+    accent: "#FFD700",
+    accentRgb: "255,215,0",
     icon: <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />,
     num: "05",
   },
@@ -191,8 +287,8 @@ const ROUTES = [
     title: "关于",
     en: "About",
     desc: "一个人全干的独立开发者。产品、设计、前后端、部署，从头到尾。",
-    accent: "#A78BFA",
-    accentRgb: "167,139,250",
+    accent: "#FF6B6B",
+    accentRgb: "255,107,107",
     icon: <><circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" /></>,
     num: "06",
   },
@@ -245,7 +341,7 @@ function RouteSection({
         className="absolute inset-0 -z-10"
         style={{ y: bgY }}
       >
-        <div className="absolute inset-0 bg-[#0C0A09]" />
+        <div className="absolute inset-0 bg-[#050510]" />
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vh] rounded-full opacity-[0.04]"
           style={{
@@ -400,6 +496,7 @@ export default function HomePage() {
       {/* ====== Hero ====== */}
       <section className="relative flex flex-col items-center justify-center h-screen overflow-hidden snap-start">
         <Aurora />
+        <SvgBackground />
         <Particles />
 
         <div className="relative z-10 flex flex-col items-center px-6">
@@ -410,7 +507,7 @@ export default function HomePage() {
             className="mb-8"
           >
             <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[10px] tracking-[0.15em] uppercase font-mono"
-              style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.1)", color: "rgba(252,211,77,0.5)" }}
+              style={{ background: "rgba(0,212,255,0.06)", border: "1px solid rgba(0,212,255,0.1)", color: "rgba(0,212,255,0.5)" }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
               building in public
@@ -428,22 +525,22 @@ export default function HomePage() {
           >
             <div className="px-6 py-3.5 rounded-xl"
               style={{
-                background: "rgba(28, 20, 16, 0.5)",
+                background: "rgba(12, 12, 29, 0.5)",
                 backdropFilter: "blur(30px) saturate(1.5)",
                 WebkitBackdropFilter: "blur(30px) saturate(1.5)",
-                border: "1px solid rgba(245, 158, 11, 0.07)",
+                border: "1px solid rgba(0, 212, 255, 0.07)",
               }}
             >
               <motion.div className="absolute inset-0 rounded-xl opacity-[0.05]"
                 style={{
-                  background: "linear-gradient(105deg, transparent 35%, rgba(245,158,11,0.6) 50%, transparent 65%)",
+                  background: "linear-gradient(105deg, transparent 35%, rgba(0,212,255,0.6) 50%, transparent 65%)",
                   backgroundSize: "250% 100%",
                 }}
                 animate={{ backgroundPosition: ["200% 0", "-200% 0"] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "linear", repeatDelay: 4 }}
               />
               <p className="relative text-sm sm:text-base tracking-[0.06em] text-foreground/50 font-light">
-                技术博客 <span className="text-warm mx-1 font-medium">×</span> AI 工具库
+                技术博客 <span className="text-[#00D4FF] mx-1 font-medium">×</span> AI 工具库
               </p>
               <p className="relative text-xs text-foreground/25 tracking-[0.2em] mt-1 font-mono uppercase">
                 Skills · Prompts · MCP
@@ -454,7 +551,7 @@ export default function HomePage() {
 
         {/* 底部渐隐 + 滚动提示 */}
         <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-10"
-          style={{ background: "linear-gradient(to top, #0C0A09, transparent)" }}
+          style={{ background: "linear-gradient(to top, #050510, transparent)" }}
         />
         <motion.div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
@@ -465,7 +562,7 @@ export default function HomePage() {
             <span className="text-[9px] tracking-[0.25em] uppercase text-foreground/10 font-mono">scroll</span>
             <div className="w-[1px] h-7 rounded-full overflow-hidden bg-foreground/5">
               <motion.div className="w-full h-1/2 rounded-full"
-                style={{ background: "linear-gradient(to bottom, #F59E0B, transparent)" }}
+                style={{ background: "linear-gradient(to bottom, #00D4FF, transparent)" }}
                 animate={{ y: ["-100%", "200%"] }}
                 transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
               />
@@ -495,7 +592,7 @@ export default function HomePage() {
       </a>
       <Link
         href="/resume"
-        className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-[11px] font-mono tracking-wider text-foreground/25 hover:text-foreground/50 hover:bg-white/5 transition-all"
+        className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-[11px] font-mono tracking-wider text-foreground/20 hover:text-foreground/50 hover:bg-white/5 transition-all"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />

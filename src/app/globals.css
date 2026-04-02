@@ -28,10 +28,10 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-warm: var(--warm);
-  --color-warm-light: var(--warm-light);
-  --color-orange: var(--orange);
-  --color-rose: var(--rose);
+  /* 项目语义色 */
+  --color-ice: var(--ice);
+  --color-violet: var(--violet);
+  --color-magenta: var(--magenta);
   --color-surface: var(--surface);
   --color-text-secondary: var(--text-secondary);
 
@@ -42,60 +42,34 @@
   --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-/* ===== 暗色主题（默认） ===== */
+/* ===== 深空暗色主题 ===== */
 :root {
-  --background: #0C0A09;
-  --foreground: #FEF3C7;
-  --surface: #1C1410;
-  --text-secondary: #A8937A;
+  --background: #050510;
+  --foreground: #E0E6F0;
+  --surface: #0C0C1D;
+  --text-secondary: #6B7394;
 
-  --warm: #F59E0B;
-  --warm-light: #FCD34D;
-  --orange: #F97316;
-  --rose: #EC4899;
+  --ice: #00D4FF;
+  --violet: #7B61FF;
+  --magenta: #FF3CAC;
 
-  --card: #1C1410;
-  --card-foreground: #FEF3C7;
-  --popover: #1C1410;
-  --popover-foreground: #FEF3C7;
-  --primary: #F59E0B;
-  --primary-foreground: #0C0A09;
-  --secondary: #1C1410;
-  --secondary-foreground: #FEF3C7;
-  --muted: #1C1410;
-  --muted-foreground: #A8937A;
-  --accent: #EC4899;
-  --accent-foreground: #0C0A09;
-  --destructive: #EF4444;
-  --border: rgba(245, 158, 11, 0.08);
-  --input: rgba(245, 158, 11, 0.1);
-  --ring: #F59E0B;
+  --card: #0C0C1D;
+  --card-foreground: #E0E6F0;
+  --popover: #0C0C1D;
+  --popover-foreground: #E0E6F0;
+  --primary: #00D4FF;
+  --primary-foreground: #050510;
+  --secondary: #0C0C1D;
+  --secondary-foreground: #E0E6F0;
+  --muted: #0C0C1D;
+  --muted-foreground: #6B7394;
+  --accent: #FF3CAC;
+  --accent-foreground: #050510;
+  --destructive: #FF4444;
+  --border: rgba(0, 212, 255, 0.06);
+  --input: rgba(0, 212, 255, 0.08);
+  --ring: #7B61FF;
   --radius: 0.75rem;
-}
-
-/* ===== 亮色主题 ===== */
-.light {
-  --background: #FFFBF0;
-  --foreground: #1C1410;
-  --surface: #FFFFFF;
-  --text-secondary: #8B7355;
-
-  --card: #FFFFFF;
-  --card-foreground: #1C1410;
-  --popover: #FFFFFF;
-  --popover-foreground: #1C1410;
-  --primary: #D97706;
-  --primary-foreground: #FFFFFF;
-  --secondary: #FEF3C7;
-  --secondary-foreground: #1C1410;
-  --muted: #FEF3C7;
-  --muted-foreground: #8B7355;
-  --accent: #EC4899;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --border: rgba(28, 20, 16, 0.08);
-  --input: rgba(28, 20, 16, 0.08);
-  --ring: #D97706;
 }
 
 @layer base {
@@ -115,30 +89,30 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(245, 158, 11, 0.2);
+    background: rgba(123, 97, 255, 0.25);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(245, 158, 11, 0.4);
+    background: rgba(123, 97, 255, 0.4);
   }
 
   ::selection {
-    background: rgba(245, 158, 11, 0.25);
-    color: #FEF3C7;
+    background: rgba(0, 212, 255, 0.2);
+    color: #E0E6F0;
   }
 }
 
 @layer utilities {
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #F59E0B, #F97316);
+    background-image: linear-gradient(135deg, #00D4FF, #7B61FF);
   }
 
   .glass {
-    background: rgba(28, 20, 16, 0.6);
+    background: rgba(12, 12, 29, 0.6);
     backdrop-filter: blur(20px) saturate(1.4);
     -webkit-backdrop-filter: blur(20px) saturate(1.4);
-    border: 1px solid rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.06);
   }
 }
 

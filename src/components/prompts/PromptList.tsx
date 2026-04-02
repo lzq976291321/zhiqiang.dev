@@ -29,7 +29,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
         {/* 平台标签 */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           {prompt.platforms.map((p) => (
-            <span key={p} className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-rose/5 text-rose/40">
+            <span key={p} className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-magenta/5 text-magenta/40">
               {p}
             </span>
           ))}
@@ -37,7 +37,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
 
         {/* Prompt 正文 */}
         <div className="relative group">
-          <pre className="text-sm text-foreground/35 leading-relaxed bg-[#0F0D0B] rounded-lg p-4 overflow-x-auto whitespace-pre-wrap font-mono">
+          <pre className="text-sm text-foreground/35 leading-relaxed bg-[#0A0A18] rounded-lg p-4 overflow-x-auto whitespace-pre-wrap font-mono">
             {prompt.prompt}
           </pre>
           <div className="absolute top-2 right-2">
@@ -55,7 +55,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
 
         {/* 技巧 */}
         {prompt.tips && (
-          <p className="mt-3 text-xs text-warm/40 flex items-start gap-1.5">
+          <p className="mt-3 text-xs text-ice/40 flex items-start gap-1.5">
             <span>💡</span>
             {prompt.tips}
           </p>

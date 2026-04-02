@@ -9,7 +9,7 @@ const PROJECTS = [
     desc: "你正在看的这个网站。个人博客 × AI 工具库，Next.js + Tailwind + Framer Motion + MDX。",
     tags: ["Next.js", "Tailwind", "Framer Motion"],
     href: "https://github.com/linzhiqiang/zhiqiang.dev",
-    accent: "#F59E0B",
+    accent: "#00D4FF",
     span: "col-span-1 sm:col-span-2",
   },
   {
@@ -17,7 +17,7 @@ const PROJECTS = [
     desc: "Claude Code Skills 按角色分类收集，覆盖前端/后端/独立开发者/产品经理/安全。",
     tags: ["Claude Code", "AI"],
     href: "/skills",
-    accent: "#F97316",
+    accent: "#7B61FF",
     span: "col-span-1",
   },
   {
@@ -25,7 +25,7 @@ const PROJECTS = [
     desc: "生图生视频 Prompt 模板，覆盖 Midjourney / ChatGPT / Sora / Runway / Kling。",
     tags: ["AIGC", "Prompt"],
     href: "/prompts",
-    accent: "#EC4899",
+    accent: "#FF3CAC",
     span: "col-span-1",
   },
   {
@@ -33,7 +33,7 @@ const PROJECTS = [
     desc: "从 20000+ MCP Server 中精选真正好用的，带安装命令和安全提醒。",
     tags: ["MCP", "AI Tools"],
     href: "/mcp",
-    accent: "#FCD34D",
+    accent: "#00F5D4",
     span: "col-span-1 sm:col-span-2",
   },
 ]

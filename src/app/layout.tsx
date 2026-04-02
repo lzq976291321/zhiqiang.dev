@@ -1,15 +1,15 @@
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
+import { Work_Sans, Outfit, JetBrains_Mono } from "next/font/google"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
 
-const inter = Inter({
+const workSans = Work_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 })
 
-const spaceGrotesk = Space_Grotesk({
+const outfit = Outfit({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark`}
+      className={`${workSans.variable} ${outfit.variable} ${jetbrainsMono.variable} dark`}
     >
       <body className="min-h-screen antialiased bg-background text-foreground">
         {children}
