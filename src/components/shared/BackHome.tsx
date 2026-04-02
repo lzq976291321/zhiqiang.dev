@@ -1,9 +1,26 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 
+// 路由 → 首页 section id 的映射
+const routeToSection: Record<string, string> = {
+  "/blog": "blog",
+  "/skills": "skills",
+  "/prompts": "prompts",
+  "/mcp": "mcp",
+  "/projects": "projects",
+  "/about": "about",
+  "/resume": "about",
+}
+
 export function BackHome() {
+  const pathname = usePathname()
+  // 取一级路径匹配，如 /blog/xxx → /blog
+  const base = "/" + (pathname.split("/")[1] ?? "")
+  const hash = routeToSection[base] ?? ""
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
@@ -11,7 +28,7 @@ export function BackHome() {
       transition={{ duration: 0.4 }}
     >
       <Link
-        href="/"
+        href={hash ? `/#${hash}` : "/"}
         className="inline-flex items-center gap-2 text-[13px] text-foreground/30 hover:text-foreground/60 transition-colors group"
       >
         <svg

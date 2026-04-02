@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useMemo, useState, useCallback } from "react"
+import { useRef, useMemo, useState, useCallback, useEffect } from "react"
 import {
   motion,
   useScroll,
@@ -232,9 +232,12 @@ function RouteSection({
       `radial-gradient(circle 300px at ${x * 100}% ${y * 100}%, rgba(${accentRgb},0.06), transparent)`
   )
 
+  const sectionId = href.replace("/", "")
+
   return (
     <section
       ref={sectionRef}
+      id={sectionId}
       className="relative h-screen flex items-center overflow-hidden snap-start"
     >
       {/* 背景光晕（视差） */}
@@ -381,7 +384,18 @@ function RouteSection({
    PAGE
    ========================================================================== */
 export default function HomePage() {
+  // 处理 hash 定位
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "")
+    if (hash) {
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "instant" })
+      }, 100)
+    }
+  }, [])
+
   return (
+    <>
     <div className="snap-y snap-mandatory h-screen overflow-y-auto">
       {/* ====== Hero ====== */}
       <section className="relative flex flex-col items-center justify-center h-screen overflow-hidden snap-start">
@@ -464,41 +478,35 @@ export default function HomePage() {
       {ROUTES.map((r, i) => (
         <RouteSection key={r.href} {...r} isLast={i === ROUTES.length - 1} />
       ))}
-
-      {/* ====== 最后一屏：版权 ====== */}
-      <section className="h-screen flex items-center justify-center snap-start relative">
-        <div className="absolute inset-0 bg-[#0C0A09]" />
-        <div className="relative z-10 text-center">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-[11px] text-foreground/12 font-mono tracking-[0.2em]"
-          >
-            &copy; {new Date().getFullYear()} zhiqiang.dev
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center justify-center gap-4 mt-4"
-          >
-            <a href="https://github.com/linzhiqiang" target="_blank" rel="noopener noreferrer"
-              className="text-foreground/10 hover:text-foreground/25 transition-colors">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-              </svg>
-            </a>
-            <a href="https://x.com/linzhiqiang" target="_blank" rel="noopener noreferrer"
-              className="text-foreground/10 hover:text-foreground/25 transition-colors">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4l11.733 16h4.267l-11.733 -16h-4.267zm6.617 6.911l-6.617 9.089h4.267l4.617 -6.34" />
-              </svg>
-            </a>
-          </motion.div>
-        </div>
-      </section>
     </div>
+
+    {/* ====== 右上角固定按钮 ====== */}
+    <div className="fixed top-5 right-5 z-50 flex items-center gap-2">
+      <a
+        href="https://github.com/lzq976291321?tab=repositories"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-8 h-8 flex items-center justify-center rounded-lg text-foreground/20 hover:text-foreground/50 hover:bg-white/5 transition-all"
+        aria-label="GitHub"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+        </svg>
+      </a>
+      <Link
+        href="/resume"
+        className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-[11px] font-mono tracking-wider text-foreground/25 hover:text-foreground/50 hover:bg-white/5 transition-all"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        简历
+      </Link>
+    </div>
+    </>
   )
 }
