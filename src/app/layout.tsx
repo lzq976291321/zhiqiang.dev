@@ -1,8 +1,5 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
-import { ThemeProvider } from "@/components/layout/ThemeProvider"
-import { Navbar } from "@/components/layout/Navbar"
-import { Footer } from "@/components/layout/Footer"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
 
@@ -49,15 +46,10 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark`}
     >
-      <body className="min-h-screen flex flex-col antialiased">
-        <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </ThemeProvider>
+      <body className="min-h-screen antialiased bg-background text-foreground">
+        {children}
       </body>
     </html>
   )
