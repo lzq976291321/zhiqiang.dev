@@ -73,7 +73,7 @@ function HeroTitle() {
 
       <h1 className="font-heading select-none">
         <motion.span
-          className="block text-[clamp(4rem,12vw,10rem)] leading-[0.85] tracking-[-0.04em] text-foreground"
+          className="block text-[clamp(4rem,12vw,10rem)] leading-[1] tracking-[-0.04em] text-foreground pb-[0.1em]"
           initial={{ opacity: 0, y: 60, clipPath: "inset(100% 0 0 0)" }}
           animate={{ opacity: 1, y: 0, clipPath: "inset(0% 0 0 0)" }}
           transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
