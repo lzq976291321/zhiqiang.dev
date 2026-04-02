@@ -49,6 +49,22 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} dark`}
     >
       <body className="min-h-screen antialiased bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Lin Zhiqiang",
+              alternateName: "林志强",
+              url: siteConfig.url,
+              jobTitle: "全栈 Agent 开发工程师",
+              sameAs: [
+                "https://github.com/lzq976291321",
+              ],
+            }),
+          }}
+        />
         {children}
       </body>
     </html>

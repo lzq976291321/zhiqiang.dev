@@ -1,7 +1,12 @@
+import type { Metadata } from "next"
 import { getAllSkills } from "@/lib/content"
 import { SkillsList } from "@/components/skills/SkillsList"
 
-export const metadata = { title: "Skills" }
+export const metadata: Metadata = {
+  title: "Skills",
+  description: "Claude Code Skills 按角色分类收集，覆盖前端、后端、独立开发者、产品经理、安全合规",
+  openGraph: { title: "Skills 工具库 | zhiqiang.dev", description: "Claude Code Skills 按角色分类收集" },
+}
 
 export default function SkillsPage() {
   const skills = getAllSkills()

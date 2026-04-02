@@ -2,7 +2,11 @@ import { getAllPrompts } from "@/lib/content"
 import { PromptList } from "@/components/prompts/PromptList"
 import { PageShell } from "@/components/shared/PageShell"
 
-export const metadata = { title: "生视频 Prompt" }
+export const metadata = {
+  title: "生视频 Prompt",
+  description: "Sora、Runway、Veo、Kling 通用生视频提示词模板库",
+  openGraph: { title: "生视频 Prompt | zhiqiang.dev" },
+}
 
 export default function VideoPromptsPage() {
   const prompts = getAllPrompts("prompt-video")
