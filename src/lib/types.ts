@@ -1,14 +1,3 @@
-export interface Post {
-  slug: string
-  title: string
-  date: string
-  category: string
-  tags: string[]
-  description: string
-  cover?: string
-  content: string
-}
-
 export interface Skill {
   slug: string
   title: string
@@ -43,5 +32,4 @@ export interface McpServer {
   content: string
 }
 
-// frontmatter 原始类型（解析前）
-export type ContentType = "blog" | "skill" | "prompt-image" | "prompt-video" | "mcp"
+export type ContentType = "skill" | "prompt-image" | "prompt-video" | "mcp"

@@ -5,16 +5,24 @@ import { PageShell } from "@/components/shared/PageShell"
 
 const PROJECTS = [
   {
-    title: "zhiqiang.dev",
-    desc: "你正在看的这个网站。个人博客 × AI 工具库，Next.js + Tailwind + Framer Motion + MDX。",
-    tags: ["Next.js", "Tailwind", "Framer Motion"],
-    href: "https://github.com/linzhiqiang/zhiqiang.dev",
-    accent: "#C8A97E",
+    title: "RC模友圈",
+    desc: "国内免费的遥控模型垂直社区，专注遥控船、遥控车、维修技术交流。从入门到精通的 RC 爱好者之家。",
+    tags: ["Next.js", "Supabase", "社区"],
+    href: "https://rcmyq.cn",
+    accent: "#d35400",
     span: "col-span-1 sm:col-span-2",
   },
   {
-    title: "Skills 收集库",
-    desc: "Claude Code Skills 按角色分类收集，覆盖前端/后端/独立开发者/产品经理/安全。",
+    title: "zhiqiang.dev",
+    desc: "你正在看的这个网站。AI 工具库 + 个人展示，editorial 杂志风设计。",
+    tags: ["Next.js", "Tailwind", "Framer Motion"],
+    href: "https://github.com/lzq976291321/zhiqiang.dev",
+    accent: "#C8A97E",
+    span: "col-span-1",
+  },
+  {
+    title: "Skills 工具库",
+    desc: "22 个 Claude Code Skills 按角色分类，前端/后端/独立开发者/产品经理各取所需。",
     tags: ["Claude Code", "AI"],
     href: "/skills",
     accent: "#C8A97E",
@@ -22,7 +30,7 @@ const PROJECTS = [
   },
   {
     title: "Prompt 模板库",
-    desc: "生图生视频 Prompt 模板，覆盖 Midjourney / ChatGPT / Sora / Runway / Kling。",
+    desc: "13 条中文生图生视频 Prompt 模板，Midjourney / ChatGPT / Sora / Runway 通用。",
     tags: ["AIGC", "Prompt"],
     href: "/prompts",
     accent: "#C8A97E",
@@ -30,11 +38,11 @@ const PROJECTS = [
   },
   {
     title: "MCP 精选",
-    desc: "从 20000+ MCP Server 中精选真正好用的，带安装命令和安全提醒。",
+    desc: "从 20000+ Server 中精选 8 个真正好用的，带安装命令、安全提醒、使用场景。",
     tags: ["MCP", "AI Tools"],
     href: "/mcp",
-    accent: "#00F5D4",
-    span: "col-span-1 sm:col-span-2",
+    accent: "#C8A97E",
+    span: "col-span-1",
   },
 ]
 

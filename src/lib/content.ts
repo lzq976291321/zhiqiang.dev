@@ -1,38 +1,5 @@
-import { getMdxFiles, getMdxBySlug } from "./mdx"
-import type { Post, Skill, Prompt, McpServer } from "./types"
-
-// ===== 博客 =====
-export function getAllPosts(): Post[] {
-  return getMdxFiles("blog")
-    .map(({ slug, frontmatter, content }) => ({
-      slug,
-      title: frontmatter.title ?? "",
-      date: frontmatter.date ?? "",
-      category: frontmatter.category ?? "",
-      tags: frontmatter.tags ?? [],
-      description: frontmatter.description ?? "",
-      cover: frontmatter.cover,
-      content,
-    }))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-}
-
-export function getPostBySlug(slug: string): Post | null {
-  const result = getMdxBySlug("blog", slug)
-  if (!result) return null
-
-  const { frontmatter, content } = result
-  return {
-    slug,
-    title: frontmatter.title ?? "",
-    date: frontmatter.date ?? "",
-    category: frontmatter.category ?? "",
-    tags: frontmatter.tags ?? [],
-    description: frontmatter.description ?? "",
-    cover: frontmatter.cover,
-    content,
-  }
-}
+import { getMdxFiles } from "./mdx"
+import type { Skill, Prompt, McpServer } from "./types"
 
 // ===== Skills =====
 export function getAllSkills(): Skill[] {
@@ -83,7 +50,6 @@ export function getAllPrompts(type?: "prompt-image" | "prompt-video"): Prompt[] 
   )
 
   const all = [...imagePrompts, ...videoPrompts]
-
   if (type) return all.filter((p) => p.type === type)
   return all
 }

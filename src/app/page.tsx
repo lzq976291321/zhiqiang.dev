@@ -68,7 +68,7 @@ function HeroTitle() {
         transition={{ delay: 0.2, duration: 1 }}
         className="text-[11px] font-mono tracking-[0.3em] uppercase text-muted-foreground/50 mb-8"
       >
-        Portfolio & AI Toolkit
+        AI Toolkit & Projects
       </motion.div>
 
       <h1 className="font-heading select-none">
@@ -104,8 +104,8 @@ function HeroTitle() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.6 }}
       >
-        技术博客 · Skills 工具库<br />
-        Prompt 模板 · MCP 精选
+        Skills 工具库 · Prompt 模板<br />
+        MCP 精选 · 开源项目
       </motion.p>
     </div>
   )
@@ -115,12 +115,11 @@ function HeroTitle() {
    路由数据
    ========================================================================== */
 const ROUTES = [
-  { href: "/blog", title: "Blog", cn: "博客", desc: "前端、后端、AI 与独立开发随笔", num: "01" },
-  { href: "/skills", title: "Skills", cn: "工具库", desc: "Claude Code Skills 按角色分类收集", num: "02" },
-  { href: "/prompts", title: "Prompts", cn: "提示词", desc: "生图与生视频 Prompt 模板库", num: "03" },
-  { href: "/mcp", title: "MCP", cn: "服务", desc: "真正好用的 MCP Server 精选", num: "04" },
-  { href: "/projects", title: "Projects", cn: "项目", desc: "个人作品与开源项目展示", num: "05" },
-  { href: "/about", title: "About", cn: "关于", desc: "经历、技能、联系方式", num: "06" },
+  { href: "/skills", title: "Skills", cn: "工具库", desc: "Claude Code Skills 按角色分类收集", num: "01" },
+  { href: "/prompts", title: "Prompts", cn: "提示词", desc: "生图与生视频 Prompt 模板库", num: "02" },
+  { href: "/mcp", title: "MCP", cn: "服务", desc: "真正好用的 MCP Server 精选", num: "03" },
+  { href: "/projects", title: "Projects", cn: "项目", desc: "个人作品与开源项目展示", num: "04" },
+  { href: "/about", title: "About", cn: "关于", desc: "经历、技能、联系方式", num: "05" },
 ]
 
 /* ==========================================================================
@@ -228,7 +227,7 @@ function RouteSection({
 
       <div className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2">
         <span className="text-[10px] font-mono text-white/5 tracking-widest" style={{ writingMode: "vertical-lr" }}>
-          {num} — 06
+          {num} — 05
         </span>
       </div>
     </section>
