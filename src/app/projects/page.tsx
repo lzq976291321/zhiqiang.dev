@@ -48,7 +48,7 @@ const PROJECTS = [
 
 export default function ProjectsPage() {
   return (
-    <PageShell title="项目" subtitle="个人作品与开源项目" accent="#FB923C">
+    <PageShell title="项目" subtitle="个人作品与开源项目" accent="#B8F7D4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {PROJECTS.map((p, i) => (
           <motion.a
@@ -59,20 +59,18 @@ export default function ProjectsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -3 }}
-            className={`group block p-6 rounded-xl border border-foreground/[0.04] hover:border-foreground/[0.08] bg-surface/30 hover:bg-surface/50 transition-all duration-300 ${p.span}`}
+            className={`glass-card group block p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-100/22 hover:bg-white/[0.095] ${p.span}`}
           >
             {/* 顶部色条 */}
             <div
-              className="h-[2px] w-12 rounded-full mb-5 group-hover:w-20 transition-all duration-500"
-              style={{ background: p.accent }}
+              className="mb-5 h-[2px] w-12 rounded-full bg-cyan-100/60 transition-all duration-500 group-hover:w-20"
             />
 
-            <h3 className="text-lg font-heading font-bold text-foreground/85 group-hover:text-foreground transition-colors mb-2">
+            <h3 className="mb-2 font-heading text-2xl font-semibold tracking-[-0.025em] text-white/88 transition-colors group-hover:text-white">
               {p.title}
             </h3>
 
-            <p className="text-sm text-foreground/30 group-hover:text-foreground/40 transition-colors leading-relaxed mb-4">
+            <p className="mb-4 text-sm leading-relaxed text-white/48 transition-colors group-hover:text-white/58">
               {p.desc}
             </p>
 
@@ -80,7 +78,7 @@ export default function ProjectsPage() {
               {p.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-foreground/[0.03] text-foreground/20"
+                  className="rounded-full border border-white/10 bg-white/[0.045] px-2.5 py-1 font-mono text-[10px] tracking-wider text-white/38"
                 >
                   {tag}
                 </span>
@@ -88,7 +86,7 @@ export default function ProjectsPage() {
             </div>
 
             {/* 箭头 */}
-            <div className="mt-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ color: `${p.accent}70` }}>
+            <div className="mt-4 flex items-center gap-1.5 text-cyan-50/68 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <span className="text-[11px] font-mono">{p.href.startsWith("http") ? "GitHub" : "查看"}</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17L17 7" />

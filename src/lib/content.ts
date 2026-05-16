@@ -1,5 +1,5 @@
 import { getMdxFiles } from "./mdx"
-import type { Skill, Prompt, McpServer } from "./types"
+import type { AgentArticle, Skill, Prompt, McpServer } from "./types"
 
 // ===== Skills =====
 export function getAllSkills(): Skill[] {
@@ -66,4 +66,31 @@ export function getAllMcpServers(): McpServer[] {
     whoNeeds: frontmatter.whoNeeds ?? "",
     content,
   }))
+}
+
+// ===== Agent Engineering =====
+export function getAllAgentArticles(): AgentArticle[] {
+  return getMdxFiles("agent")
+    .map(({ slug, frontmatter, content }) => ({
+      slug,
+      title: frontmatter.title ?? "",
+      description: frontmatter.description ?? "",
+      category: frontmatter.category ?? "Agent 设计原则",
+      series: frontmatter.series ?? "Agent Engineering",
+      order: frontmatter.order ?? 999,
+      tags: frontmatter.tags ?? [],
+      date: frontmatter.date ?? "",
+      readTime: frontmatter.readTime ?? "5 min",
+      level: frontmatter.level ?? "foundation",
+      content,
+    }))
+    .sort((a, b) => a.order - b.order)
+}
+
+export function getAgentArticleBySlug(slug: string): AgentArticle | null {
+  return getAllAgentArticles().find((article) => article.slug === slug) ?? null
+}
+
+export function getAgentCategories(): string[] {
+  return Array.from(new Set(getAllAgentArticles().map((article) => article.category)))
 }

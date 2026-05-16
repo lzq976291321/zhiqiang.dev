@@ -32,4 +32,18 @@ export interface McpServer {
   content: string
 }
 
-export type ContentType = "skill" | "prompt-image" | "prompt-video" | "mcp"
+export interface AgentArticle {
+  slug: string
+  title: string
+  description: string
+  category: string
+  series: string
+  order: number
+  tags: string[]
+  date: string
+  readTime: string
+  level: "foundation" | "practice" | "advanced"
+  content: string
+}
+
+export type ContentType = "skill" | "prompt-image" | "prompt-video" | "mcp" | "agent"

@@ -1,5 +1,5 @@
 export const navItems = [
-  { label: "博客", href: "/blog" },
+  { label: "Agent", href: "/agent" },
   { label: "Skills", href: "/skills" },
   { label: "Prompts", href: "/prompts" },
   { label: "MCP", href: "/mcp" },

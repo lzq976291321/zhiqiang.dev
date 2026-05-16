@@ -14,6 +14,7 @@ export default function VideoPromptsPage() {
     <PageShell
       title="生视频 Prompt"
       subtitle="Sora · Runway · Veo · Kling 通用模板"
+      accent="#B8F7D4"
       parentLink={{ href: "/prompts", label: "Prompts" }}
     >
       <PromptList prompts={prompts} type="prompt-video" />

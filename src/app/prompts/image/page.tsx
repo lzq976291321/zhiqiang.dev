@@ -14,6 +14,7 @@ export default function ImagePromptsPage() {
     <PageShell
       title="生图 Prompt"
       subtitle="Midjourney · ChatGPT · Stable Diffusion · Flux 通用模板"
+      accent="#9FE8FF"
       parentLink={{ href: "/prompts", label: "Prompts" }}
     >
       <PromptList prompts={prompts} type="prompt-image" />

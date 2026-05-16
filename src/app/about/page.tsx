@@ -27,14 +27,14 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
       viewport={{ once: true }}
       transition={{ delay: index * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-sm text-foreground/50">{name}</span>
-        <span className="text-[11px] font-mono text-foreground/20">{level}%</span>
+      <div className="mb-1.5 flex items-center justify-between">
+        <span className="text-sm text-white/56">{name}</span>
+        <span className="font-mono text-[11px] text-white/34">{level}%</span>
       </div>
-      <div className="h-1 rounded-full bg-foreground/[0.04] overflow-hidden">
+      <div className="h-1 overflow-hidden rounded-full bg-white/[0.08]">
         <motion.div
           className="h-full rounded-full"
-          style={{ background: "linear-gradient(90deg, #C8A97E, #C8A97E)" }}
+          style={{ background: "linear-gradient(90deg, #9FE8FF, #B8F7D4)" }}
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
           viewport={{ once: true }}
@@ -47,14 +47,14 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
 
 export default function AboutPage() {
   return (
-    <PageShell title="关于" subtitle="一个人全干的独立开发者" accent="#A78BFA">
+    <PageShell title="关于" subtitle="一个人全干的独立开发者" accent="#9FE8FF">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
         {/* 左侧：时间线 */}
         <div className="lg:col-span-3">
-          <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-foreground/20 mb-6">
+          <h2 className="mb-6 font-mono text-sm uppercase tracking-[0.15em] text-cyan-100/46">
             经历
           </h2>
-          <div className="space-y-8">
+          <div className="glass-card space-y-8 p-6">
             {TIMELINE.map((item, i) => (
               <motion.div
                 key={item.year}
@@ -62,20 +62,20 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="relative pl-6 border-l border-foreground/[0.06]"
+                className="relative border-l border-white/10 pl-6"
               >
                 {/* 圆点 */}
                 <div
-                  className="absolute left-0 top-1 w-2 h-2 rounded-full -translate-x-[4.5px]"
-                  style={{ background: i === 0 ? "#C8A97E" : "rgba(200,169,126,0.2)" }}
+                  className="absolute left-0 top-1 size-2 -translate-x-[4.5px] rounded-full"
+                  style={{ background: i === 0 ? "#9FE8FF" : "rgba(159,232,255,0.24)" }}
                 />
-                <span className="text-[11px] font-mono tracking-wider text-gold/50 block mb-1">
+                <span className="mb-1 block font-mono text-[11px] tracking-wider text-cyan-100/56">
                   {item.year}
                 </span>
-                <h3 className="text-base font-heading font-bold text-foreground/75 mb-1.5">
+                <h3 className="mb-1.5 font-heading text-xl font-semibold tracking-[-0.02em] text-white/86">
                   {item.title}
                 </h3>
-                <p className="text-sm text-foreground/30 leading-relaxed">
+                <p className="text-sm leading-relaxed text-white/48">
                   {item.desc}
                 </p>
               </motion.div>
@@ -86,10 +86,10 @@ export default function AboutPage() {
 
         {/* 右侧：技能 */}
         <div className="lg:col-span-2">
-          <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-foreground/20 mb-6">
+          <h2 className="mb-6 font-mono text-sm uppercase tracking-[0.15em] text-cyan-100/46">
             技能
           </h2>
-          <div className="space-y-5">
+          <div className="glass-card space-y-5 p-6">
             {SKILLS.map((s, i) => (
               <SkillBar key={s.name} {...s} index={i} />
             ))}

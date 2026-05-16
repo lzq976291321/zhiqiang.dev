@@ -18,8 +18,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  useEffect(() => setMobileOpen(false), [pathname])
-
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
 
@@ -125,6 +123,7 @@ export function Navbar() {
                 >
                   <Link
                     href={item.href}
+                    onClick={() => setMobileOpen(false)}
                     className={`text-xl font-heading tracking-wide transition-colors ${
                       isActive(item.href)
                         ? "text-gold"

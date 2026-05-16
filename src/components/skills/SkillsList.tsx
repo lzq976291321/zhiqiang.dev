@@ -8,9 +8,9 @@ import { PageShell } from "@/components/shared/PageShell"
 const ROLES = ["全部", "前端开发者", "后端开发者", "独立开发者", "产品经理", "安全合规"]
 
 const sourceColor: Record<string, string> = {
-  official: "text-gold/60 bg-gold/8",
-  community: "text-foreground/30 bg-foreground/[0.04]",
-  vendor: "text-gold/60 bg-gold/8",
+  official: "text-cyan-50/80 bg-cyan-100/10 border-cyan-100/18",
+  community: "text-white/46 bg-white/[0.05] border-white/10",
+  vendor: "text-emerald-50/80 bg-emerald-100/10 border-emerald-100/18",
 }
 
 function SkillCard({ skill, index }: { skill: Skill; index: number }) {
@@ -22,25 +22,25 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ delay: index * 0.04, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="border border-foreground/[0.04] rounded-xl overflow-hidden bg-surface/30 hover:bg-surface/50 transition-colors duration-300"
+      className="glass-card overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:border-cyan-100/22 hover:bg-white/[0.09]"
     >
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left p-5 flex items-start justify-between gap-4"
+        className="flex w-full items-start justify-between gap-4 p-5 text-left sm:p-6"
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-base font-heading font-bold text-foreground/80 font-mono">
+            <h3 className="font-heading text-xl font-semibold tracking-[-0.02em] text-white/90">
               {skill.title}
             </h3>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${sourceColor[skill.source] ?? sourceColor.community}`}>
+            <span className={`rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] ${sourceColor[skill.source] ?? sourceColor.community}`}>
               {skill.source}
             </span>
           </div>
-          <p className="text-sm text-foreground/30 leading-relaxed">{skill.description}</p>
+          <p className="text-sm leading-relaxed text-white/48">{skill.description}</p>
           <div className="flex flex-wrap gap-1.5 mt-3">
             {skill.roles.map((r) => (
-              <span key={r} className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-foreground/[0.03] text-foreground/20">
+              <span key={r} className="rounded-full border border-white/10 bg-white/[0.045] px-2.5 py-1 font-mono text-[10px] tracking-wider text-white/36">
                 {r}
               </span>
             ))}
@@ -50,7 +50,7 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
         <motion.svg
           width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-          className="mt-1 text-foreground/15 shrink-0"
+          className="mt-1 shrink-0 text-white/32"
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
@@ -67,18 +67,18 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-5 pt-1 border-t border-foreground/[0.04]">
+            <div className="border-t border-white/10 px-5 pb-5 pt-4 sm:px-6">
               {skill.trigger && (
-                <p className="text-[12px] text-foreground/20 mb-2">
-                  <span className="text-foreground/35">触发方式：</span>{skill.trigger}
+                <p className="mb-2 text-[12px] text-white/42">
+                  <span className="text-white/62">触发方式：</span>{skill.trigger}
                 </p>
               )}
               {skill.installs && (
-                <p className="text-[12px] text-foreground/20">
-                  <span className="text-foreground/35">安装量：</span>{skill.installs.toLocaleString()}+
+                <p className="text-[12px] text-white/42">
+                  <span className="text-white/62">安装量：</span>{skill.installs.toLocaleString()}+
                 </p>
               )}
-              <div className="mt-3 text-sm text-foreground/25 leading-relaxed prose-sm">
+              <div className="mt-3 text-sm leading-relaxed text-white/46">
                 {skill.content.split("\n").filter(Boolean).map((line, i) => (
                   <p key={i} className="mb-1">{line}</p>
                 ))}
@@ -96,17 +96,17 @@ export function SkillsList({ skills }: { skills: Skill[] }) {
   const filtered = role === "全部" ? skills : skills.filter((s) => s.roles.includes(role))
 
   return (
-    <PageShell title="Skills" subtitle="Claude Code Skills 按角色分类收集，找到适合你的工具" accent="#F97316">
+    <PageShell title="Skills" subtitle="Claude Code Skills 按角色分类收集，找到适合你的工具" accent="#B8F7D4">
       {/* 角色筛选 */}
       <div className="flex flex-wrap gap-2 mb-10">
         {ROLES.map((r) => (
           <button
             key={r}
             onClick={() => setRole(r)}
-            className={`px-3 py-1 rounded-lg text-[12px] font-mono tracking-wider transition-all duration-200 ${
+            className={`rounded-full border px-3 py-1.5 font-mono text-[12px] tracking-wider transition-all duration-200 ${
               role === r
-                ? "bg-gold/10 text-gold"
-                : "text-foreground/25 hover:text-foreground/40 hover:bg-foreground/[0.03]"
+                ? "border-cyan-100/20 bg-cyan-100/12 text-cyan-50"
+                : "border-white/10 bg-white/[0.04] text-white/40 hover:bg-white/[0.075] hover:text-white/72"
             }`}
           >
             {r}
@@ -123,7 +123,7 @@ export function SkillsList({ skills }: { skills: Skill[] }) {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-foreground/20 py-20 text-sm">暂无匹配的 Skill</p>
+        <p className="py-20 text-center text-sm text-white/36">暂无匹配的 Skill</p>
       )}
     </PageShell>
   )

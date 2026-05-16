@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 
 // 路由 → 首页 section id 的映射
 const routeToSection: Record<string, string> = {
+  "/agent": "agent",
   "/skills": "skills",
   "/prompts": "prompts",
   "/mcp": "mcp",

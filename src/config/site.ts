@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "zhiqiang.dev",
-  title: "zhiqiang.dev — 博客 × AI 工具库",
+  title: "zhiqiang.dev — Agent Engineering Knowledge Base",
   description:
-    "个人技术博客与 AI 工具收集站，涵盖前端开发、Claude Skills、Prompt 模板库、MCP Server 推荐",
+    "全栈 Agent 开发者的公开知识库，记录 Claude Code、Agent 设计、MCP、Skills、Prompt 与独立产品交付实践",
   url: "https://zhiqiang.dev",
   author: {
     name: "Lin Zhiqiang",

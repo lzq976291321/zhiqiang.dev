@@ -14,13 +14,13 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ delay: index * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="border border-foreground/[0.04] rounded-xl overflow-hidden bg-surface/30"
+      className="glass-card overflow-hidden"
     >
-      <div className="p-5">
+      <div className="p-5 sm:p-6">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-heading font-bold text-foreground/80">{prompt.title}</h3>
-            <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-foreground/[0.04] text-foreground/20">
+            <h3 className="font-heading text-xl font-semibold tracking-[-0.02em] text-white/90">{prompt.title}</h3>
+            <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] tracking-wider text-white/42">
               {prompt.scene}
             </span>
           </div>
@@ -29,7 +29,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
         {/* 平台标签 */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           {prompt.platforms.map((p) => (
-            <span key={p} className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-foreground/5 text-foreground/40">
+            <span key={p} className="rounded-full border border-white/10 bg-white/[0.045] px-2.5 py-1 font-mono text-[10px] tracking-wider text-white/42">
               {p}
             </span>
           ))}
@@ -37,7 +37,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
 
         {/* Prompt 正文 */}
         <div className="relative group">
-          <pre className="text-sm text-foreground/35 leading-relaxed bg-[#141414] rounded-lg p-4 overflow-x-auto whitespace-pre-wrap font-mono">
+          <pre className="overflow-x-auto whitespace-pre-wrap rounded-3xl border border-white/10 bg-[#050913]/70 p-4 pr-24 font-mono text-sm leading-relaxed text-cyan-50/70">
             {prompt.prompt}
           </pre>
           <div className="absolute top-2 right-2">
@@ -48,15 +48,15 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
         {/* 负面提示词 */}
         {prompt.negative && (
           <div className="mt-3">
-            <span className="text-[10px] font-mono text-foreground/20 tracking-wider">Negative:</span>
-            <p className="text-xs text-foreground/20 mt-1 font-mono">{prompt.negative}</p>
+            <span className="font-mono text-[10px] tracking-wider text-white/36">Negative:</span>
+            <p className="mt-1 font-mono text-xs text-white/38">{prompt.negative}</p>
           </div>
         )}
 
         {/* 技巧 */}
         {prompt.tips && (
-          <p className="mt-3 text-xs text-gold/40 flex items-start gap-1.5">
-            <span>💡</span>
+          <p className="mt-3 flex items-start gap-1.5 text-xs text-emerald-50/62">
+            <span className="mt-1 size-1.5 rounded-full bg-emerald-200/70" />
             {prompt.tips}
           </p>
         )}
@@ -66,7 +66,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
           <>
             <button
               onClick={() => setExpanded(!expanded)}
-              className="mt-4 text-[11px] font-mono text-foreground/20 hover:text-foreground/35 transition-colors"
+              className="mt-4 font-mono text-[11px] text-white/38 transition-colors hover:text-white/68"
             >
               {expanded ? "收起" : "展开详情"} ↓
             </button>
@@ -79,7 +79,7 @@ function PromptCard({ prompt, index }: { prompt: Prompt; index: number }) {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-3 pt-3 border-t border-foreground/[0.04] text-sm text-foreground/25 leading-relaxed">
+                  <div className="mt-3 border-t border-white/10 pt-3 text-sm leading-relaxed text-white/46">
                     {prompt.content.split("\n").filter(Boolean).map((line, i) => (
                       <p key={i} className="mb-1">{line}</p>
                     ))}
@@ -115,12 +115,12 @@ export function PromptList({
           <button
             key={s}
             onClick={() => setScene(s)}
-            className={`px-3 py-1 rounded-lg text-[12px] font-mono tracking-wider transition-all duration-200 ${
+            className={`rounded-full border px-3 py-1.5 font-mono text-[12px] tracking-wider transition-all duration-200 ${
               scene === s
-                ? "text-white"
-                : "text-foreground/25 hover:text-foreground/40 hover:bg-foreground/[0.03]"
+                ? "border-cyan-100/20 text-white"
+                : "border-white/10 bg-white/[0.04] text-white/40 hover:bg-white/[0.075] hover:text-white/72"
             }`}
-            style={scene === s ? { background: `${accentColor}20`, color: accentColor } : {}}
+            style={scene === s ? { background: `${accentColor}24`, color: "white" } : {}}
           >
             {s}
           </button>
@@ -136,7 +136,7 @@ export function PromptList({
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-foreground/20 py-20 text-sm">暂无模板</p>
+        <p className="py-20 text-center text-sm text-white/36">暂无模板</p>
       )}
     </>
   )

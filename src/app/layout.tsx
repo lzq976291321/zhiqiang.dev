@@ -1,22 +1,28 @@
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google"
+import {
+  Bricolage_Grotesque,
+  IBM_Plex_Mono,
+  Instrument_Sans,
+} from "next/font/google"
+import { GlassNav } from "@/components/layout/GlassNav"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
 
-const inter = Inter({
+const instrument = Instrument_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 })
 
-const playfair = Playfair_Display({
+const bricolage = Bricolage_Grotesque({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
 })
 
-const jetbrainsMono = JetBrains_Mono({
+const mono = IBM_Plex_Mono({
   variable: "--font-mono",
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
 })
@@ -46,9 +52,9 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} dark`}
+      className={`${instrument.variable} ${bricolage.variable} ${mono.variable} dark`}
     >
-      <body className="min-h-screen antialiased bg-background text-foreground">
+      <body className="min-h-screen overflow-x-hidden antialiased bg-background text-foreground">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -65,6 +71,7 @@ export default function RootLayout({
             }),
           }}
         />
+        <GlassNav />
         {children}
       </body>
     </html>
