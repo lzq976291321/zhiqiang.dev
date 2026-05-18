@@ -9,14 +9,12 @@ import {
   FileText,
   Layers3,
   Network,
-  PenTool,
   ShieldCheck,
   Sparkles,
 } from "lucide-react"
 import {
   getAllAgentArticles,
   getAllMcpServers,
-  getAllPrompts,
   getAllSkills,
 } from "@/lib/content"
 
@@ -34,9 +32,8 @@ const principles = [
 export default function HomePage() {
   const agentArticles = getAllAgentArticles()
   const skills = getAllSkills()
-  const prompts = getAllPrompts()
   const mcpServers = getAllMcpServers()
-  const mdxCount = agentArticles.length + skills.length + prompts.length + mcpServers.length
+  const mdxCount = agentArticles.length + skills.length + mcpServers.length
 
   const routes = [
     {
@@ -61,14 +58,6 @@ export default function HomePage() {
       desc: "真正好用的 MCP Server 精选。",
       meta: `${mcpServers.length} servers`,
       icon: Network,
-      className: "",
-    },
-    {
-      href: "/prompts",
-      title: "Prompts",
-      desc: "生图与生视频 Prompt 模板库。",
-      meta: `${prompts.length} templates`,
-      icon: PenTool,
       className: "",
     },
     {

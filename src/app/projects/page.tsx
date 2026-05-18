@@ -29,14 +29,6 @@ const PROJECTS = [
     span: "col-span-1",
   },
   {
-    title: "Prompt 模板库",
-    desc: "13 条中文生图生视频 Prompt 模板，Midjourney / ChatGPT / Sora / Runway 通用。",
-    tags: ["AIGC", "Prompt"],
-    href: "/prompts",
-    accent: "#C8A97E",
-    span: "col-span-1",
-  },
-  {
     title: "MCP 精选",
     desc: "从 20000+ Server 中精选 8 个真正好用的，带安装命令、安全提醒、使用场景。",
     tags: ["MCP", "AI Tools"],
