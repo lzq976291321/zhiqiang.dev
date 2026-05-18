@@ -1,12 +1,16 @@
 ---
 title: "Supabase MCP"
-description: "建表、查询、配置一站式，支持 RLS"
-maintainer: "Supabase 社区"
+description: "建表、查询、日志、TypeScript 类型和配置管理，生产环境先只读"
+maintainer: "Supabase 官方"
 tier: "recommended"
-installCommand: "npx -y @supabase/mcp --read-only"
-whoNeeds: "用 Supabase 做后端的团队"
+roles: ["后端开发者", "独立开发者", "Agent 工程师"]
+fit: "core"
+risk: "high"
+worth: "用 Supabase 做后端时值得启用，但生产项目必须 project-scoped + read_only。没有 Supabase 项目就不需要装。"
+installCommand: "claude mcp add --transport http supabase 'https://mcp.supabase.com/mcp?project_ref=YOUR_REF&read_only=true'"
+whoNeeds: "用 Supabase 做数据库、Auth、Edge Functions 或日志排查的团队"
 ---
 
-直接在 AI 对话中操作 Supabase 项目：建表、查询数据、管理配置、部署 Edge Functions。支持 Row Level Security，不绕过 Auth。
+直接在 AI 对话中操作 Supabase 项目：建表、查询数据、管理配置、生成类型、读取日志、部署 Edge Functions。支持 Row Level Security，不绕过 Auth。
 
-生产环境建议开启 `--read-only` 模式。
+生产环境建议用 `read_only=true` 和 `project_ref` 限制范围。

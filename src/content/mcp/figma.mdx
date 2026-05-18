@@ -3,8 +3,12 @@ title: "Figma MCP"
 description: "读取真实布局约束而非截图猜测，生成代码质量明显高一档"
 maintainer: "Figma 官方"
 tier: "recommended"
-installCommand: "npx -y @anthropic/figma-mcp"
-whoNeeds: "有设计稿要还原的前端"
+roles: ["前端开发者", "独立开发者", "产品经理"]
+fit: "situational"
+risk: "low"
+worth: "有真实 Figma 设计稿时非常值得启用；没有设计稿时不必装。优先使用 Figma 官方 Dev Mode MCP，不要随手装不明第三方 Figma MCP。"
+installCommand: "在 Figma Desktop 的 Dev Mode 中启用 MCP Server"
+whoNeeds: "有设计稿要还原的前端和独立开发者"
 ---
 
-Figma MCP 读取设计稿的节点树结构，让 AI 基于真实布局约束生成代码，而不是截图猜测。设计转代码的质量明显提升。
+Figma 官方 Dev Mode MCP 读取设计稿的节点树结构，让 AI 基于真实布局约束生成代码，而不是截图猜测。设计转代码的质量明显提升。

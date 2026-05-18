@@ -1,9 +1,11 @@
 ---
 title: "mcp-builder"
 description: "创建高质量 MCP Server 的标准化指南"
-roles: ["后端开发者"]
+roles: ["Agent 工程师", "后端开发者"]
 source: "official"
 trigger: "构建 MCP Server 时"
+fit: "core"
+worth: "只要你要把内部系统、数据库或第三方 API 暴露给 Agent，就值得启用。普通业务开发不需要常驻。"
 ---
 
 指导创建高质量的 MCP (Model Context Protocol) Server，让 LLM 能通过精心设计的工具与外部服务交互。支持 Python (FastMCP) 和 TypeScript。

@@ -3,8 +3,12 @@ title: "Brave Search"
 description: "无广告追踪的干净搜索结果"
 maintainer: "Brave"
 tier: "recommended"
-installCommand: "npx -y @anthropic/brave-search-mcp"
-whoNeeds: "需要 AI 联网搜索的场景"
+roles: ["Agent 工程师", "独立开发者", "产品经理"]
+fit: "situational"
+risk: "medium"
+worth: "需要联网搜索时值得启用，但不建议全局常驻。搜索结果会把外部网页内容带进上下文，需要警惕提示注入。"
+installCommand: "claude mcp add brave-search -e BRAVE_API_KEY=$BRAVE_API_KEY -- npx -y @modelcontextprotocol/server-brave-search"
+whoNeeds: "需要 AI 联网搜索但不想依赖浏览器复制粘贴的场景"
 ---
 
 给 AI 联网搜索能力。使用 Brave Search API，无广告追踪，结果干净。

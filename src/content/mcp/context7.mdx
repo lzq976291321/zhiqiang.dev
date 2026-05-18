@@ -3,8 +3,12 @@ title: "Context7"
 description: "实时拉取官方库最新文档注入 Prompt"
 maintainer: "社区"
 tier: "essential"
-installCommand: "npx -y @context7/mcp"
-whoNeeds: "所有开发者"
+roles: ["Agent 工程师", "前端开发者", "后端开发者", "独立开发者"]
+fit: "core"
+risk: "low"
+worth: "开发类角色值得长期启用。它解决的是模型训练数据滞后问题，尤其适合 Next.js、React、Supabase、AI SDK 这类快速变化的库。"
+installCommand: "claude mcp add context7 -- npx -y @upstash/context7-mcp@latest"
+whoNeeds: "所有需要查最新库文档的开发者"
 ---
 
 框架迭代快，AI 训练数据滞后。Context7 在你提问时实时拉取版本对应的官方文档，注入到 Prompt 中，让 AI 不再用去年的 API 写代码。

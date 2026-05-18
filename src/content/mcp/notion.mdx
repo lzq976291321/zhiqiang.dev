@@ -1,0 +1,18 @@
+---
+title: "Notion MCP"
+description: "把需求、会议纪要、知识库和项目资料接入 Agent"
+maintainer: "Notion 官方"
+tier: "recommended"
+roles: ["产品经理", "独立开发者", "Agent 工程师"]
+fit: "situational"
+risk: "medium"
+worth: "团队知识沉淀在 Notion 时值得启用。个人没有稳定 Notion 工作流时不必装，避免把大量低质量文档塞进上下文。"
+installCommand: "claude mcp add --transport http notion https://mcp.notion.com/mcp"
+whoNeeds: "用 Notion 管理需求、知识库、会议纪要和项目资料的人"
+---
+
+Notion MCP 适合产品经理和独立开发者把知识库接入 Agent。
+
+更好的用法不是让 Agent 读整个 workspace，而是围绕当前项目、当前页面或明确数据库查询来取上下文。
+
+如果文档质量很差，先整理信息架构，再接 MCP。

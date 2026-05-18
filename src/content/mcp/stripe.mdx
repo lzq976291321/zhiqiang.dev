@@ -1,0 +1,23 @@
+---
+title: "Stripe MCP"
+description: "查询 Stripe API、文档和支付对象，适合商业化产品"
+maintainer: "Stripe 官方"
+tier: "recommended"
+roles: ["独立开发者", "后端开发者", "产品经理", "安全合规"]
+fit: "situational"
+risk: "high"
+worth: "开始做付费、订阅或账单系统时值得启用。支付数据高敏感，默认只读，避免让 Agent 直接修改生产支付对象。"
+installCommand: "claude mcp add --transport http stripe https://mcp.stripe.com"
+whoNeeds: "需要接入支付、订阅、账单、退款或 Stripe 文档查询的项目"
+---
+
+Stripe MCP 对独立开发者很有价值，因为商业化经常卡在支付模型、Webhook、订阅状态和账单边界。
+
+建议先用于：
+
+- 查文档
+- 解释 API 对象
+- 审查 Webhook 处理
+- 检查测试环境支付流程
+
+生产写操作必须单独确认。

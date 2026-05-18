@@ -4,6 +4,8 @@ description: "代码写完后自动审查复用性、质量和效率"
 roles: ["前端开发者", "后端开发者", "独立开发者"]
 source: "official"
 trigger: "/simplify"
+fit: "situational"
+worth: "写完一轮代码后值得手动触发，不建议每个小改动都跑。它适合收敛重复、命名和性能问题。"
 ---
 
 内置 Skill，写完代码后执行 `/simplify`，它会并行启动 3 个审查 Agent，分别从不同角度找问题并直接修复。

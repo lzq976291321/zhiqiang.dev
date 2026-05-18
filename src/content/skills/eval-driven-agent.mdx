@@ -1,0 +1,22 @@
+---
+title: "eval-driven-agent"
+description: "为 Agent 设计评测集、失败分类和回归验证流程"
+roles: ["Agent 工程师", "后端开发者", "安全合规"]
+source: "community"
+trigger: "Agent 能跑起来后，准备提升稳定性和可回归性时"
+fit: "core"
+worth: "Agent 工程师必须启用。没有 eval 的 Agent 只能靠主观体验判断好坏，无法证明改动是否真的变好。"
+---
+
+Agent 上线前必须有评测闭环。
+
+这个 Skill 会把模糊体验拆成：
+
+- 典型任务集
+- 失败类型
+- 成功判定
+- 工具调用轨迹
+- 安全边界检查
+- 回归对比方式
+
+它特别适合和 Verification、Permission、Context 设计一起使用。

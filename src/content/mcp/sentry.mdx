@@ -3,8 +3,12 @@ title: "Sentry MCP"
 description: "错误监控 + AI 根因分析，调试效率翻倍"
 maintainer: "Sentry 官方"
 tier: "recommended"
-installCommand: "npx -y @sentry/mcp-server"
-whoNeeds: "用 Sentry 做错误监控的团队"
+roles: ["后端开发者", "前端开发者", "独立开发者", "安全合规"]
+fit: "situational"
+risk: "medium"
+worth: "接入 Sentry 的项目值得启用。它适合生产问题排查，但错误上下文可能包含敏感信息，需要控制组织和项目权限。"
+installCommand: "claude mcp add --transport http sentry https://mcp.sentry.dev/mcp"
+whoNeeds: "用 Sentry 做错误监控和线上问题分析的团队"
 ---
 
 把 Sentry 的错误监控数据接入 AI 对话。AI 可以直接分析错误堆栈、定位根因、建议修复方案。

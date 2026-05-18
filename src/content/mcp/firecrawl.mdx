@@ -3,8 +3,12 @@ title: "Firecrawl"
 description: "整站爬取 + 结构化提取 + 自主研究 Agent"
 maintainer: "Firecrawl"
 tier: "recommended"
-installCommand: "npx -y @anthropic/firecrawl-mcp"
-whoNeeds: "需要爬取整站、结构化提取的场景"
+roles: ["Agent 工程师", "独立开发者", "产品经理"]
+fit: "situational"
+risk: "medium"
+worth: "做竞品研究、资料采集、内容整理时值得启用。它会引入大量外部网页内容，生产 Agent 要加来源记录和过滤。"
+installCommand: "claude mcp add firecrawl -e FIRECRAWL_API_KEY=$FIRECRAWL_API_KEY -- npx -y firecrawl-mcp"
+whoNeeds: "需要爬取整站、结构化提取和深度研究的场景"
 ---
 
 12+ 工具包含自主研究 Agent，支持整站爬取和结构化数据提取。比单纯的搜索 MCP 强大很多，适合竞品分析、内容采集等深度研究场景。

@@ -1,0 +1,16 @@
+---
+title: "Cloudflare Docs MCP"
+description: "查询 Cloudflare Workers、R2、D1、KV、AI Gateway 等最新文档"
+maintainer: "Cloudflare 官方"
+tier: "recommended"
+roles: ["Agent 工程师", "后端开发者", "独立开发者"]
+fit: "situational"
+risk: "low"
+worth: "项目跑在 Cloudflare 生态时值得启用。它主要提供文档上下文，风险低；不使用 Cloudflare 时无需装。"
+installCommand: "claude mcp add --transport http cloudflare-docs https://docs.mcp.cloudflare.com/mcp"
+whoNeeds: "使用 Cloudflare Workers、D1、R2、KV、Pages 或 AI Gateway 的开发者"
+---
+
+Cloudflare 的产品线变化快，文档 MCP 能减少模型使用旧 API 的概率。
+
+它适合搭配 Context7 使用：Context7 查通用库文档，Cloudflare Docs MCP 查平台专属约束。

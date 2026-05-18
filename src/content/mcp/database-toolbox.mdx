@@ -1,0 +1,23 @@
+---
+title: "MCP Toolbox for Databases"
+description: "用 tools.yaml 显式定义数据库工具，替代直接把整库暴露给 Agent"
+maintainer: "Google"
+tier: "recommended"
+roles: ["Agent 工程师", "后端开发者", "安全合规"]
+fit: "situational"
+risk: "high"
+worth: "需要给 Agent 接数据库时值得评估。比直接接通用 Postgres MCP 更可控，但仍然必须只读、最小权限和审计。"
+installCommand: "claude mcp add database-toolbox -- npx -y @toolbox-sdk/server --tools-file tools.yaml"
+whoNeeds: "需要把数据库查询能力安全暴露给 Agent 的后端和 Agent 工程师"
+---
+
+数据库 MCP 的原则是：不要把整库变成一个万能 SQL 工具。
+
+更稳的做法是用 `tools.yaml` 暴露有限工具：
+
+- 查询固定报表
+- 检查 schema
+- 读取只读视图
+- 运行经过参数化的查询
+
+对生产数据库，必须使用只读账号和独立审计日志。

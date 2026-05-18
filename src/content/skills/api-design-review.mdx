@@ -1,0 +1,22 @@
+---
+title: "api-design-review"
+description: "审查 API 契约、错误模型、分页、幂等和权限边界"
+roles: ["Agent 工程师", "后端开发者", "独立开发者"]
+source: "community"
+trigger: "新增 REST / GraphQL / tRPC / Server Action 接口时"
+fit: "core"
+worth: "后端和 Agent 工程师值得启用。API 一旦被前端、Agent 或第三方调用，错误契约和权限边界的返工成本很高。"
+---
+
+API 设计最容易被低估的是长期维护成本。
+
+这个 Skill 重点检查：
+
+- 请求和响应是否稳定
+- 错误码是否能指导调用方恢复
+- 是否需要分页、排序、过滤
+- 写操作是否幂等
+- 权限和审计是否明确
+- 是否暴露了内部实现细节
+
+Agent 调用 API 时尤其需要结构化错误，否则模型只能猜下一步。

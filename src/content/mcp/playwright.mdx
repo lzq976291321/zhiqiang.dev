@@ -1,0 +1,18 @@
+---
+title: "Playwright MCP"
+description: "让 Agent 操作真实浏览器，验证页面、交互、控制台和截图"
+maintainer: "Microsoft"
+tier: "essential"
+roles: ["Agent 工程师", "前端开发者", "独立开发者"]
+fit: "core"
+risk: "medium"
+worth: "做前端、网站、可视化工具或 Agent UI 时值得长期启用。它能把“看起来应该没问题”变成真实浏览器验证。"
+installCommand: "claude mcp add playwright -- npx -y @playwright/mcp@latest"
+whoNeeds: "需要让 AI 在真实浏览器里检查页面和交互的开发者"
+---
+
+Playwright MCP 适合做视觉回归、表单流程、控制台错误检查、移动端布局验证和截图确认。
+
+它不是普通爬虫工具。对前端来说，它更像一个能被 Agent 调用的浏览器 QA 层。
+
+注意：浏览器自动化会消耗较多上下文和时间，复杂任务要限制目标页面和验证范围。

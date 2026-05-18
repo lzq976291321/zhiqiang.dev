@@ -3,10 +3,14 @@ title: "GitHub MCP"
 description: "所有指南一致推荐第一个装的 MCP"
 maintainer: "GitHub 官方"
 tier: "essential"
-installCommand: "gh mcp"
-whoNeeds: "所有开发者"
+roles: ["Agent 工程师", "前端开发者", "后端开发者", "独立开发者", "安全合规"]
+fit: "core"
+risk: "medium"
+worth: "开发类角色值得长期启用。建议先用只读或最小权限，确认流程稳定后再开放 Issue、PR、Actions 等写入能力。"
+installCommand: "claude mcp add --transport http github https://api.githubcopilot.com/mcp/"
+whoNeeds: "所有需要在 AI 对话里读仓库、Issue、PR 和 Actions 的开发者"
 ---
 
 PR 审查、Issue 管理、代码搜索、CI 失败分析，全在编辑器内完成。消除编辑器和 GitHub 网页之间的上下文切换——这是开发者最频繁的中断。
 
-内置在 GitHub CLI 中，一条命令安装。
+优先使用 GitHub 官方远程 MCP。企业自托管或特殊网络环境再考虑本地 Docker 方式。

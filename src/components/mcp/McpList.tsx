@@ -1,9 +1,46 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import type { McpServer } from "@/lib/types"
 import { CopyButton } from "@/components/shared/CopyButton"
 import { PageShell } from "@/components/shared/PageShell"
+
+const ROLES = ["全部", "Agent 工程师", "前端开发者", "后端开发者", "独立开发者", "产品经理", "安全合规"]
+
+const roleNotes: Record<string, string> = {
+  全部: "MCP 不是越多越好。先装高频只读上下文，再接入会改变外部系统的写入型工具。",
+  "Agent 工程师": "优先选择文档、代码仓库、沙箱、评测和自建 MCP 相关工具。",
+  前端开发者: "优先选择 GitHub、Context7、Figma、Playwright、Vercel，覆盖代码、文档、设计和真实浏览器验证。",
+  后端开发者: "优先选择 GitHub、Context7、数据库、监控和支付/基础设施，生产库默认只读。",
+  独立开发者: "优先选择 GitHub、Vercel、Supabase、Stripe、Sentry，减少从开发到上线的上下文切换。",
+  产品经理: "优先选择 Notion、Linear、Firecrawl 和数据读取型 MCP，用来沉淀需求、竞品和用户反馈。",
+  安全合规: "优先选择官方、可审计、可只读的 MCP。凡是带写权限、令牌或生产数据的都要谨慎。",
+}
+
+const fitLabel: Record<McpServer["fit"], string> = {
+  core: "值得长期启用",
+  situational: "按项目启用",
+  watch: "谨慎观察",
+}
+
+const riskLabel: Record<McpServer["risk"], string> = {
+  low: "低风险",
+  medium: "中风险",
+  high: "高风险",
+}
+
+const fitColor: Record<McpServer["fit"], string> = {
+  core: "border-cyan-100/18 bg-cyan-100/10 text-cyan-50/78",
+  situational: "border-emerald-100/16 bg-emerald-100/8 text-emerald-50/70",
+  watch: "border-amber-100/18 bg-amber-100/10 text-amber-50/72",
+}
+
+const riskColor: Record<McpServer["risk"], string> = {
+  low: "border-white/10 bg-white/[0.05] text-white/46",
+  medium: "border-amber-100/18 bg-amber-100/10 text-amber-50/68",
+  high: "border-rose-100/18 bg-rose-100/10 text-rose-50/70",
+}
 
 function McpCard({ server, index }: { server: McpServer; index: number }) {
   const isEssential = server.tier === "essential"
@@ -39,8 +76,26 @@ function McpCard({ server, index }: { server: McpServer; index: number }) {
         {server.description}
       </p>
 
+      <div className="mb-4 flex flex-wrap gap-1.5">
+        <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] tracking-wider ${fitColor[server.fit]}`}>
+          {fitLabel[server.fit]}
+        </span>
+        <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] tracking-wider ${riskColor[server.risk]}`}>
+          {riskLabel[server.risk]}
+        </span>
+        {server.roles.map((role) => (
+          <span key={role} className="rounded-full border border-white/10 bg-white/[0.045] px-2.5 py-1 font-mono text-[10px] tracking-wider text-white/36">
+            {role}
+          </span>
+        ))}
+      </div>
+
       <p className="mb-3 text-[11px] text-white/42">
         <span className="text-white/60">谁需要装：</span>{server.whoNeeds}
+      </p>
+
+      <p className="mb-3 text-[11px] leading-relaxed text-white/42">
+        <span className="text-white/60">是否值得：</span>{server.worth}
       </p>
 
       {/* 安装命令 */}
@@ -63,15 +118,43 @@ function McpCard({ server, index }: { server: McpServer; index: number }) {
 }
 
 export function McpList({ servers }: { servers: McpServer[] }) {
-  const essential = servers.filter((s) => s.tier === "essential")
-  const recommended = servers.filter((s) => s.tier === "recommended")
+  const [role, setRole] = useState("全部")
+  const filtered = role === "全部" ? servers : servers.filter((s) => s.roles.includes(role))
+  const essential = filtered.filter((s) => s.tier === "essential")
+  const recommended = filtered.filter((s) => s.tier === "recommended")
 
   return (
     <PageShell
       title="MCP"
-      subtitle="从 20000+ Server 中精选真正好用的。3 个最佳，5 个上限。"
+      subtitle="按角色筛选值得接入的 MCP：优先官方、只读、低权限、可审计"
       accent="#B8F7D4"
     >
+      <div className="glass-card mb-6 p-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-100/46">
+          Role fit
+        </p>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-white/56">
+          {roleNotes[role]}
+        </p>
+      </div>
+
+      <div className="mb-10 flex flex-wrap gap-2">
+        {ROLES.map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => setRole(item)}
+            className={`rounded-full border px-3 py-1.5 font-mono text-[12px] tracking-wider transition-all duration-200 ${
+              role === item
+                ? "border-cyan-100/20 bg-cyan-100/12 text-cyan-50"
+                : "border-white/10 bg-white/[0.04] text-white/40 hover:bg-white/[0.075] hover:text-white/72"
+            }`}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
       {/* 安全提醒 */}
       <div className="glass-card mb-10 p-4">
         <p className="text-[12px] leading-relaxed text-white/58">
@@ -105,6 +188,10 @@ export function McpList({ servers }: { servers: McpServer[] }) {
             ))}
           </div>
         </div>
+      )}
+
+      {filtered.length === 0 && (
+        <p className="py-20 text-center text-sm text-white/36">暂无匹配的 MCP</p>
       )}
     </PageShell>
   )

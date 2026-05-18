@@ -5,6 +5,8 @@ export interface Skill {
   roles: string[]
   source: "official" | "community" | "vendor"
   trigger: string
+  fit: "core" | "situational" | "watch"
+  worth: string
   installs?: number
   content: string
 }
@@ -27,6 +29,10 @@ export interface McpServer {
   description: string
   maintainer: string
   tier: "essential" | "recommended"
+  roles: string[]
+  fit: "core" | "situational" | "watch"
+  risk: "low" | "medium" | "high"
+  worth: string
   installCommand: string
   whoNeeds: string
   content: string
