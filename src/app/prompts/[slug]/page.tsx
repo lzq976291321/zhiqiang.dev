@@ -102,6 +102,80 @@ function PromptBlock({ title, text }: { title: string; text?: string }) {
   )
 }
 
+function ReferenceMedia({ item }: { item: PromptCase }) {
+  const media = item.reference?.media ?? []
+
+  if (media.length === 0) {
+    return null
+  }
+
+  return (
+    <section className="glass-card overflow-hidden">
+      <div className="flex flex-col gap-3 border-b border-white/10 px-5 py-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
+            Reference media
+          </p>
+          <h2 className="mt-2 font-heading text-2xl font-semibold tracking-[-0.025em] text-white">
+            参考图片 / 视频
+          </h2>
+        </div>
+        <a
+          href={item.reference?.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-50/70 transition hover:text-cyan-50"
+        >
+          查看原始样本
+          <ArrowUpRight className="size-4" />
+        </a>
+      </div>
+
+      <div className={`grid gap-4 p-4 ${media.length > 1 ? "md:grid-cols-2" : ""}`}>
+        {media.map((entry, index) => (
+          <figure
+            key={`${entry.type}-${entry.src}`}
+            className="overflow-hidden rounded-[28px] border border-white/10 bg-[#07111f]"
+          >
+            {entry.type === "video" ? (
+              <video
+                src={entry.src}
+                poster={entry.poster}
+                controls
+                playsInline
+                preload="metadata"
+                className="aspect-video w-full bg-black object-contain"
+              />
+            ) : (
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
+                  src={entry.src}
+                  alt={entry.alt ?? `${item.reference?.title ?? item.title} reference ${index + 1}`}
+                  fill
+                  unoptimized
+                  loading="eager"
+                  sizes={media.length > 1 ? "(min-width: 768px) 35vw, 100vw" : "100vw"}
+                  className="object-cover"
+                />
+              </div>
+            )}
+            <figcaption className="flex items-center justify-between gap-4 px-4 py-3 text-xs text-white/42">
+              <span>
+                {entry.type === "video" ? "Video sample" : "Image sample"} {index + 1}
+              </span>
+              <span>{item.reference?.model}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <p className="border-t border-white/10 px-5 py-4 text-xs leading-5 text-white/40">
+        这些媒体来自 OpenNana 公开样本，仅作为参考预览和来源追溯；本站案例 Prompt 已重新改写，不收录第三方完整原文。
+      </p>
+    </section>
+  )
+}
+
 export default async function PromptCasePage({ params }: PageProps) {
   const { slug } = await params
   const item = getPromptCaseBySlug(slug)
@@ -164,6 +238,8 @@ export default async function PromptCasePage({ params }: PageProps) {
                 </p>
               </header>
             </div>
+
+            <ReferenceMedia item={item} />
 
             <PromptBlock title="完整 Prompt" text={item.prompt} />
             <PromptBlock title="Negative Prompt" text={item.negative} />

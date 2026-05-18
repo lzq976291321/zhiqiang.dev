@@ -51,6 +51,12 @@ export interface PromptCase {
     source?: string
     sample?: string
     scrapedAt?: string
+    media?: Array<{
+      type: "image" | "video"
+      src: string
+      poster?: string
+      alt?: string
+    }>
   }
   content: string
 }
