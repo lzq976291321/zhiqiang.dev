@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Fictional supercar beast awakening commercial</title>
+  <desc id="desc">A black horn silhouette transitions into a blade-like fictional supercar with cold highlights and amber heat reflections.</desc>
+  <defs>
+    <linearGradient id="dark" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#030508"/>
+      <stop offset=".45" stop-color="#111827"/>
+      <stop offset="1" stop-color="#050607"/>
+    </linearGradient>
+    <radialGradient id="heat" cx="54%" cy="54%" r="46%">
+      <stop offset="0" stop-color="#ff9a32" stop-opacity=".52"/>
+      <stop offset=".35" stop-color="#9fe8ff" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="12" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="750" fill="url(#dark)"/>
+  <rect width="1200" height="750" fill="url(#heat)"/>
+  <g filter="url(#glow)" opacity=".9">
+    <path d="M238 260C390 157 512 186 603 321" fill="none" stroke="#e7faff" stroke-opacity=".55" stroke-width="7" stroke-linecap="round"/>
+    <path d="M958 260C806 157 684 186 593 321" fill="none" stroke="#e7faff" stroke-opacity=".55" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="600" cy="334" r="68" fill="#020407" stroke="#ffffff" stroke-opacity=".18"/>
+    <circle cx="600" cy="334" r="15" fill="#ff8a24"/>
+  </g>
+  <g opacity=".56" stroke-linecap="round" filter="url(#glow)">
+    <path d="M138 512C354 442 646 423 1058 468" stroke="#9fe8ff" stroke-width="5"/>
+    <path d="M184 576C420 532 692 516 1012 550" stroke="#ff8a24" stroke-width="7"/>
+    <path d="M98 370C362 438 658 434 1096 350" stroke="#ffffff" stroke-opacity=".25" stroke-width="3"/>
+  </g>
+  <g transform="translate(0 18)">
+    <path d="M210 495c80-78 169-127 306-142l187-19c62-6 106 8 154 43l119 86c15 11 11 35-8 40-231 60-493 63-786 17-20-3-27-20-12-25Z" fill="#080b10" stroke="#e9fbff" stroke-opacity=".24" stroke-width="3"/>
+    <path d="M390 455c102-54 218-77 351-74l82 64c-170 22-330 27-492 13Z" fill="#121923"/>
+    <path d="M238 492c112-11 218-15 317-11" stroke="#9fe8ff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M742 439c61 3 122 8 184 16" stroke="#ff8a24" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="372" cy="520" r="55" fill="#030405" stroke="#dff8ff" stroke-opacity=".42" stroke-width="7"/>
+    <circle cx="826" cy="510" r="64" fill="#030405" stroke="#dff8ff" stroke-opacity=".42" stroke-width="7"/>
+    <circle cx="372" cy="520" r="22" fill="#111a24"/>
+    <circle cx="826" cy="510" r="26" fill="#111a24"/>
+  </g>
+  <g fill="#ffffff" opacity=".28">
+    <rect x="168" y="209" width="150" height="4" rx="2" transform="rotate(-18 168 209)"/>
+    <rect x="882" y="186" width="132" height="4" rx="2" transform="rotate(17 882 186)"/>
+    <rect x="184" y="642" width="808" height="2" rx="1"/>
+  </g>
+  <rect x="34" y="34" width="1132" height="682" rx="36" fill="none" stroke="#ffffff" stroke-opacity=".08"/>
+</svg>

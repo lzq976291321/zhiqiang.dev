@@ -44,6 +44,14 @@ export interface PromptCase {
   failureModes: string[]
   iterationPrompts: string[]
   shotList: string[]
+  reference?: {
+    title: string
+    url: string
+    model: string
+    source?: string
+    sample?: string
+    scrapedAt?: string
+  }
   content: string
 }
 

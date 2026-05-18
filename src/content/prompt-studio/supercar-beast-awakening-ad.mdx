@@ -1,0 +1,70 @@
+---
+title: "狂牛超跑觉醒广告"
+description: "参考超跑广告的高压迫运镜，用生物力量、机械切面和声音设计串成 15 秒短片。"
+mode: "video"
+category: "Brand Film"
+useCase: "汽车广告 / 运动品牌短片 / 高冲击转场练习"
+asset: "/prompt-studio/supercar-beast-awakening-ad.svg"
+output: "一支 15 秒以内的虚构超跑广告，黑色力量意象过渡到机械车身，节奏短狠。"
+modelFit: ["Seedance 2.0", "Veo", "Runway", "Pika"]
+ratio: "16:9"
+difficulty: "advanced"
+order: 4
+tags: ["Supercar", "Commercial", "Speed", "Foley"]
+reference:
+  title: "兰博基尼公牛觉醒狂飙广告"
+  url: "https://opennana.com/awesome-prompt-gallery/lamborghini-bull-awakening-commercial"
+  model: "Seedance 2.0"
+  source: "@johnAGI168"
+  sample: "OpenNana 抽样：1 图 1 视频，中文 Prompt 约 1.5k 字，英文 Prompt 超过 6k 字；重点参考它每 3 秒做一次视觉升级。"
+  scrapedAt: "2026-05-18"
+prompt: |
+  Create a cinematic 15-second commercial for a fictional ultra-low supercar brand. The film should translate raw animal-like force into mechanical speed through details, reflections, and seamless motion, without using any real brand logo or real car model.
+
+  Visual tone: black metal space, cold white highlights, restrained amber heat reflections, aggressive but premium, no cheap cyberpunk, no robot transformation.
+
+  0-3s: In a dark metallic void, a massive black horned silhouette charges toward camera. The camera runs close to the horn line and shoulder movement, almost touching the surface. Use intense wind pressure, shallow flashes of muscle-like curves, and minimal cold highlights.
+
+  3-5s: Push into an extreme close-up of the eye reflection and horn curve. A thin white blade of light appears in the reflection. Match-cut the horn curve into the edge of a supercar headlight and the wedge-shaped nose.
+
+  5-8s: The camera skims along the car's front corner, low hood, sharp intake, carbon fiber lip, and headlight details. The motion should keep the same charging inertia from the opening, as if the force has become a mechanical sculpture.
+
+  8-11s: Dive low to the wheel and side skirt. Wheel rotation, brake caliper, aero channel, door cutline, and rear fin flash past in one smooth side run. Keep the frame close, fast, and physical.
+
+  11-13s: Pull out just enough to reveal the full fictional supercar: low, wide, blade-like, matte black with restrained amber reflections. Heat shimmer and air distortion trail behind it.
+
+  13-15s: End on a low front three-quarter hero shot. The car freezes for half a beat, air still vibrating around it. Leave a clean dark area for brand typography.
+
+  Sound design: low-frequency pulse, heavy steps, wind compression, metal light-slice transition, airflow over paint, wheel spin, carbon vibration, tire pressure on ground. No background music, only foley and spatial sound.
+negative: |
+  real Lamborghini logo, real car model, cheap robot transformation, low-quality cyberpunk city, random text, shaky cuts, slow boring tracking shot, cartoon car, plastic material, overdone flames, background music
+parameters:
+  - "Duration: 13-15 seconds"
+  - "Aspect ratio: 16:9"
+  - "Motion: continuous high-speed tracking, no hard jump cuts"
+  - "Sound: foley only, no music"
+structure:
+  - "0-3s：力量意象贴脸冲出，建立压迫感"
+  - "3-5s：用反光和曲线做生物到机械的转场"
+  - "5-11s：车身细节高速掠过，强化材质"
+  - "13-15s：低机位英雄镜头，留品牌字区"
+failureModes:
+  - "最容易生成廉价机甲变形，必须禁止 robot transformation"
+  - "真实品牌标识可能乱入，要求 fictional brand"
+  - "速度太快会糊，需要每段指定可识别细节"
+iterationPrompts:
+  - "Make the transition rely on reflections and matching curves, not a direct morph."
+  - "Reduce cyberpunk effects and make it feel like a premium studio car commercial."
+  - "Keep the final hero shot readable for at least half a second."
+shotList:
+  - "0-3s 黑色力量意象贴近镜头高速冲出"
+  - "3-5s 眼部反光和角线转为车灯与车鼻"
+  - "5-8s 沿车头和进气口高速滑行"
+  - "8-11s 贴地掠过轮毂、侧裙和空气通道"
+  - "11-13s 拉出完整车身，建立车型轮廓"
+  - "13-15s 低机位英雄定格，空气余震收束"
+---
+
+视频 Prompt 要写“时间结构”，不能只写画面。
+
+这个案例最值得学的是：每 3 秒有一次视觉升级，同时用声音设计把镜头粘起来。

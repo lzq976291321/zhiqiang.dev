@@ -104,7 +104,7 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
   return (
     <PageShell
       title="Prompt Studio"
-      subtitle="娱乐性和美学向精品案例：电影海报、胶片写真、美食大片、音乐视觉和品牌短片。"
+      subtitle="基于 OpenNana 8k+ 提示词图库抽样重做：写真、产品广告、食品解构、超跑短片、搞笑反转和治愈美食。"
       accent="#9FE8FF"
     >
       <section className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
@@ -122,7 +122,7 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100/18 bg-cyan-100/10 px-3 py-1.5 text-sm text-cyan-50/78 backdrop-blur-xl">
                   <Sparkles className="size-4" />
-                  Real scenes + aesthetic prompts
+                  OpenNana sampled + rewritten cases
                 </div>
               </div>
             </div>
@@ -131,9 +131,9 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
 
         <div className="grid gap-4">
           {[
-            ["好玩优先", "案例先服务真实创作欲望：海报、写真、美食、音乐、香水广告、梦核空间。"],
-            ["美学明确", "每个 prompt 都锁定镜头、光线、色彩和失败边界，避免只写风格词。"],
-            ["能直接改", "详情页保留完整 prompt、负向约束和二次迭代句，方便换题材复用。"],
+            ["有样本", "每个案例都挂了参考样本：标题、模型、来源和 OpenNana 链接，知道灵感从哪里来。"],
+            ["重写过", "不直接照搬原 Prompt，只吸收标题命名、分镜密度、标签方向和商业画面结构。"],
+            ["能复用", "详情页保留完整 Prompt、负向约束、参数、失败点和二次迭代句，方便换题材。"],
           ].map(([title, desc]) => (
             <div key={title} className="glass-card p-5">
               <h2 className="font-heading text-2xl font-semibold tracking-[-0.025em] text-white">

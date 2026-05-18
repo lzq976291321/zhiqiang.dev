@@ -276,6 +276,34 @@ export default async function PromptCasePage({ params }: PageProps) {
               </div>
             </section>
 
+            {item.reference ? (
+              <section className="glass-card p-5">
+                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
+                  Source signal
+                </p>
+                <a
+                  href={item.reference.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.045] p-4 transition hover:border-cyan-100/22 hover:bg-white/[0.075]"
+                >
+                  <span>
+                    <span className="block text-sm font-semibold leading-5 text-white/82">
+                      {item.reference.title}
+                    </span>
+                    <span className="mt-2 block text-xs leading-5 text-white/42">
+                      {item.reference.model}
+                      {item.reference.source ? ` · ${item.reference.source}` : ""}
+                    </span>
+                  </span>
+                  <ArrowUpRight className="mt-1 size-4 shrink-0 text-cyan-100/64" />
+                </a>
+                {item.reference.sample ? (
+                  <p className="mt-3 text-xs leading-5 text-white/42">{item.reference.sample}</p>
+                ) : null}
+              </section>
+            ) : null}
+
             <Link
               href="/prompts"
               className="glass-card group flex items-center justify-between gap-4 p-5 transition hover:-translate-y-1 hover:border-cyan-100/22"
