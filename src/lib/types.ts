@@ -23,6 +23,30 @@ export interface Prompt {
   content: string
 }
 
+export interface PromptCase {
+  slug: string
+  title: string
+  description: string
+  mode: "image" | "video"
+  category: string
+  useCase: string
+  asset: string
+  output: string
+  modelFit: string[]
+  ratio: string
+  difficulty: "starter" | "intermediate" | "advanced"
+  order: number
+  tags: string[]
+  prompt: string
+  negative?: string
+  parameters: string[]
+  structure: string[]
+  failureModes: string[]
+  iterationPrompts: string[]
+  shotList: string[]
+  content: string
+}
+
 export interface McpServer {
   slug: string
   title: string
@@ -52,4 +76,4 @@ export interface AgentArticle {
   content: string
 }
 
-export type ContentType = "skill" | "prompt-image" | "prompt-video" | "mcp" | "agent"
+export type ContentType = "skill" | "prompt-image" | "prompt-video" | "prompt-studio" | "mcp" | "agent"

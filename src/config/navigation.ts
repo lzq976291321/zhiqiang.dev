@@ -1,5 +1,6 @@
 export const navItems = [
   { label: "Agent", href: "/agent" },
+  { label: "Prompts", href: "/prompts" },
   { label: "Skills", href: "/skills" },
   { label: "MCP", href: "/mcp" },
   { label: "项目", href: "/projects" },

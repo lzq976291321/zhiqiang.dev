@@ -1,0 +1,53 @@
+---
+title: "上下文工程解释视频开场"
+description: "给技术教程做 12 秒开场：把散乱信息变成结构化上下文，再输出可执行计划。"
+mode: "video"
+category: "Education Opener"
+useCase: "技术课程开场 / 博客视频封面 / Agent 教程片头"
+asset: "/prompt-studio/context-pipeline-opener.svg"
+output: "一个解释型 motion opener：输入杂乱笔记，通过 Context Filter，输出可执行计划。"
+modelFit: ["文生视频模型", "动态图形风格模型", "可配合字幕后期"]
+ratio: "16:9"
+difficulty: "intermediate"
+order: 6
+tags: ["Video", "Context Engineering", "Education", "Motion Graphics"]
+prompt: |
+  Create a 12-second motion graphics opener for a technical tutorial about context engineering.
+
+  Concept: messy notes enter a structured context pipeline, get filtered, ranked, and assembled, then become a useful execution plan. The visual should be abstract but easy to understand.
+
+  Visual style: dark technical editorial, glass panels, clean diagram motion, cyan signal lines, soft green confirmation states, subtle grid, premium educational animation. No characters, no robots, no cartoon style.
+
+  Timeline:
+  0-3s: Small fragments of notes float in from the left, slightly messy but controlled.
+  3-7s: The fragments pass through a central glass pipeline labeled conceptually as filter / rank / assemble. Use abstract label blocks, not exact readable text.
+  7-12s: The output resolves into a clean plan card on the right, with calm confirmation glow and stable final frame.
+
+  Motion: smooth diagram animation, medium pace, crisp transitions, no chaotic particles, no overcomplicated machinery.
+negative: |
+  cartoon explainer, humanoid robot, messy sticky notes, excessive text, unreadable labels, fast particle explosion, bright purple background, childish animation, office stock footage, whiteboard doodles
+parameters:
+  - "Duration: 12 seconds"
+  - "Aspect ratio: 16:9"
+  - "Motion style: clean diagram animation"
+  - "Add precise labels in post if needed"
+structure:
+  - "左侧：杂乱信息输入"
+  - "中间：context pipeline 三段处理"
+  - "右侧：输出结构化计划"
+  - "结尾：停在可做封面的清晰画面"
+failureModes:
+  - "解释型视频容易生成太多文字，导致乱码"
+  - "抽象管线容易变成科幻机器，需要强调 diagram motion"
+  - "如果粒子太多，会失去教学清晰度"
+iterationPrompts:
+  - "Make the animation more like a clean technical diagram, less like sci-fi machinery."
+  - "Reduce text and use abstract blocks for labels."
+  - "Make the final plan card larger and more readable as a tutorial thumbnail."
+shotList:
+  - "0-3s：碎片化 notes 从左侧进入"
+  - "3-7s：经过 filter / rank / assemble 三段管线"
+  - "7-12s：右侧形成清晰 plan card，稳定收尾"
+---
+
+这个案例适合给 Agent 教程、上下文工程文章和课程视频做开场。资源不足时，只要一个清晰首帧和分镜，就能先把创意方向定住。

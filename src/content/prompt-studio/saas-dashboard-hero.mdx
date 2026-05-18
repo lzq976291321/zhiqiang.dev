@@ -1,0 +1,47 @@
+---
+title: "SaaS Agent Dashboard Hero"
+description: "为 AI SaaS、自动化平台、Agent 产品生成首屏视觉，用于官网和产品介绍页。"
+mode: "image"
+category: "Product Hero"
+useCase: "SaaS 官网首屏 / 产品发布图 / 投融资 deck 视觉"
+asset: "/prompt-studio/saas-dashboard-hero.svg"
+output: "一张高端 SaaS 仪表盘 hero 图，突出自动化运行、队列、成功率、数据趋势和产品可信度。"
+modelFit: ["通用文生图模型", "UI mockup 生成模型", "设计稿辅助生成"]
+ratio: "16:10"
+difficulty: "intermediate"
+order: 2
+tags: ["SaaS", "Dashboard", "Agent Product", "Landing Page"]
+prompt: |
+  Generate a premium SaaS landing page hero visual for an AI automation platform called SignalOps.
+
+  The image should show a sophisticated product dashboard inside a glassy browser window. Include a left navigation rail, metric cards, a queue panel, a success-rate chart, and an automation throughput graph. The visual must feel like a real product interface that a startup could ship, not a decorative sci-fi mockup.
+
+  Art direction: quiet enterprise SaaS, dark translucent glass, cyan and soft green accent colors, strong spacing, clear information density, subtle depth, modern editorial lighting, polished but utilitarian.
+
+  Composition: 16:10 landscape, centered dashboard, slightly angled perspective, primary metric cards near the top, large graph in the lower right, dark background with faint grid, plenty of breathing room around the UI.
+
+  UI quality requirements: consistent spacing, realistic dashboard hierarchy, restrained colors, readable blocks, no random lorem ipsum paragraphs, no fake tiny charts everywhere, no decorative blobs.
+negative: |
+  marketing template, oversized hero card, purple-blue gradient cliché, cartoon mascot, fake illegible UI, random crypto charts, cluttered analytics, overexposed glow, stock photo hands, unrealistic hologram
+parameters:
+  - "Aspect ratio: 16:10"
+  - "Use dark enterprise SaaS color palette"
+  - "Keep UI density medium, not crowded"
+  - "Final text can be replaced manually in Figma"
+structure:
+  - "左侧：导航和产品身份"
+  - "顶部：2-3 个关键指标卡"
+  - "主体：运行趋势图和队列状态"
+  - "背景：低对比网格和微弱体积光"
+failureModes:
+  - "容易变成营销落地页截图，而不是 hero 视觉"
+  - "容易把图表做得太密，看起来廉价"
+  - "品牌名文字可能乱码，建议后期替换"
+iterationPrompts:
+  - "Make the dashboard feel more real and less decorative. Reduce random widgets."
+  - "Improve spacing consistency and align all UI cards to a clean grid."
+  - "Remove stock marketing elements and keep only the product interface."
+shotList: []
+---
+
+这个案例适合独立开发者做产品首屏视觉。重点是让画面像一个真实可用的产品，而不是常见的“漂亮但没业务含义”的 AI UI。

@@ -1,5 +1,5 @@
 import { getMdxFiles } from "./mdx"
-import type { AgentArticle, Skill, Prompt, McpServer } from "./types"
+import type { AgentArticle, Skill, Prompt, PromptCase, McpServer } from "./types"
 
 // ===== Skills =====
 export function getAllSkills(): Skill[] {
@@ -7,13 +7,13 @@ export function getAllSkills(): Skill[] {
     slug,
     title: frontmatter.title ?? "",
     description: frontmatter.description ?? "",
-      roles: frontmatter.roles ?? [],
-      source: frontmatter.source ?? "community",
-      trigger: frontmatter.trigger ?? "",
-      fit: frontmatter.fit ?? "situational",
-      worth: frontmatter.worth ?? "当你的角色和触发场景匹配时再启用，不建议长期全局加载。",
-      installs: frontmatter.installs,
-      content,
+    roles: frontmatter.roles ?? [],
+    source: frontmatter.source ?? "community",
+    trigger: frontmatter.trigger ?? "",
+    fit: frontmatter.fit ?? "situational",
+    worth: frontmatter.worth ?? "当你的角色和触发场景匹配时再启用，不建议长期全局加载。",
+    installs: frontmatter.installs,
+    content,
   }))
 }
 
@@ -54,6 +54,39 @@ export function getAllPrompts(type?: "prompt-image" | "prompt-video"): Prompt[] 
   const all = [...imagePrompts, ...videoPrompts]
   if (type) return all.filter((p) => p.type === type)
   return all
+}
+
+// ===== Prompt Studio =====
+export function getAllPromptCases(): PromptCase[] {
+  return getMdxFiles("prompt-studio")
+    .map(({ slug, frontmatter, content }) => ({
+      slug,
+      title: frontmatter.title ?? "",
+      description: frontmatter.description ?? "",
+      mode: frontmatter.mode ?? "image",
+      category: frontmatter.category ?? "Creative System",
+      useCase: frontmatter.useCase ?? "",
+      asset: frontmatter.asset ?? "",
+      output: frontmatter.output ?? "",
+      modelFit: frontmatter.modelFit ?? [],
+      ratio: frontmatter.ratio ?? "16:9",
+      difficulty: frontmatter.difficulty ?? "intermediate",
+      order: frontmatter.order ?? 999,
+      tags: frontmatter.tags ?? [],
+      prompt: frontmatter.prompt ?? "",
+      negative: frontmatter.negative,
+      parameters: frontmatter.parameters ?? [],
+      structure: frontmatter.structure ?? [],
+      failureModes: frontmatter.failureModes ?? [],
+      iterationPrompts: frontmatter.iterationPrompts ?? [],
+      shotList: frontmatter.shotList ?? [],
+      content,
+    }))
+    .sort((a, b) => a.order - b.order)
+}
+
+export function getPromptCaseBySlug(slug: string): PromptCase | null {
+  return getAllPromptCases().find((item) => item.slug === slug) ?? null
 }
 
 // ===== MCP =====

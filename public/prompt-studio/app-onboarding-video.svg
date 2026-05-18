@@ -1,0 +1,36 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="1000">
+      <stop stop-color="#07111F"/>
+      <stop offset=".52" stop-color="#18314A"/>
+      <stop offset="1" stop-color="#101726"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect x="148" y="132" width="1304" height="736" rx="52" fill="white" fill-opacity=".07" stroke="white" stroke-opacity=".18"/>
+  <g transform="translate(255 210)">
+    <rect width="300" height="580" rx="54" fill="#070D17" stroke="white" stroke-opacity=".16"/>
+    <rect x="34" y="64" width="232" height="452" rx="34" fill="white" fill-opacity=".08"/>
+    <rect x="66" y="104" width="120" height="16" rx="8" fill="#9FE8FF" fill-opacity=".72"/>
+    <rect x="66" y="152" width="168" height="110" rx="26" fill="white" fill-opacity=".12"/>
+    <rect x="66" y="300" width="168" height="12" rx="6" fill="white" fill-opacity=".22"/>
+    <rect x="66" y="332" width="110" height="12" rx="6" fill="white" fill-opacity=".16"/>
+    <circle cx="150" cy="548" r="22" fill="#B8F7D4" fill-opacity=".24"/>
+  </g>
+  <g transform="translate(650 270)">
+    <rect width="690" height="108" rx="32" fill="white" fill-opacity=".08"/>
+    <text x="36" y="46" fill="white" fill-opacity=".5" font-family="ui-monospace, monospace" font-size="15">STEP 01</text>
+    <text x="36" y="78" fill="white" fill-opacity=".86" font-family="ui-sans-serif, system-ui" font-size="28" font-weight="700">Open dashboard and detect empty state</text>
+  </g>
+  <g transform="translate(650 430)">
+    <rect width="690" height="108" rx="32" fill="white" fill-opacity=".08"/>
+    <text x="36" y="46" fill="white" fill-opacity=".5" font-family="ui-monospace, monospace" font-size="15">STEP 02</text>
+    <text x="36" y="78" fill="white" fill-opacity=".86" font-family="ui-sans-serif, system-ui" font-size="28" font-weight="700">Highlight one primary action with cursor trail</text>
+  </g>
+  <g transform="translate(650 590)">
+    <rect width="690" height="108" rx="32" fill="white" fill-opacity=".08"/>
+    <text x="36" y="46" fill="white" fill-opacity=".5" font-family="ui-monospace, monospace" font-size="15">STEP 03</text>
+    <text x="36" y="78" fill="white" fill-opacity=".86" font-family="ui-sans-serif, system-ui" font-size="28" font-weight="700">Resolve into activated workspace</text>
+  </g>
+  <path d="M590 380C625 390 625 438 590 450M590 540C625 550 625 598 590 610" stroke="#9FE8FF" stroke-opacity=".5" stroke-width="8" stroke-linecap="round"/>
+</svg>

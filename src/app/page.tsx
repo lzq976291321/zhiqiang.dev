@@ -7,6 +7,7 @@ import {
   Code2,
   Command,
   FileText,
+  Images,
   Layers3,
   Network,
   ShieldCheck,
@@ -15,6 +16,7 @@ import {
 import {
   getAllAgentArticles,
   getAllMcpServers,
+  getAllPromptCases,
   getAllSkills,
 } from "@/lib/content"
 
@@ -31,9 +33,10 @@ const principles = [
 
 export default function HomePage() {
   const agentArticles = getAllAgentArticles()
+  const promptCases = getAllPromptCases()
   const skills = getAllSkills()
   const mcpServers = getAllMcpServers()
-  const mdxCount = agentArticles.length + skills.length + mcpServers.length
+  const mdxCount = agentArticles.length + promptCases.length + skills.length + mcpServers.length
 
   const routes = [
     {
@@ -50,6 +53,14 @@ export default function HomePage() {
       desc: "Claude Code Skills 按角色分类收集。",
       meta: `${skills.length} entries`,
       icon: Boxes,
+      className: "",
+    },
+    {
+      href: "/prompts",
+      title: "Prompt Studio",
+      desc: "生图与生视频精品案例：成品预览、完整 prompt、参数和失败修正。",
+      meta: `${promptCases.length} cases`,
+      icon: Images,
       className: "",
     },
     {
@@ -144,9 +155,9 @@ export default function HomePage() {
 
           <div className="grid grid-cols-3 gap-3">
             {[
-              [String(mdxCount), "MDX notes"],
-              [String(agentArticles.length), "Agent essays"],
-              [String(mcpServers.length), "MCP picks"],
+      [String(mdxCount), "MDX notes"],
+      [String(agentArticles.length), "Agent essays"],
+      [String(promptCases.length), "Prompt cases"],
             ].map(([value, label]) => (
               <div key={label} className="glass-card p-4">
                 <p className="font-heading text-3xl font-semibold tracking-[-0.04em] text-white">

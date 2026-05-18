@@ -1,18 +1,19 @@
 import type { MetadataRoute } from "next"
 import { siteConfig } from "@/config/site"
-import { getAllAgentArticles } from "@/lib/content"
+import { getAllAgentArticles, getAllPromptCases } from "@/lib/content"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
-    "", "/agent", "/skills", "/mcp", "/projects", "/about", "/resume",
+    "", "/agent", "/prompts", "/skills", "/mcp", "/projects", "/about", "/resume",
   ]
 
   const agentPages = getAllAgentArticles().map((article) => `/agent/${article.slug}`)
+  const promptPages = getAllPromptCases().map((item) => `/prompts/${item.slug}`)
 
-  return [...staticPages, ...agentPages].map((path) => ({
+  return [...staticPages, ...agentPages, ...promptPages].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
-    changeFrequency: path === "" || path.startsWith("/agent") ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path.startsWith("/agent") ? 0.9 : 0.8,
+    changeFrequency: path === "" || path.startsWith("/agent") || path.startsWith("/prompts") ? "weekly" : "monthly",
+    priority: path === "" ? 1 : path.startsWith("/agent") || path.startsWith("/prompts") ? 0.9 : 0.8,
   }))
 }
