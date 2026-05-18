@@ -104,7 +104,7 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
   return (
     <PageShell
       title="Prompt Studio"
-      subtitle="少量精品案例：每个 prompt 都绑定成品预览、参数、失败点和二次迭代方式。"
+      subtitle="娱乐性和美学向精品案例：电影海报、胶片写真、美食大片、音乐视觉和品牌短片。"
       accent="#9FE8FF"
     >
       <section className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
@@ -122,7 +122,7 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100/18 bg-cyan-100/10 px-3 py-1.5 text-sm text-cyan-50/78 backdrop-blur-xl">
                   <Sparkles className="size-4" />
-                  Start with image + prompt
+                  Real scenes + aesthetic prompts
                 </div>
               </div>
             </div>
@@ -131,9 +131,9 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
 
         <div className="grid gap-4">
           {[
-            ["精品优先", "先做 6-10 个可复用场景，每个案例都要有图、prompt、参数和失败修正。"],
-            ["视频先用首帧", "资源不足时先做分镜和首帧图，等有真实视频再替换成成片。"],
-            ["可复制可迭代", "每个案例都给二次修改 prompt，让读者能直接复用。"],
+            ["好玩优先", "案例先服务真实创作欲望：海报、写真、美食、音乐、香水广告、梦核空间。"],
+            ["美学明确", "每个 prompt 都锁定镜头、光线、色彩和失败边界，避免只写风格词。"],
+            ["能直接改", "详情页保留完整 prompt、负向约束和二次迭代句，方便换题材复用。"],
           ].map(([title, desc]) => (
             <div key={title} className="glass-card p-5">
               <h2 className="font-heading text-2xl font-semibold tracking-[-0.025em] text-white">

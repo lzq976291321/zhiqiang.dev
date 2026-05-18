@@ -1,0 +1,31 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="1000">
+      <stop stop-color="#C6E7EA"/>
+      <stop offset=".5" stop-color="#8EC9D1"/>
+      <stop offset="1" stop-color="#26495C"/>
+    </linearGradient>
+    <pattern id="tile" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M70 0H0V70" stroke="white" stroke-opacity=".22"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#tile)"/>
+  <path d="M0 640H1600V1000H0V640Z" fill="#6EB7C2"/>
+  <path d="M0 722C196 682 330 792 520 742C710 694 814 678 980 736C1170 804 1350 718 1600 680V1000H0V722Z" fill="#2E6D82" fill-opacity=".72"/>
+  <g transform="translate(280 210)">
+    <rect width="1040" height="360" rx="48" fill="white" fill-opacity=".22" stroke="white" stroke-opacity=".45"/>
+    <rect x="86" y="76" width="250" height="208" rx="34" fill="#EAFBFF" fill-opacity=".45"/>
+    <rect x="394" y="76" width="250" height="208" rx="34" fill="#EAFBFF" fill-opacity=".28"/>
+    <rect x="702" y="76" width="250" height="208" rx="34" fill="#EAFBFF" fill-opacity=".38"/>
+    <path d="M210 76V284M518 76V284M826 76V284" stroke="#2E6D82" stroke-opacity=".22" stroke-width="10"/>
+  </g>
+  <g opacity=".72">
+    <circle cx="420" cy="730" r="8" fill="white"/>
+    <circle cx="610" cy="786" r="5" fill="white"/>
+    <circle cx="1020" cy="752" r="7" fill="white"/>
+    <circle cx="1280" cy="820" r="5" fill="white"/>
+  </g>
+  <text x="250" y="852" fill="#EAFBFF" font-family="ui-sans-serif, system-ui" font-size="62" font-weight="900">Dream Pool Walkthrough</text>
+  <text x="254" y="902" fill="#EAFBFF" fill-opacity=".72" font-family="ui-monospace, monospace" font-size="18" letter-spacing="6">LIMINAL SPACE / SLOW CAMERA DRIFT</text>
+</svg>

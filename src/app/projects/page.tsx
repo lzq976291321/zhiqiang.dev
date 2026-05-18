@@ -30,8 +30,8 @@ const PROJECTS = [
   },
   {
     title: "Prompt Studio",
-    desc: "生图和生视频的精品 prompt 案例，每个都绑定预览图、参数、失败点和二次迭代 prompt。",
-    tags: ["Prompt", "Image", "Video"],
+    desc: "娱乐性和美学向生图、生视频 prompt 案例：电影海报、胶片写真、美食大片和品牌短片。",
+    tags: ["Prompt", "Aesthetic", "Video"],
     href: "/prompts",
     accent: "#9FE8FF",
     span: "col-span-1",

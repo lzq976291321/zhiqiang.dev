@@ -1,0 +1,49 @@
+---
+title: "雨夜霓虹港风电影海报"
+description: "适合做短篇小说封面、音乐封面、角色氛围图和小红书电影感海报。"
+mode: "image"
+category: "Cinematic Poster"
+useCase: "电影感海报 / 音乐封面 / 角色氛围图"
+asset: "/prompt-studio/neon-noir-rain-poster.svg"
+output: "一张雨夜霓虹街头电影海报，人物背影或半侧脸，红蓝霓虹、湿润地面、强烈故事感。"
+modelFit: ["Midjourney", "Seedream", "即梦", "通用文生图模型"]
+ratio: "2:3"
+difficulty: "starter"
+order: 1
+tags: ["Movie Poster", "Hong Kong", "Noir", "Neon"]
+prompt: |
+  Create a cinematic Hong Kong neo-noir movie poster set on a rainy midnight street.
+
+  A fictional young adult protagonist stands under a broken neon sign in a narrow alley, half side-profile, wet black hair, dark coat, subtle emotion, no celebrity likeness. Red and cyan neon reflections spread across the wet pavement. Steam rises from a street food stall in the background. The scene feels like a lost 1990s crime romance film, stylish but grounded.
+
+  Composition: vertical 2:3 poster, subject in the lower center, neon sign in the upper left, deep alley perspective, strong negative space for title typography, cinematic framing, shallow depth of field, rain streaks visible against dark background.
+
+  Color and lighting: red neon key light from the right, cyan fill light from the left, warm tungsten food stall glow in the distance, glossy reflections, high contrast, film grain, moody but not over-saturated.
+
+  Style: premium film poster, realistic photography mixed with editorial color grading, 35mm cinema still, dramatic atmosphere, elegant typography-safe layout.
+negative: |
+  celebrity face, exact actor likeness, cyberpunk armor, futuristic helmet, anime style, plastic skin, over-saturated purple, random Chinese text, distorted hands, extra faces, blurry face, low quality rain, cluttered signs
+parameters:
+  - "Aspect ratio: 2:3"
+  - "Style: cinematic realism + film grain"
+  - "Use seed locking after the first good composition"
+  - "Add final title typography manually, do not rely on generated text"
+structure:
+  - "主体：虚构成年角色，半侧脸或背影，避免明星脸"
+  - "环境：雨夜巷子、霓虹招牌、湿地反光、远处小吃摊热气"
+  - "色彩：红蓝对冲，少量暖色作故事点"
+  - "版式：上方留标题区，下方留演员表/副标题区"
+failureModes:
+  - "容易变成过度赛博朋克，失去港风电影感"
+  - "中文招牌容易乱码，最好让招牌抽象化"
+  - "人物脸容易太精修，需要要求真实皮肤和电影颗粒"
+iterationPrompts:
+  - "Make it less cyberpunk and more like a grounded 1990s Hong Kong crime romance film."
+  - "Reduce neon saturation and add more wet pavement reflection."
+  - "Keep the protagonist fictional and remove any celebrity resemblance."
+shotList: []
+---
+
+这个案例比单纯写“港风海报”更稳，因为它把角色、环境、灯光和版式都锁住了。
+
+真正好看的海报 prompt，不只是画面风格，还要给后期排版留下空间。

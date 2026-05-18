@@ -4,10 +4,10 @@ import { getAllPromptCases } from "@/lib/content"
 
 export const metadata: Metadata = {
   title: "Prompt Studio",
-  description: "高质量生图和生视频 Prompt 案例库，每个案例包含成品预览、完整 prompt、参数和失败修正。",
+  description: "娱乐性和美学向生图、生视频 Prompt 案例库，覆盖电影海报、胶片写真、美食大片、音乐视觉和品牌短片。",
   openGraph: {
     title: "Prompt Studio | zhiqiang.dev",
-    description: "生图 / 生视频精品 Prompt 案例库",
+    description: "娱乐性和美学向生图 / 生视频精品 Prompt 案例库",
   },
 }
 

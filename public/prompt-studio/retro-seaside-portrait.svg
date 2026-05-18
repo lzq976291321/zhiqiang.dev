@@ -1,0 +1,31 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1000">
+      <stop stop-color="#F5D7B8"/>
+      <stop offset=".48" stop-color="#A9D6DA"/>
+      <stop offset="1" stop-color="#2D5869"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1130 250) rotate(90) scale(270)">
+      <stop stop-color="#FFF5CC"/>
+      <stop offset="1" stop-color="#FFF5CC" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <rect width="1600" height="1000" fill="url(#sun)" opacity=".9"/>
+  <path d="M0 606C180 560 302 650 480 608C660 566 746 520 936 580C1112 636 1290 612 1600 544V1000H0V606Z" fill="#163D4C"/>
+  <path d="M0 690C196 636 356 750 574 684C769 625 894 686 1058 730C1242 780 1404 724 1600 682V1000H0V690Z" fill="#F2E4CC"/>
+  <g transform="translate(605 196)">
+    <ellipse cx="190" cy="600" rx="234" ry="42" fill="#173847" fill-opacity=".28"/>
+    <path d="M190 72C280 86 340 154 352 252C364 350 318 430 256 452H124C62 430 16 350 28 252C40 154 100 86 190 72Z" fill="#382822"/>
+    <rect x="104" y="228" width="172" height="184" rx="86" fill="#D9A88E"/>
+    <path d="M92 278C128 224 202 214 286 244C276 118 132 86 74 190C58 220 58 250 92 278Z" fill="#2A1D1A"/>
+    <path d="M110 410C142 454 232 454 270 410L336 690H44L110 410Z" fill="#F7EFE0"/>
+    <path d="M82 548C130 584 250 584 306 548" stroke="#C65F4C" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <rect x="184" y="188" width="360" height="104" rx="52" fill="white" fill-opacity=".32" stroke="white" stroke-opacity=".5"/>
+  <text x="232" y="252" fill="#2A5664" font-family="ui-sans-serif, system-ui" font-size="38" font-weight="800">夏日胶片写真</text>
+  <text x="208" y="834" fill="#173847" fill-opacity=".65" font-family="ui-monospace, monospace" font-size="20" letter-spacing="6">35MM FILM / SEASIDE PORTRAIT</text>
+  <g opacity=".22">
+    <circle cx="90" cy="90" r="3" fill="#2A5664"/><circle cx="220" cy="130" r="2" fill="#2A5664"/><circle cx="1320" cy="140" r="3" fill="#2A5664"/><circle cx="1460" cy="210" r="2" fill="#2A5664"/>
+  </g>
+</svg>
