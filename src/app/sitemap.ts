@@ -4,7 +4,7 @@ import { getAllAgentArticles, getAllPromptCases } from "@/lib/content"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
-    "", "/agent", "/prompts", "/skills", "/mcp", "/projects", "/about", "/resume",
+    "", "/agent", "/prompts", "/prompts/research", "/skills", "/mcp", "/projects", "/about", "/resume",
   ]
 
   const agentPages = getAllAgentArticles().map((article) => `/agent/${article.slug}`)

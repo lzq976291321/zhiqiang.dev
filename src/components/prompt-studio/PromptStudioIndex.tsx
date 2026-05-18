@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowUpRight, Clapperboard, ImageIcon, Sparkles } from "lucide-react"
+import { ArrowUpRight, BarChart3, Clapperboard, ImageIcon, Sparkles } from "lucide-react"
 import { PageShell } from "@/components/shared/PageShell"
 import type { PromptCase } from "@/lib/types"
 
@@ -130,10 +130,28 @@ export function PromptStudioIndex({ cases }: { cases: PromptCase[] }) {
         </div>
 
         <div className="grid gap-4">
+          <Link
+            href="/prompts/research"
+            className="glass-card group flex items-start justify-between gap-4 p-5 transition hover:-translate-y-1 hover:border-cyan-100/22 hover:bg-white/[0.095]"
+          >
+            <span>
+              <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-100/46">
+                <BarChart3 className="size-4" />
+                Research
+              </span>
+              <span className="mt-3 block font-heading text-2xl font-semibold tracking-[-0.025em] text-white">
+                OpenNana 抽样分析
+              </span>
+              <span className="mt-2 block text-sm leading-6 text-white/50">
+                100 条列表样本、7 条详情样本，只保留元数据和选题信号。
+              </span>
+            </span>
+            <ArrowUpRight className="mt-1 size-4 shrink-0 text-cyan-100/68 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
+
           {[
             ["有样本", "每个案例都挂了参考样本：标题、模型、来源和 OpenNana 链接，知道灵感从哪里来。"],
             ["重写过", "不直接照搬原 Prompt，只吸收标题命名、分镜密度、标签方向和商业画面结构。"],
-            ["能复用", "详情页保留完整 Prompt、负向约束、参数、失败点和二次迭代句，方便换题材。"],
           ].map(([title, desc]) => (
             <div key={title} className="glass-card p-5">
               <h2 className="font-heading text-2xl font-semibold tracking-[-0.025em] text-white">
