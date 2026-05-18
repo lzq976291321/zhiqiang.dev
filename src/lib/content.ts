@@ -80,7 +80,7 @@ export function getAllPromptCases(): PromptCase[] {
       failureModes: frontmatter.failureModes ?? [],
       iterationPrompts: frontmatter.iterationPrompts ?? [],
       shotList: frontmatter.shotList ?? [],
-      reference: frontmatter.reference,
+      media: frontmatter.media ?? frontmatter.reference?.media,
       content,
     }))
     .sort((a, b) => a.order - b.order)

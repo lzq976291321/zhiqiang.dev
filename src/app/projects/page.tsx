@@ -30,8 +30,8 @@ const PROJECTS = [
   },
   {
     title: "Prompt Studio",
-    desc: "参考 OpenNana 提示词图库抽样重写的生图、生视频案例：写真、广告、美食和娱乐短片。",
-    tags: ["Prompt", "OpenNana", "Video"],
+    desc: "沉淀生图、生视频案例：写真、广告、美食和娱乐短片，重点拆 Prompt 结构、画面控制和迭代方法。",
+    tags: ["Prompt", "Image", "Video"],
     href: "/prompts",
     accent: "#9FE8FF",
     span: "col-span-1",

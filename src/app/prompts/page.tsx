@@ -5,10 +5,10 @@ import { getAllPromptCases } from "@/lib/content"
 export const metadata: Metadata = {
   title: "Prompt Studio",
   description:
-    "基于 OpenNana 提示词图库抽样重写的 AI 生图和生视频案例，包含完整 prompt、参考样本、负向约束、参数和迭代方式。",
+    "面向 AI 生图和生视频的高质量 Prompt 案例库，包含完整 prompt、参考媒体、负向约束、参数和迭代方式。",
   openGraph: {
     title: "Prompt Studio | zhiqiang.dev",
-    description: "基于 OpenNana 抽样重写的生图 / 生视频精品 Prompt 案例库",
+    description: "生图 / 生视频 Prompt 案例库，沉淀可复用的镜头、光线、结构和迭代方法",
   },
 }
 

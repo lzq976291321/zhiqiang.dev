@@ -103,7 +103,7 @@ function PromptBlock({ title, text }: { title: string; text?: string }) {
 }
 
 function ReferenceMedia({ item }: { item: PromptCase }) {
-  const media = item.reference?.media ?? []
+  const media = item.media ?? []
 
   if (media.length === 0) {
     return null
@@ -114,21 +114,12 @@ function ReferenceMedia({ item }: { item: PromptCase }) {
       <div className="flex flex-col gap-3 border-b border-white/10 px-5 py-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
-            Reference media
+            Visual reference
           </p>
           <h2 className="mt-2 font-heading text-2xl font-semibold tracking-[-0.025em] text-white">
             参考图片 / 视频
           </h2>
         </div>
-        <a
-          href={item.reference?.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-50/70 transition hover:text-cyan-50"
-        >
-          查看原始样本
-          <ArrowUpRight className="size-4" />
-        </a>
       </div>
 
       <div className={`grid gap-4 p-4 ${media.length > 1 ? "md:grid-cols-2" : ""}`}>
@@ -150,7 +141,7 @@ function ReferenceMedia({ item }: { item: PromptCase }) {
               <div className="relative aspect-[4/3] overflow-hidden">
                 <Image
                   src={entry.src}
-                  alt={entry.alt ?? `${item.reference?.title ?? item.title} reference ${index + 1}`}
+                  alt={entry.alt}
                   fill
                   unoptimized
                   loading="eager"
@@ -163,14 +154,14 @@ function ReferenceMedia({ item }: { item: PromptCase }) {
               <span>
                 {entry.type === "video" ? "Video sample" : "Image sample"} {index + 1}
               </span>
-              <span>{item.reference?.model}</span>
+              <span>{item.mode === "video" ? "motion" : "image"}</span>
             </figcaption>
           </figure>
         ))}
       </div>
 
       <p className="border-t border-white/10 px-5 py-4 text-xs leading-5 text-white/40">
-        这些媒体来自 OpenNana 公开样本，仅作为参考预览和来源追溯；本站案例 Prompt 已重新改写，不收录第三方完整原文。
+        这些媒体仅作为视觉参考和 Prompt 结构对照，正文案例已重新组织为可复用的创作模板。
       </p>
     </section>
   )
@@ -351,34 +342,6 @@ export default async function PromptCasePage({ params }: PageProps) {
                 ))}
               </div>
             </section>
-
-            {item.reference ? (
-              <section className="glass-card p-5">
-                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
-                  Source signal
-                </p>
-                <a
-                  href={item.reference.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.045] p-4 transition hover:border-cyan-100/22 hover:bg-white/[0.075]"
-                >
-                  <span>
-                    <span className="block text-sm font-semibold leading-5 text-white/82">
-                      {item.reference.title}
-                    </span>
-                    <span className="mt-2 block text-xs leading-5 text-white/42">
-                      {item.reference.model}
-                      {item.reference.source ? ` · ${item.reference.source}` : ""}
-                    </span>
-                  </span>
-                  <ArrowUpRight className="mt-1 size-4 shrink-0 text-cyan-100/64" />
-                </a>
-                {item.reference.sample ? (
-                  <p className="mt-3 text-xs leading-5 text-white/42">{item.reference.sample}</p>
-                ) : null}
-              </section>
-            ) : null}
 
             <Link
               href="/prompts"
