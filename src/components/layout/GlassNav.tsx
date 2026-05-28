@@ -25,7 +25,7 @@ export function GlassNav() {
           <span className="grid size-8 place-items-center rounded-full border border-cyan-200/20 bg-cyan-200/10 text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
             <BookOpen className="size-4" />
           </span>
-          <span className="hidden sm:inline">zhiqiang.dev</span>
+          <span className="hidden sm:inline">zhiqiang.chat</span>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

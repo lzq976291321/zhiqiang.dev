@@ -11,48 +11,6 @@ export interface Skill {
   content: string
 }
 
-export interface Prompt {
-  slug: string
-  title: string
-  type: "prompt-image" | "prompt-video"
-  scene: string
-  platforms: string[]
-  prompt: string
-  negative?: string
-  tips?: string
-  content: string
-}
-
-export interface PromptCase {
-  slug: string
-  title: string
-  description: string
-  mode: "image" | "video"
-  category: string
-  useCase: string
-  asset: string
-  output: string
-  modelFit: string[]
-  ratio: string
-  difficulty: "starter" | "intermediate" | "advanced"
-  order: number
-  tags: string[]
-  prompt: string
-  negative?: string
-  parameters: string[]
-  structure: string[]
-  failureModes: string[]
-  iterationPrompts: string[]
-  shotList: string[]
-  media?: Array<{
-    type: "image" | "video"
-    src: string
-    poster?: string
-    alt: string
-  }>
-  content: string
-}
-
 export interface McpServer {
   slug: string
   title: string
@@ -82,4 +40,4 @@ export interface AgentArticle {
   content: string
 }
 
-export type ContentType = "skill" | "prompt-image" | "prompt-video" | "prompt-studio" | "mcp" | "agent"
+export type ContentType = "skill" | "mcp" | "agent"

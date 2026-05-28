@@ -1,5 +1,5 @@
 import { getMdxFiles } from "./mdx"
-import type { AgentArticle, Skill, Prompt, PromptCase, McpServer } from "./types"
+import type { AgentArticle, Skill, McpServer } from "./types"
 
 // ===== Skills =====
 export function getAllSkills(): Skill[] {
@@ -19,75 +19,6 @@ export function getAllSkills(): Skill[] {
 
 export function getSkillsByRole(role: string): Skill[] {
   return getAllSkills().filter((s) => s.roles.includes(role))
-}
-
-// ===== Prompts =====
-export function getAllPrompts(type?: "prompt-image" | "prompt-video"): Prompt[] {
-  const imagePrompts = getMdxFiles("prompts/image").map(
-    ({ slug, frontmatter, content }) => ({
-      slug,
-      title: frontmatter.title ?? "",
-      type: "prompt-image" as const,
-      scene: frontmatter.scene ?? "",
-      platforms: frontmatter.platforms ?? [],
-      prompt: frontmatter.prompt ?? "",
-      negative: frontmatter.negative,
-      tips: frontmatter.tips,
-      content,
-    })
-  )
-
-  const videoPrompts = getMdxFiles("prompts/video").map(
-    ({ slug, frontmatter, content }) => ({
-      slug,
-      title: frontmatter.title ?? "",
-      type: "prompt-video" as const,
-      scene: frontmatter.scene ?? "",
-      platforms: frontmatter.platforms ?? [],
-      prompt: frontmatter.prompt ?? "",
-      negative: frontmatter.negative,
-      tips: frontmatter.tips,
-      content,
-    })
-  )
-
-  const all = [...imagePrompts, ...videoPrompts]
-  if (type) return all.filter((p) => p.type === type)
-  return all
-}
-
-// ===== Prompt Studio =====
-export function getAllPromptCases(): PromptCase[] {
-  return getMdxFiles("prompt-studio")
-    .map(({ slug, frontmatter, content }) => ({
-      slug,
-      title: frontmatter.title ?? "",
-      description: frontmatter.description ?? "",
-      mode: frontmatter.mode ?? "image",
-      category: frontmatter.category ?? "Creative System",
-      useCase: frontmatter.useCase ?? "",
-      asset: frontmatter.asset ?? "",
-      output: frontmatter.output ?? "",
-      modelFit: frontmatter.modelFit ?? [],
-      ratio: frontmatter.ratio ?? "16:9",
-      difficulty: frontmatter.difficulty ?? "intermediate",
-      order: frontmatter.order ?? 999,
-      tags: frontmatter.tags ?? [],
-      prompt: frontmatter.prompt ?? "",
-      negative: frontmatter.negative,
-      parameters: frontmatter.parameters ?? [],
-      structure: frontmatter.structure ?? [],
-      failureModes: frontmatter.failureModes ?? [],
-      iterationPrompts: frontmatter.iterationPrompts ?? [],
-      shotList: frontmatter.shotList ?? [],
-      media: frontmatter.media ?? frontmatter.reference?.media,
-      content,
-    }))
-    .sort((a, b) => a.order - b.order)
-}
-
-export function getPromptCaseBySlug(slug: string): PromptCase | null {
-  return getAllPromptCases().find((item) => item.slug === slug) ?? null
 }
 
 // ===== MCP =====

@@ -40,7 +40,7 @@ export function Navbar() {
           <div className="flex h-14 items-center justify-between">
             {/* Logo — 简洁文字标 */}
             <Link href="/" className="font-heading text-sm font-semibold tracking-wide text-foreground/80 hover:text-foreground transition-colors">
-              zhiqiang.dev
+              zhiqiang.chat
             </Link>
 
             {/* 桌面端导航 */}

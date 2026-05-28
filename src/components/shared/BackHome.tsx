@@ -8,7 +8,7 @@ import { motion } from "framer-motion"
 const routeToSection: Record<string, string> = {
   "/agent": "agent",
   "/skills": "skills",
-  "/prompts": "prompts",
+  "/design-lab": "design-lab",
   "/mcp": "mcp",
   "/projects": "projects",
   "/about": "about",
@@ -39,7 +39,7 @@ export function BackHome() {
           <path d="m12 19-7-7 7-7" />
           <path d="M19 12H5" />
         </svg>
-        zhiqiang.dev
+        zhiqiang.chat
       </Link>
     </motion.div>
   )

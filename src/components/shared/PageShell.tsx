@@ -51,7 +51,7 @@ export function PageShell({ children, title, subtitle, accent = "#C8A97E", paren
         >
           <div>
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-cyan-100/46">
-              zhiqiang.dev / knowledge system
+              zhiqiang.chat / knowledge system
             </p>
             <h1 className="max-w-4xl text-balance font-heading text-5xl font-semibold leading-[0.94] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
               {title}
