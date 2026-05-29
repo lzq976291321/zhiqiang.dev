@@ -4,7 +4,7 @@ import { getAllAgentArticles } from "@/lib/content"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
-    "", "/agent", "/design-lab", "/skills", "/mcp", "/projects", "/about", "/resume",
+    "", "/chat", "/agent", "/design-lab", "/skills", "/mcp", "/projects", "/about", "/resume",
   ]
 
   const agentPages = getAllAgentArticles().map((article) => `/agent/${article.slug}`)
@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [...staticPages, ...agentPages].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
-    changeFrequency: path === "" || path.startsWith("/agent") || path.startsWith("/design-lab") ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path.startsWith("/agent") || path.startsWith("/design-lab") ? 0.9 : 0.8,
+    changeFrequency: path === "" || path.startsWith("/chat") || path.startsWith("/agent") || path.startsWith("/design-lab") ? "weekly" : "monthly",
+    priority: path === "" ? 1 : path.startsWith("/chat") || path.startsWith("/agent") || path.startsWith("/design-lab") ? 0.9 : 0.8,
   }))
 }
