@@ -76,10 +76,14 @@ export function getDefaultProfileSources(limit = 4): ChatSource[] {
 }
 
 export function getChatKnowledgeSources(question: string, limit = 12): ChatSource[] {
-  const profileSources = getDefaultProfileSources(8)
+  const profileSources = getDefaultProfileSources(5)
   const relevantSources = retrieveChatSources(question, limit)
+  const relevantProfileSources = relevantSources.filter(
+    (source) => source.category === "profile"
+  )
 
   return uniqueSources([
+    ...relevantProfileSources,
     ...profileSources,
     ...relevantSources,
   ]).slice(0, limit)

@@ -132,17 +132,10 @@ async function streamText(
 
 function sendMeta(
   controller: ReadableStreamDefaultController<Uint8Array>,
-  {
-    mode,
-    sources,
-  }: {
-    mode: ChatStreamMode
-    sources: ChatSource[]
-  }
+  mode: ChatStreamMode
 ) {
   send(controller, {
     type: "meta",
-    sources,
     mode,
   })
 }
@@ -240,10 +233,7 @@ export async function POST(request: NextRequest) {
   return createStreamResponse(async (controller) => {
     try {
       if (hasDeepSeekApiKey()) {
-        sendMeta(controller, {
-          sources,
-          mode: "deepseek",
-        })
+        sendMeta(controller, "deepseek")
         await proxyDeepSeekStream({
           controller,
           question,
@@ -254,10 +244,7 @@ export async function POST(request: NextRequest) {
         return
       }
 
-      sendMeta(controller, {
-        sources,
-        mode: "local_fallback",
-      })
+      sendMeta(controller, "local_fallback")
       await streamText(controller, generateLocalAnswer(question, sources))
       send(controller, { type: "done" })
       controller.close()

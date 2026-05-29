@@ -1,6 +1,4 @@
 "use client"
-
-import Link from "next/link"
 import {
   type FormEvent,
   type KeyboardEvent,
@@ -11,7 +9,6 @@ import {
   useState,
 } from "react"
 import {
-  ArrowUpRight,
   FileText,
   LoaderCircle,
   MessageSquareText,
@@ -22,14 +19,12 @@ import {
 } from "lucide-react"
 import type {
   ChatMessage,
-  ChatSource,
   ChatStreamEvent,
   ChatStreamMode,
 } from "@/lib/chat/types"
 
 interface UiMessage extends ChatMessage {
   id: string
-  sources?: ChatSource[]
   mode?: ChatStreamMode
 }
 
@@ -73,34 +68,22 @@ function createMessageId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`
 }
 
-function SourceList({ sources }: { sources: ChatSource[] }) {
-  if (sources.length === 0) return null
+const internalReferencePattern =
+  /[ \t]*\[(?:profile|agent|skill|mcp)(?:\.[a-z0-9_-]+)+\][ \t]*/gi
+const trailingInternalReferencePattern =
+  /[ \t]*\[(?:profile|agent|skill|mcp)(?:\.[a-z0-9_-]*)*$/i
 
-  return (
-    <div className="mt-4 grid gap-2 sm:grid-cols-2">
-      {sources.map((source) => (
-        <Link
-          key={source.id}
-          href={source.path}
-          className="group rounded-2xl border border-white/10 bg-white/[0.04] p-3 transition hover:border-cyan-100/24 hover:bg-white/[0.07]"
-        >
-          <div className="mb-2 flex items-center justify-between gap-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-100/42">
-              {source.id}
-            </span>
-            <ArrowUpRight className="size-3.5 text-white/32 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-100/70" />
-          </div>
-          <p className="line-clamp-2 text-xs leading-5 text-white/52">
-            {source.excerpt}
-          </p>
-        </Link>
-      ))}
-    </div>
-  )
+function cleanAssistantMarkdown(content: string) {
+  return content
+    .replace(internalReferencePattern, " ")
+    .replace(trailingInternalReferencePattern, "")
+    .replace(/\s+([，。！？；：,.!?;:])/g, "$1")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim()
 }
 
 function renderInlineMarkdown(text: string) {
-  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\[[a-z][a-z0-9._-]+\])/gi)
+  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/gi)
 
   return parts.map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**")) {
@@ -122,23 +105,12 @@ function renderInlineMarkdown(text: string) {
       )
     }
 
-    if (/^\[[a-z][a-z0-9._-]+\]$/i.test(part)) {
-      return (
-        <span
-          key={`${part}-${index}`}
-          className="font-mono text-[0.84em] text-cyan-100/56"
-        >
-          {part}
-        </span>
-      )
-    }
-
     return part
   })
 }
 
 function ChatMarkdown({ content }: { content: string }) {
-  const lines = content.replace(/\r\n/g, "\n").split("\n")
+  const lines = cleanAssistantMarkdown(content).replace(/\r\n/g, "\n").split("\n")
   const blocks: ReactNode[] = []
   let index = 0
 
@@ -146,6 +118,24 @@ function ChatMarkdown({ content }: { content: string }) {
     const line = lines[index].trim()
 
     if (!line) {
+      index += 1
+      continue
+    }
+
+    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/)
+    if (headingMatch) {
+      const level = headingMatch[1].length
+      const HeadingTag = level <= 2 ? "h2" : level === 3 ? "h3" : "h4"
+      const className =
+        level <= 2
+          ? "text-lg font-semibold leading-7 text-white/90"
+          : "text-base font-semibold leading-7 text-white/86"
+
+      blocks.push(
+        <HeadingTag key={`h-${blocks.length}`} className={className}>
+          {renderInlineMarkdown(headingMatch[2])}
+        </HeadingTag>
+      )
       index += 1
       continue
     }
@@ -219,7 +209,14 @@ function ChatMarkdown({ content }: { content: string }) {
 
     while (index < lines.length) {
       const next = lines[index].trim()
-      if (!next || /^\d+\.\s+/.test(next) || /^[-*]\s+/.test(next)) break
+      if (
+        !next ||
+        /^#{1,6}\s+/.test(next) ||
+        /^\d+\.\s+/.test(next) ||
+        /^[-*]\s+/.test(next)
+      ) {
+        break
+      }
       paragraphLines.push(next)
       index += 1
     }
@@ -276,7 +273,6 @@ export function ChatRoom() {
       id: assistantId,
       role: "assistant",
       content: "",
-      sources: [],
     }
 
     const nextApiMessages = [...apiMessages, { role: "user" as const, content: trimmed }]
@@ -332,7 +328,6 @@ export function ChatRoom() {
                   message.id === assistantId
                     ? {
                         ...message,
-                        sources: payload.sources,
                         mode: payload.mode,
                       }
                     : message
@@ -501,9 +496,6 @@ export function ChatRoom() {
                         ) : null}
                       </div>
                     )}
-                    {!isUser && message.sources ? (
-                      <SourceList sources={message.sources} />
-                    ) : null}
                   </div>
                 </div>
               )

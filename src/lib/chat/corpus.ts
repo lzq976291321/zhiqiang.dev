@@ -104,20 +104,32 @@ function chunkMarkdown({
 }
 
 function readProfileChunks() {
-  const filePath = path.join(contentDir, "profile/dev-profile.md")
-  if (!fs.existsSync(filePath)) return []
+  const profileDir = path.join(contentDir, "profile")
+  if (!fs.existsSync(profileDir)) return []
 
-  const raw = fs.readFileSync(filePath, "utf-8")
-  const { data, content } = matter(raw)
+  return fs
+    .readdirSync(profileDir)
+    .filter((filename) => /\.(md|mdx)$/.test(filename))
+    .flatMap((filename) => {
+      const filePath = path.join(profileDir, filename)
+      const raw = fs.readFileSync(filePath, "utf-8")
+      const { data, content } = matter(raw)
 
-  return chunkMarkdown({
-    content,
-    sourceBaseId: data.sourceId ?? "profile",
-    title: data.title ?? "开发侧公开 Profile",
-    path: "/chat#profile",
-    category: "profile",
-    keywords: ["开发侧", "公开资料", "合作", "技术栈"],
-  })
+      return chunkMarkdown({
+        content,
+        sourceBaseId: data.sourceId ?? "profile",
+        title: data.title ?? "开发侧公开 Profile",
+        path: data.publicPath ?? "/chat#profile",
+        category: "profile",
+        keywords: [
+          "开发侧",
+          "公开资料",
+          "合作",
+          "技术栈",
+          ...(Array.isArray(data.keywords) ? data.keywords : []),
+        ],
+      })
+    })
 }
 
 function readAgentChunks() {

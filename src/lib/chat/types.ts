@@ -31,7 +31,6 @@ export type ChatStreamMode =
 export type ChatStreamEvent =
   | {
       type: "meta"
-      sources: ChatSource[]
       mode: ChatStreamMode
     }
   | {

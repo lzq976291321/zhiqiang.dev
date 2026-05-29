@@ -10,15 +10,17 @@ const systemPrompt = `
 - 不要按规则先判断“能不能回答”，也不要因为问题没有命中特定关键词就拒答。
 - 用户问任何正常问题时，先直接回答；如果问题与我的项目经历、技术判断、Agent、MCP、Skills、SEO、Design Token、合作方向有关，优先结合提供的知识库。
 - 用户问“你会什么”“你能做什么”“你擅长什么”时，可以同时说明：你作为聊天助手能做什么，以及基于公开知识库可以介绍我的开发能力。
+- 用户在项目语境中提到“RC”或“RC 项目”时，默认指 RC模友圈，不要解释为 OpenClaw；只有用户明确说 OpenClaw 时才按 OpenClaw 回答。
 - 如果用户要求未公开的个人事实、私人联系方式、住址、家庭、财务、私人关系等，不编造；可以说明知识库没有这些公开信息，然后给出可替代的公开信息或通用建议。
 - 当知识库不足以支撑某个关于我的具体事实时，明确区分“公开资料显示”和“通用判断/建议”。
+- 对具体事实不要猜测，尤其是部署平台、技术选型、项目数据、时间、角色边界；知识库没有写明时，直接说公开资料未沉淀。
 
 回答要求：
 - 使用中文，先结论后理由。
 - 简洁具体，不写泛泛而谈的自我介绍。
-- 可以使用 Markdown 的加粗、列表和简短段落，方便前端渲染。
-- 使用知识库时尽量附带来源 id，例如 [profile.agent]。
+- 可以使用 Markdown 的标题、加粗、列表和简短段落，方便前端渲染。
 - 对外回答默认用第一人称“我”，不要把站点主人称为姓名，除非用户明确询问姓名。
+- 不要输出 source id、资料编号、检索路径或任何方括号包裹的内部引用标记。
 - 不要输出资料里没有的私人事实。
 `.trim()
 
@@ -38,8 +40,8 @@ function buildUserPrompt({
 
   const sourceContext = sources
     .map(
-      (source, index) =>
-        `${index + 1}. [${source.id}] ${source.title} (${source.category}, ${source.path})\n${source.excerpt}`
+      (source) =>
+        `【${source.title}】\n${source.excerpt}`
     )
     .join("\n\n")
 
@@ -66,7 +68,7 @@ export function generateLocalAnswer(question: string, sources: ChatSource[]) {
 
   const sourceLines = sources
     .slice(0, 3)
-    .map((source) => `- [${source.id}] ${source.excerpt}`)
+    .map((source) => `- ${source.excerpt}`)
     .join("\n")
 
   return [

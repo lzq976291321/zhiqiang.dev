@@ -78,7 +78,8 @@ Chat 可以进行开放式对话；当问题涉及我的经历、项目、技术
 - 闪剪 Web 端视频创作平台：React + TypeScript + MobX。参与面向内容创作者的视频编辑、直播管理、数字人生成、AI 配音、多平台发布等能力建设；核心负责视频编辑器主体架构、编辑逻辑、几何算法、Undo/Redo、多轨道协同和实时预览。
 - Falcocut：AI 视频营销工具套件。使用 Next.js、NestJS、Supabase 等技术做全栈独立开发，包含热门视频采集、Gemini 反推提示词、批量 AI 视频生成、SEO Content Generator 和自动化内容生产链路。
 - ov-admin：Landing Page 运营管理系统。使用 NestJS、Prisma、React/Vite、Ant Design，支持 Section 模板、可视化编辑、Google Sheets 同步、多语言 SEO、结构化数据、权限管理和部署优化。
-- RC模友圈：遥控模型垂直社区，重点在内容社区、SEO 和产品独立运营。
+- 流量卡办理：已上线在 `https://liuliangka.netlify.app/` 的流量卡筛选与办理页面，围绕地区、月租、通用流量、周期、人群和运营商做信息架构与商品筛选体验，部署平台为 Netlify。
+- RC模友圈：遥控模型垂直社区，重点在内容社区、SEO 和产品独立运营；本知识库里用户提到“RC 项目”时默认指 RC模友圈，不是 OpenClaw；公开资料未沉淀它的部署平台，回答时不要猜测；展示优先级低于 Agent、全栈交付、视频产品线、SEO/AEO 和工具型产品。
 
 ## 视频编辑器与前端架构经验
 
@@ -144,9 +145,10 @@ Skills 更像“按场景加载的专业工作方式”，MCP 更像“让 Agent
 > source id: `profile.projects`
 
 - `zhiqiang.chat`：Agent 知识库、Design Token Lab、个人公开 Profile Chat。
-- RC模友圈：遥控模型垂直社区，关注内容、社区与 SEO。
+- 流量卡办理：流量卡筛选与办理工具，公开地址为 `https://liuliangka.netlify.app/`，关注信息架构、商品筛选、转化路径和 Netlify 静态站点部署。
 - OpenClaw：本地多 Agent 调度平台，服务研发自动化。
 - Falcocut / ov-admin 相关经验：AI 视频营销工具、Landing Page 运营管理、多语言 SEO、自动化内容生产和后台系统。
+- RC模友圈：遥控模型垂直社区，作为内容社区和 SEO 方向的补充项目；如果用户简称“RC”，默认就是这个项目；部署平台未在公开知识库中沉淀。
 
 ## 适合的合作方向
 
@@ -169,4 +171,4 @@ Chat 的回答方式：
 - 普通问题可以直接回答，不需要先做规则分类。
 - 涉及我的能力、经历、项目和技术判断时，优先引用公开知识库。
 - 涉及未公开个人事实时，不编造；可以说明公开资料没有覆盖，并给出可替代的公开信息或通用建议。
-- 关键判断尽量附带来源 id，方便追溯。
+- 对外回答不展示 source id、资料编号或检索路径，避免把内部知识库结构暴露给使用者。

@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# zhiqiang.chat
 
-## Getting Started
+个人公开知识库与 Chat 入口。当前默认访问 `/` 会重定向到 `/chat`。
 
-First, run the development server:
+## 本地开发
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+默认端口：`http://localhost:54129`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+生产预览：
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## 核心目录
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app/chat`：Chat 页面和 API。
+- `src/components/chat`：Chat 前端交互和 SSE 渲染。
+- `src/lib/chat`：知识库读取、检索、DeepSeek SSE 代理、问题日志。
+- `src/content/profile`：Chat 的个人公开知识库。
+- `src/content/agent`、`src/content/mcp`、`src/content/skills`：站内文章和工具资料。
+- `docs`：工程知识沉淀。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 文档
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [项目总览](./docs/README.md)
+- [Chat 模块](./docs/chat.md)
+- [知识库维护](./docs/knowledge-base.md)
+- [部署与环境](./docs/deployment.md)
 
-## Deploy on Vercel
+## 常用命令
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+```
