@@ -21,7 +21,6 @@ import {
   TerminalSquare,
 } from "lucide-react"
 import type {
-  ChatClassification,
   ChatMessage,
   ChatSource,
   ChatStreamEvent,
@@ -31,22 +30,21 @@ import type {
 interface UiMessage extends ChatMessage {
   id: string
   sources?: ChatSource[]
-  classification?: ChatClassification
   mode?: ChatStreamMode
 }
 
 const quickQuestions = [
-  "林志强适合做什么项目？",
-  "他对 Agent 的理解是什么？",
-  "他常用技术栈是什么？",
-  "Design Token Lab 是什么？",
-  "怎么判断是否适合合作？",
+  "你会什么？",
+  "帮我评估一个 Agent 产品想法",
+  "他的项目经历里最强的是什么？",
+  "做 SEO 内容产品怎么规划？",
+  "根据他的经历适合接什么项目？",
 ]
 
 const boundaryItems = [
-  "只回答公开开发侧资料",
-  "回答尽量附带 sources",
-  "隐私、家庭、财务和私人关系直接拒答",
+  "开放式对话",
+  "相关问题结合知识库",
+  "个人事实不编造",
 ]
 
 function getSessionId() {
@@ -230,14 +228,7 @@ function ChatMarkdown({ content }: { content: string }) {
 }
 
 export function ChatRoom() {
-  const [messages, setMessages] = useState<UiMessage[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content:
-        "你可以问林志强的开发能力、项目经验、Agent 设计、MCP / Skills、Design Token Lab 或合作方向。我只基于公开开发侧资料回答。",
-    },
-  ])
+  const [messages, setMessages] = useState<UiMessage[]>([])
   const [input, setInput] = useState("")
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
@@ -247,9 +238,7 @@ export function ChatRoom() {
 
   const apiMessages = useMemo(
     () =>
-      messages
-        .filter((message) => message.id !== "welcome")
-        .map(({ role, content }) => ({ role, content })),
+      messages.map(({ role, content }) => ({ role, content })),
     [messages]
   )
 
@@ -334,7 +323,6 @@ export function ChatRoom() {
                   message.id === assistantId
                     ? {
                         ...message,
-                        classification: payload.classification,
                         sources: payload.sources,
                         mode: payload.mode,
                       }
@@ -407,14 +395,14 @@ export function ChatRoom() {
               <span className="aurora-text block">Builder</span>
             </h1>
             <p className="mt-6 text-base leading-7 text-white/58">
-              这是公开开发侧 Chat，只谈技术能力、项目、Agent 设计和合作方向。
+              开放式对话，结合林志强的公开知识库生成回答。
             </p>
           </div>
 
           <div className="glass-card p-5">
             <div className="mb-4 flex items-center justify-between">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-emerald-100/52">
-                Boundary
+                Mode
               </p>
               <ShieldCheck className="size-5 text-emerald-100/52" />
             </div>
@@ -465,7 +453,7 @@ export function ChatRoom() {
               <div>
                 <p className="text-sm font-semibold text-white/84">开发侧访谈室</p>
                 <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/32">
-                  sources required
+                  profile augmented
                 </p>
               </div>
             </div>
@@ -516,7 +504,7 @@ export function ChatRoom() {
               <div className="flex justify-start">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.045] px-4 py-2 text-sm text-white/48">
                   <LoaderCircle className="size-4 animate-spin" />
-                  正在检索公开资料
+                  正在组织回答
                 </div>
               </div>
             ) : null}
@@ -536,7 +524,7 @@ export function ChatRoom() {
                 onKeyDown={handleKeyDown}
                 rows={1}
                 maxLength={1600}
-                placeholder="问一个开发侧问题..."
+                placeholder="直接输入你的问题..."
                 className="min-h-12 flex-1 resize-none rounded-[22px] border border-white/10 bg-white/[0.05] px-4 py-3 text-sm leading-6 text-white outline-none transition placeholder:text-white/28 focus:border-cyan-100/28 focus:bg-white/[0.075]"
               />
               <button

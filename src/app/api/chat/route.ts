@@ -1,22 +1,13 @@
 import type { NextRequest } from "next/server"
 import {
-  classifyQuestion,
-  getPrivacyBlockedAnswer,
-  getUncoveredAnswer,
-} from "@/lib/chat/classifier"
-import {
   createDeepSeekCompletionStream,
   extractDeepSeekDelta,
   generateLocalAnswer,
   hasDeepSeekApiKey,
 } from "@/lib/chat/answer"
-import {
-  getDefaultProfileSources,
-  retrieveChatSources,
-} from "@/lib/chat/retrieval"
+import { getChatKnowledgeSources } from "@/lib/chat/retrieval"
 import { logChatQuestion } from "@/lib/chat/question-log"
 import type {
-  ChatClassification,
   ChatMessage,
   ChatSource,
   ChatStreamEvent,
@@ -144,16 +135,13 @@ function sendMeta(
   {
     mode,
     sources,
-    classification,
   }: {
     mode: ChatStreamMode
     sources: ChatSource[]
-    classification: ChatClassification
   }
 ) {
   send(controller, {
     type: "meta",
-    classification,
     sources,
     mode,
   })
@@ -239,11 +227,11 @@ export async function POST(request: NextRequest) {
 
   const { messages, sessionId } = chatRequest
   const question = getLatestQuestion(messages)
-  const classification = classifyQuestion(question)
+  const sources = getChatKnowledgeSources(question)
 
   logChatQuestion({
     question,
-    classification,
+    sourceIds: sources.map((source) => source.id),
     sessionId,
     userAgent: request.headers.get("user-agent"),
     referrer: request.headers.get("referer"),
@@ -251,47 +239,26 @@ export async function POST(request: NextRequest) {
 
   return createStreamResponse(async (controller) => {
     try {
-      if (classification === "privacy_blocked") {
-        sendMeta(controller, { classification, sources: [], mode: "blocked" })
-        await streamText(controller, getPrivacyBlockedAnswer())
-        send(controller, { type: "done" })
-        controller.close()
-        return
-      }
-
-      if (classification === "unknown_or_uncovered") {
-        sendMeta(controller, { classification, sources: [], mode: "uncovered" })
-        await streamText(controller, getUncoveredAnswer())
-        send(controller, { type: "done" })
-        controller.close()
-        return
-      }
-
-      const sources = retrieveChatSources(question)
-      const finalSources = sources.length > 0 ? sources : getDefaultProfileSources()
-
       if (hasDeepSeekApiKey()) {
         sendMeta(controller, {
-          classification,
-          sources: finalSources,
+          sources,
           mode: "deepseek",
         })
         await proxyDeepSeekStream({
           controller,
           question,
           messages,
-          sources: finalSources,
+          sources,
         })
         controller.close()
         return
       }
 
       sendMeta(controller, {
-        classification,
-        sources: finalSources,
+        sources,
         mode: "local_fallback",
       })
-      await streamText(controller, generateLocalAnswer(question, finalSources))
+      await streamText(controller, generateLocalAnswer(question, sources))
       send(controller, { type: "done" })
       controller.close()
     } catch (error) {

@@ -1,13 +1,12 @@
 import fs from "fs"
 import path from "path"
-import type { ChatClassification } from "./types"
 
 const MAX_LOGGED_QUESTION_LENGTH = 500
 const localLogPath = path.join(process.cwd(), "chat-questions.local.jsonl")
 
 interface ChatQuestionLogInput {
   question: string
-  classification: ChatClassification
+  sourceIds: string[]
   sessionId?: string
   userAgent?: string | null
   referrer?: string | null
@@ -19,7 +18,7 @@ function normalizeQuestion(question: string) {
 
 export function logChatQuestion({
   question,
-  classification,
+  sourceIds,
   sessionId,
   userAgent,
   referrer,
@@ -28,9 +27,10 @@ export function logChatQuestion({
     event: "chat_question",
     timestamp: new Date().toISOString(),
     sessionId: sessionId?.slice(0, 64) || "anonymous",
-    classification,
     question: normalizeQuestion(question),
     questionLength: question.length,
+    sourceIds: sourceIds.slice(0, 12),
+    sourceCount: sourceIds.length,
     userAgent: userAgent?.slice(0, 180) || null,
     referrer: referrer?.slice(0, 240) || null,
   }

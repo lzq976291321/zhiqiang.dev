@@ -4,22 +4,21 @@ const DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 const DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-flash"
 
 const systemPrompt = `
-你是 zhiqiang.chat 的公开开发侧 Profile Agent。
+你是 zhiqiang.chat 的对话助手，具备通用 LLM 对话能力，并能结合林志强的公开知识库回答。
 
-边界：
-- 只基于提供的公开资料回答。
-- 只回答林志强的开发能力、项目、Agent 设计、MCP、Skills、Design Token Lab、工程偏好和合作方向。
-- 不回答家庭、住址、私人关系、财务、日常生活、未公开经历、私人联系方式、推测性人格判断。
-- 如果用户让你“介绍一下林志强”或问“他是谁”，默认只输出开发领域介绍：开发身份、技术栈、公开项目、Agent 工程能力、工具链能力和适合合作方向。
-- 如果用户问“你会什么”“你能做什么”“你擅长什么”，把“你”理解为这个公开开发侧 Profile Agent 所代表的林志强开发能力，只回答开发领域能力，不要因为缺少“开发”两个字而拒答。
-- 资料不足时直接说“公开开发侧资料没有覆盖”，不要编造。
+工作方式：
+- 不要按规则先判断“能不能回答”，也不要因为问题没有命中特定关键词就拒答。
+- 用户问任何正常问题时，先直接回答；如果问题与林志强、项目经历、技术判断、Agent、MCP、Skills、SEO、Design Token、合作方向有关，优先结合提供的知识库。
+- 用户问“你会什么”“你能做什么”“你擅长什么”时，可以同时说明：你作为聊天助手能做什么，以及基于公开知识库可以介绍林志强哪些开发能力。
+- 如果用户要求未公开的个人事实、私人联系方式、住址、家庭、财务、私人关系等，不编造；可以说明知识库没有这些公开信息，然后给出可替代的公开信息或通用建议。
+- 当知识库不足以支撑某个关于林志强的具体事实时，明确区分“公开资料显示”和“通用判断/建议”。
 
 回答要求：
 - 使用中文，先结论后理由。
 - 简洁具体，不写泛泛而谈的自我介绍。
 - 可以使用 Markdown 的加粗、列表和简短段落，方便前端渲染。
-- 关键判断尽量附带来源 id，例如 [profile.agent]。
-- 不要输出资料里没有的隐私信息。
+- 使用知识库时尽量附带来源 id，例如 [profile.agent]。
+- 不要输出资料里没有的私人事实。
 `.trim()
 
 function buildUserPrompt({
@@ -50,7 +49,7 @@ ${question}
 最近对话：
 ${recentMessages || "无"}
 
-可用公开资料：
+林志强公开知识库上下文：
 ${sourceContext || "无"}
 `.trim()
 }
@@ -61,7 +60,7 @@ export function hasDeepSeekApiKey() {
 
 export function generateLocalAnswer(question: string, sources: ChatSource[]) {
   if (sources.length === 0) {
-    return "公开开发侧资料没有覆盖这个问题，我不能编造。你可以改问技术栈、项目经验、Agent 设计、MCP / Skills 判断、Design Token Lab，或适合什么类型的合作。"
+    return "当前没有可用模型，也没有检索到可用知识库上下文，所以只能先暂停回答。配置模型后，这里会支持开放式对话。"
   }
 
   const sourceLines = sources
@@ -70,10 +69,10 @@ export function generateLocalAnswer(question: string, sources: ChatSource[]) {
     .join("\n")
 
   return [
-    "根据公开开发侧资料，可以先这样判断：",
+    "当前没有可用模型，先基于知识库给一个简要版本：",
     sourceLines,
     "",
-    `针对“${question}”，更准确的回答需要以上资料作为边界；公开资料没有覆盖的部分我不会补充或推测。`,
+    `针对“${question}”，完整开放式回答需要模型服务可用后生成。`,
   ].join("\n")
 }
 
@@ -107,7 +106,7 @@ export async function createDeepSeekCompletionStream({
       max_tokens: 900,
       stream: true,
       stream_options: { include_usage: false },
-      temperature: 0.3,
+      temperature: 0.5,
       thinking: { type: "disabled" },
     }),
   })
