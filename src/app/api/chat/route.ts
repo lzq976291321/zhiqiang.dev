@@ -14,6 +14,7 @@ import {
   getDefaultProfileSources,
   retrieveChatSources,
 } from "@/lib/chat/retrieval"
+import { logChatQuestion } from "@/lib/chat/question-log"
 import type {
   ChatClassification,
   ChatMessage,
@@ -71,8 +72,11 @@ function isChatMessage(value: unknown): value is ChatMessage {
   )
 }
 
-async function parseMessages(request: NextRequest) {
-  const body = (await request.json()) as { messages?: unknown }
+async function parseChatRequest(request: NextRequest) {
+  const body = (await request.json()) as {
+    messages?: unknown
+    sessionId?: unknown
+  }
   if (!Array.isArray(body.messages)) return null
 
   const messages = body.messages.slice(-MAX_MESSAGES)
@@ -81,7 +85,10 @@ async function parseMessages(request: NextRequest) {
   const totalLength = messages.reduce((sum, message) => sum + message.content.length, 0)
   if (totalLength > MAX_TOTAL_LENGTH) return null
 
-  return messages
+  return {
+    messages,
+    sessionId: typeof body.sessionId === "string" ? body.sessionId : undefined,
+  }
 }
 
 function getLatestQuestion(messages: ChatMessage[]) {
@@ -215,23 +222,32 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  let messages: ChatMessage[] | null = null
+  let chatRequest: { messages: ChatMessage[]; sessionId?: string } | null = null
 
   try {
-    messages = await parseMessages(request)
+    chatRequest = await parseChatRequest(request)
   } catch {
     return Response.json({ error: "请求体不是有效 JSON。" }, { status: 400 })
   }
 
-  if (!messages) {
+  if (!chatRequest) {
     return Response.json(
       { error: "messages 格式不正确，或输入太长。" },
       { status: 400 }
     )
   }
 
+  const { messages, sessionId } = chatRequest
   const question = getLatestQuestion(messages)
   const classification = classifyQuestion(question)
+
+  logChatQuestion({
+    question,
+    classification,
+    sessionId,
+    userAgent: request.headers.get("user-agent"),
+    referrer: request.headers.get("referer"),
+  })
 
   return createStreamResponse(async (controller) => {
     try {

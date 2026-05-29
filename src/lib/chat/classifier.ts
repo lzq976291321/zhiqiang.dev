@@ -14,14 +14,15 @@ const devPatterns = [
   /agent|智能体|claude|openclaw|mcp|skill|skills|prompt|工具链/i,
   /design token|design lab|设计系统|tailwind|next\.?js|react|typescript/i,
   /seo|aeo|部署|vercel|railway|supabase|prisma|nestjs|node/i,
-  /合作|适合|方向|能力|简历|履历|公开资料|介绍/,
+  /合作|适合|方向|能力|简历|履历|工作经历|项目经历|经历|公开资料|介绍/,
+  /你会什么|会什么|能做什么|可以做什么|你能做什么|你擅长什么|擅长什么|有什么能力|能帮我做什么|能提供什么|做过什么|有什么项目/,
 ]
 
 const neutralPatterns = [
   /^你好[。！!]*$/,
   /^hi[。！!]*$/i,
   /^hello[。！!]*$/i,
-  /能问什么|你是谁|介绍一下|帮助/,
+  /能问什么|你是谁|介绍一下|帮助|你是做什么的|有什么用/,
 ]
 
 export function classifyQuestion(question: string): ChatClassification {
@@ -48,5 +49,5 @@ export function getPrivacyBlockedAnswer() {
 }
 
 export function getUncoveredAnswer() {
-  return "公开开发侧资料没有覆盖这个问题，我不能编造。你可以改问技术栈、项目经验、Agent 设计、MCP / Skills 判断、Design Token Lab，或适合什么类型的合作。"
+  return "公开开发侧资料没有覆盖这个问题，我不能编造。你可以改问：他会什么、能做什么、技术栈、项目经验、工作经历、Agent 设计、MCP / Skills 判断、Design Token Lab，或适合什么类型的合作。"
 }

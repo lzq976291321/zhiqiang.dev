@@ -49,6 +49,17 @@ const boundaryItems = [
   "隐私、家庭、财务和私人关系直接拒答",
 ]
 
+function getSessionId() {
+  const storageKey = "zhiqiang-chat-session-id"
+  const existing = window.localStorage.getItem(storageKey)
+
+  if (existing) return existing
+
+  const sessionId = createMessageId()
+  window.localStorage.setItem(storageKey, sessionId)
+  return sessionId
+}
+
 function createMessageId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID()
@@ -232,6 +243,7 @@ export function ChatRoom() {
   const [error, setError] = useState("")
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
+  const sessionIdRef = useRef<string | null>(null)
 
   const apiMessages = useMemo(
     () =>
@@ -247,6 +259,10 @@ export function ChatRoom() {
       behavior: "smooth",
     })
   }, [messages, pending])
+
+  useEffect(() => {
+    sessionIdRef.current = getSessionId()
+  }, [])
 
   async function submitQuestion(question: string) {
     const trimmed = question.trim()
@@ -277,7 +293,10 @@ export function ChatRoom() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextApiMessages }),
+        body: JSON.stringify({
+          messages: nextApiMessages,
+          sessionId: sessionIdRef.current,
+        }),
       })
 
       if (!response.ok) {

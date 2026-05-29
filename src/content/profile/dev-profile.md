@@ -39,6 +39,61 @@ category: "profile"
 - 部署与工程：Vercel、Railway、Google Cloud Run、Cloudflare、Docker。
 - 其他经验：Vue、Vite、Webpack、Taro、WebSocket、Web Worker、Puppeteer。
 
+## 简历开发经历摘要
+
+> source id: `profile.resume_summary`
+
+公开简历中的开发侧经历可以概括为：6 年左右前端与全栈研发经验，长期围绕 React / TypeScript、视频创作平台、AI Agent 工具链、SEO 内容生产、多语言 Landing Page、后台管理系统和独立产品交付展开。
+
+他不是只做单一页面实现，而是多次承担过架构设计、工程规范、前端基建、性能优化、全栈交付和 AI 工作流接入。
+
+## 工作经历
+
+> source id: `profile.work_experience`
+
+- OneVertical.ai：全栈 Agent 开发工程师。独立负责两条产品线全栈研发，通过 OpenClaw 和 Claude Code 驱动开发流程，一个人覆盖产品定义、前后端开发、部署上线和迭代。
+- 深圳市闪剪智能科技有限公司：前端开发工程师，技术委员会成员。核心负责视频创作平台前端开发、视频编辑器架构设计、几何算法核心模块、自研基建项目、前端规范和 Code Review。
+- 中科软科技股份有限公司：前端开发工程师，积累企业项目开发经验。
+- 深圳数联天下智能科技有限公司：前端开发工程师，早期参与前端业务开发和工程实践。
+
+以上只作为开发侧经历摘要，不包含私人联系方式、住址、家庭、薪资或其他私生活信息。
+
+## 核心开发能力
+
+> source id: `profile.core_strengths`
+
+- OpenClaw 多智能体平台：自研本地多 Agent 调度平台，主 Agent 调度专业子 Agent 并发执行，接入飞书工具、SearXNG 搜索、Chrome DevTools 和本地开发工具链。
+- Claude Code 深度使用：熟悉 SubAgent 任务分发、自定义 Skill、Hooks 自动化、CLAUDE.md 约束、Spec 驱动开发等能力。
+- 全栈独立交付：能一人完成产品判断、前端、后端、部署、SEO、测试和上线。
+- 前端架构与性能优化：React / TypeScript 深耕，主导过视频编辑器架构设计，使用发布订阅、策略、工厂、装饰器等模式处理复杂编辑场景；通过 WebSocket 替代轮询减少请求并提升实时性。
+- 前端基建：自研过组件库、工具库和动画能力，用于提升业务开发效率和减少重复实现。
+
+## 代表项目经历
+
+> source id: `profile.resume_projects`
+
+- OpenClaw：本地多 Agent 调度平台。重点能力包括调度决策树、多 Agent 并发编排、飞书工具接入、自部署搜索、浏览器控制、Skill 分层加载、Hooks 自动化和上下文压缩。
+- 闪剪 Web 端视频创作平台：React + TypeScript + MobX。参与面向内容创作者的视频编辑、直播管理、数字人生成、AI 配音、多平台发布等能力建设；核心负责视频编辑器主体架构、编辑逻辑、几何算法、Undo/Redo、多轨道协同和实时预览。
+- Falcocut：AI 视频营销工具套件。使用 Next.js、NestJS、Supabase 等技术做全栈独立开发，包含热门视频采集、Gemini 反推提示词、批量 AI 视频生成、SEO Content Generator 和自动化内容生产链路。
+- ov-admin：Landing Page 运营管理系统。使用 NestJS、Prisma、React/Vite、Ant Design，支持 Section 模板、可视化编辑、Google Sheets 同步、多语言 SEO、结构化数据、权限管理和部署优化。
+- RC模友圈：遥控模型垂直社区，重点在内容社区、SEO 和产品独立运营。
+
+## 视频编辑器与前端架构经验
+
+> source id: `profile.video_editor`
+
+在闪剪 Web 端视频创作平台中，他负责视频编辑器主体架构设计和几何算法核心模块，支撑裁剪、拼接、特效叠加、字幕轨道等核心编辑能力。
+
+相关工程经验包括：事件驱动状态管理、Undo/Redo、多轨道协同编辑、实时预览同步、发布订阅解耦通信、策略模式处理媒体渲染、工厂模式统一素材创建、装饰器模式无侵入扩展，以及用 WebSocket 替代轮询提升实时反馈。
+
+## SEO 与内容生产经验
+
+> source id: `profile.seo_content`
+
+他有多语言 SEO、Landing Page、内容自动化生产和结构化数据经验。公开经历中包括 10+ 产品落地页、7 种语言、多语言 meta / OG / hreflang / 结构化数据、SEO Content Generator、异步队列、批量拆分、Google Sheets 同步和运营后台。
+
+这类经验适合回答“是否适合做 SEO 内容产品”“是否适合做多语言落地页”“是否能做内容自动化后台”等开发侧问题。
+
 ## 工程偏好
 
 > source id: `profile.engineering`
