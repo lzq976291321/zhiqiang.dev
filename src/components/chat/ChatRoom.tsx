@@ -33,12 +33,19 @@ interface UiMessage extends ChatMessage {
   mode?: ChatStreamMode
 }
 
+const welcomeMessage: UiMessage = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "你可以直接问任何问题；如果涉及我的经历、项目、技术判断或合作方向，我会结合公开知识库回答。",
+}
+
 const quickQuestions = [
   "你会什么？",
   "帮我评估一个 Agent 产品想法",
-  "他的项目经历里最强的是什么？",
+  "我的项目经历里最强的是什么？",
   "做 SEO 内容产品怎么规划？",
-  "根据他的经历适合接什么项目？",
+  "根据我的经历适合接什么项目？",
 ]
 
 const boundaryItems = [
@@ -228,7 +235,7 @@ function ChatMarkdown({ content }: { content: string }) {
 }
 
 export function ChatRoom() {
-  const [messages, setMessages] = useState<UiMessage[]>([])
+  const [messages, setMessages] = useState<UiMessage[]>([welcomeMessage])
   const [input, setInput] = useState("")
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
@@ -238,7 +245,9 @@ export function ChatRoom() {
 
   const apiMessages = useMemo(
     () =>
-      messages.map(({ role, content }) => ({ role, content })),
+      messages
+        .filter((message) => message.id !== welcomeMessage.id)
+        .map(({ role, content }) => ({ role, content })),
     [messages]
   )
 
@@ -395,7 +404,7 @@ export function ChatRoom() {
               <span className="aurora-text block">Builder</span>
             </h1>
             <p className="mt-6 text-base leading-7 text-white/58">
-              开放式对话，结合林志强的公开知识库生成回答。
+              开放式对话，结合我的公开知识库生成回答。
             </p>
           </div>
 

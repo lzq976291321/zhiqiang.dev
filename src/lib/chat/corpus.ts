@@ -116,7 +116,7 @@ function readProfileChunks() {
     title: data.title ?? "开发侧公开 Profile",
     path: "/chat#profile",
     category: "profile",
-    keywords: ["林志强", "开发侧", "公开资料", "合作", "技术栈"],
+    keywords: ["开发侧", "公开资料", "合作", "技术栈"],
   })
 }
 
