@@ -42,6 +42,7 @@ type LabTheme = {
   id: string
   name: string
   title: string
+  family: "polished" | "hard-edge"
   summary: string
   intent: string
   fit: string
@@ -55,6 +56,7 @@ const themes: LabTheme[] = [
     id: "glass-luxury",
     name: "Glass Luxury",
     title: "深色玻璃奢华",
+    family: "polished",
     summary: "冷青玻璃、暗场层次、少量暖金，适合 Agent、工具台和高质感个人站。",
     intent: "让界面像一块有深度的冷色玻璃，靠边框高光、暗部层次和克制暖色建立高级感。",
     fit: "Agent 平台、设计工具、AI 控制台、个人知识库",
@@ -85,6 +87,7 @@ const themes: LabTheme[] = [
     id: "editorial-dark",
     name: "Editorial Dark",
     title: "黑金编辑部",
+    family: "polished",
     summary: "近黑底、象牙白文字、细金线和杂志式排版，适合文章、作品集和思想型产品。",
     intent: "用强排版和低饱和金色控制气质，减少装饰，把重点留给标题和内容节奏。",
     fit: "技术博客、作品集、研究报告、长文知识库",
@@ -115,6 +118,7 @@ const themes: LabTheme[] = [
     id: "clean-saas",
     name: "Clean SaaS",
     title: "冷静白色工作台",
+    family: "polished",
     summary: "浅色背景、清晰边框、低圆角和理性蓝绿，适合后台、SaaS 和高频操作界面。",
     intent: "优先可读性和密度，质感来自精确边框、阴影层级和状态色，而不是装饰。",
     fit: "SaaS 后台、CRM、数据平台、项目管理工具",
@@ -145,6 +149,7 @@ const themes: LabTheme[] = [
     id: "warm-portfolio",
     name: "Warm Portfolio",
     title: "奶油作品集",
+    family: "polished",
     summary: "奶油底、陶土红、橄榄绿和柔和纸感，适合个人品牌、摄影和生活方式页面。",
     intent: "用低对比暖色建立亲近感，保留足够留白，让内容像被放在纸张和日光里。",
     fit: "个人主页、摄影集、手作品牌、轻量内容产品",
@@ -175,6 +180,7 @@ const themes: LabTheme[] = [
     id: "neo-brutal-studio",
     name: "Neo Brutal Studio",
     title: "硬边实验室",
+    family: "hard-edge",
     summary: "高对比、硬边框、荧光点缀和强图形节奏，适合需要记忆点的实验项目。",
     intent: "让界面像一张可交互海报，靠硬边框、色块和强按钮建立冲击力。",
     fit: "实验工具、创意工作室、活动页、设计案例展示",
@@ -201,7 +207,102 @@ const themes: LabTheme[] = [
       blurGlass: "blur(0px)",
     },
   },
+  {
+    id: "raster-control",
+    name: "Raster Control",
+    title: "网格控制台",
+    family: "hard-edge",
+    summary: "米白底、黑色硬线、酸性绿和警示红，像一张可操作的设计校准板。",
+    intent: "用栅格、粗线和偏移阴影建立明确秩序，强调每个组件都像被标尺校准过。",
+    fit: "设计系统实验、工具型作品集、组件规范页、内部原型台",
+    avoid: ["不要使用柔光阴影", "不要把边框降到 1px 以下", "不要加入纸张暖滤镜"],
+    swatches: ["#f3f0e8", "#050505", "#d8ff5f", "#ff3b30"],
+    tokens: {
+      background: "#f3f0e8",
+      backgroundSoft: "#d8ff5f",
+      foreground: "#050505",
+      muted: "rgba(5, 5, 5, 0.64)",
+      surfaceCard: "#fffdfa",
+      surfaceElevated: "#d8ff5f",
+      primary: "#050505",
+      primaryForeground: "#f3f0e8",
+      accent: "#ff3b30",
+      accentForeground: "#050505",
+      borderSubtle: "rgba(5, 5, 5, 0.32)",
+      borderStrong: "#050505",
+      ring: "#00d46a",
+      radiusCard: "6px",
+      radiusButton: "3px",
+      shadowCard: "6px 6px 0 #050505",
+      shadowFloating: "12px 12px 0 #050505",
+      blurGlass: "blur(0px)",
+    },
+  },
+  {
+    id: "signal-foundry",
+    name: "Signal Foundry",
+    title: "信号铸造厂",
+    family: "hard-edge",
+    summary: "黑底、荧光黄、冷青信号和橙红警示，适合强识别的实验工具界面。",
+    intent: "把界面处理成机器铭牌和信号面板的组合，利用高亮色块表达状态和优先级。",
+    fit: "AI 控制台、硬件实验、现场工具、实时监测页面",
+    avoid: ["不要使用圆润胶囊按钮", "不要把荧光色铺满整页", "不要增加玻璃拟态层"],
+    swatches: ["#101010", "#f5ff00", "#00f0ff", "#ff3d00"],
+    tokens: {
+      background: "#101010",
+      backgroundSoft: "#1d1d1d",
+      foreground: "#f7f7ed",
+      muted: "rgba(247, 247, 237, 0.64)",
+      surfaceCard: "#181818",
+      surfaceElevated: "#f5ff00",
+      primary: "#f5ff00",
+      primaryForeground: "#101010",
+      accent: "#00f0ff",
+      accentForeground: "#101010",
+      borderSubtle: "rgba(247, 247, 237, 0.24)",
+      borderStrong: "#f5ff00",
+      ring: "#ff3d00",
+      radiusCard: "4px",
+      radiusButton: "2px",
+      shadowCard: "7px 7px 0 #f5ff00",
+      shadowFloating: "12px 12px 0 #00f0ff",
+      blurGlass: "blur(0px)",
+    },
+  },
+  {
+    id: "blueprint-cutout",
+    name: "Blueprint Cutout",
+    title: "蓝图切割板",
+    family: "hard-edge",
+    summary: "钴蓝底、白色切片、黑色结构线和荧光绿，像被剪裁出来的交互蓝图。",
+    intent: "保留蓝图的理性秩序，但用硬切块和高对比按钮让页面更像实验室样机。",
+    fit: "技术专题页、开发者工具、系统架构展示、实验型落地页",
+    avoid: ["不要使用大面积蓝紫渐变", "不要把白色卡片做透明", "不要降低文字对比度"],
+    swatches: ["#1026ff", "#fbfbf0", "#101010", "#c6ff00"],
+    tokens: {
+      background: "#1026ff",
+      backgroundSoft: "#061060",
+      foreground: "#fbfbf0",
+      muted: "rgba(251, 251, 240, 0.68)",
+      surfaceCard: "#101010",
+      surfaceElevated: "#fbfbf0",
+      primary: "#fbfbf0",
+      primaryForeground: "#1026ff",
+      accent: "#c6ff00",
+      accentForeground: "#101010",
+      borderSubtle: "rgba(251, 251, 240, 0.28)",
+      borderStrong: "#fbfbf0",
+      ring: "#c6ff00",
+      radiusCard: "5px",
+      radiusButton: "3px",
+      shadowCard: "8px 8px 0 #101010",
+      shadowFloating: "14px 14px 0 #c6ff00",
+      blurGlass: "blur(0px)",
+    },
+  },
 ]
+
+const hardEdgeThemes = themes.filter((theme) => theme.family === "hard-edge")
 
 function themeStyle(theme: LabTheme): CSSProperties & Record<string, string> {
   const { tokens } = theme
@@ -270,6 +371,17 @@ function tokenJson(theme: LabTheme) {
 
 function generateMarkdown(theme: LabTheme) {
   const { tokens } = theme
+  const hardEdgeGuidance =
+    theme.family === "hard-edge"
+      ? `
+## Hard Edge Rules
+
+- 边框是主视觉，不是辅助线：核心容器使用 \`--border-strong\`，轻量分隔才用 \`--border-subtle\`。
+- 阴影只使用硬偏移，不使用柔光、毛玻璃和大面积 blur。
+- 强调色只做标签、状态、按钮和少量色块，避免整页变成荧光海报。
+- 圆角保持克制，组件半径不超过 \`--radius-card\`。
+`
+      : ""
   const cssVariables = `:root {
   --background: ${tokens.background};
   --foreground: ${tokens.foreground};
@@ -318,6 +430,7 @@ ${theme.fit}
 ## Preview Contract
 
 这套 tokens 已在同一个 HTML 样张中验证过：导航、Hero、按钮、输入框、Badge、内容卡片、代码块、列表和浮层。
+${hardEdgeGuidance}
 
 ## Token Source
 
@@ -362,62 +475,158 @@ ${theme.avoid.map((item) => `- ${item}`).join("\n")}
 }
 
 function TokenPreview({ theme }: { theme: LabTheme }) {
+  const isHardEdge = theme.family === "hard-edge"
+  const previewStyle = themeStyle(theme)
+  previewStyle.boxShadow = isHardEdge
+    ? "var(--lab-shadow-floating)"
+    : "0 30px 120px rgba(0,0,0,0.34)"
+  const frameStyle: CSSProperties | undefined = isHardEdge
+    ? {
+        backgroundImage:
+          "linear-gradient(90deg, var(--lab-border) 1px, transparent 1px), linear-gradient(var(--lab-border) 1px, transparent 1px), linear-gradient(135deg, var(--lab-bg), var(--lab-bg-soft))",
+        backgroundSize: "34px 34px, 34px 34px, 100% 100%",
+      }
+    : undefined
+  const surfaceEffect: CSSProperties = isHardEdge
+    ? { boxShadow: "var(--lab-shadow-card)" }
+    : { backdropFilter: "var(--lab-blur)", WebkitBackdropFilter: "var(--lab-blur)" }
+
   return (
     <div
-      style={themeStyle(theme)}
-      className="overflow-hidden rounded-[34px] border border-white/12 bg-[var(--lab-bg)] p-4 text-[var(--lab-fg)] shadow-[0_30px_120px_rgba(0,0,0,0.34)]"
+      style={previewStyle}
+      className={`overflow-hidden bg-[var(--lab-bg)] text-[var(--lab-fg)] ${
+        isHardEdge
+          ? "rounded-[8px] border-2 border-[var(--lab-border-strong)] p-3"
+          : "rounded-[34px] border border-white/12 p-4"
+      }`}
     >
-      <div className="relative overflow-hidden rounded-[28px] border border-[var(--lab-border)] bg-[linear-gradient(135deg,var(--lab-bg),var(--lab-bg-soft))] p-4 sm:p-5">
-        <div className="pointer-events-none absolute right-[-16%] top-[-26%] size-80 rounded-full bg-[var(--lab-primary)] opacity-20 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-[-20%] left-[-12%] size-72 rounded-full bg-[var(--lab-accent)] opacity-16 blur-3xl" />
+      <div
+        style={frameStyle}
+        className={`relative overflow-hidden bg-[linear-gradient(135deg,var(--lab-bg),var(--lab-bg-soft))] p-4 sm:p-5 ${
+          isHardEdge
+            ? "rounded-[6px] border-2 border-[var(--lab-border-strong)]"
+            : "rounded-[28px] border border-[var(--lab-border)]"
+        }`}
+      >
+        {isHardEdge ? (
+          <>
+            <div
+              className="pointer-events-none absolute right-3 top-3 h-12 w-40 border-2 border-[var(--lab-border-strong)]"
+              style={{
+                background:
+                  "repeating-linear-gradient(135deg, var(--lab-accent) 0 10px, transparent 10px 20px)",
+              }}
+            />
+            <div className="pointer-events-none absolute bottom-4 left-4 h-14 w-14 border-2 border-[var(--lab-border-strong)] bg-[var(--lab-primary)]" />
+            <div className="pointer-events-none absolute bottom-8 left-10 h-14 w-14 border-2 border-[var(--lab-border-strong)] bg-[var(--lab-accent)]" />
+          </>
+        ) : (
+          <>
+            <div className="pointer-events-none absolute right-[-16%] top-[-26%] size-80 rounded-full bg-[var(--lab-primary)] opacity-20 blur-3xl" />
+            <div className="pointer-events-none absolute bottom-[-20%] left-[-12%] size-72 rounded-full bg-[var(--lab-accent)] opacity-16 blur-3xl" />
+          </>
+        )}
 
         <div
-          className="relative flex items-center justify-between rounded-[calc(var(--lab-radius-card)*0.75)] border border-[var(--lab-border)] bg-[var(--lab-card)] px-3 py-2 shadow-[var(--lab-shadow-card)]"
-          style={{ backdropFilter: "var(--lab-blur)", WebkitBackdropFilter: "var(--lab-blur)" }}
+          className={`relative flex items-center justify-between border bg-[var(--lab-card)] px-3 py-2 ${
+            isHardEdge
+              ? "rounded-[var(--lab-radius-card)] border-2 border-[var(--lab-border-strong)]"
+              : "rounded-[calc(var(--lab-radius-card)*0.75)] border-[var(--lab-border)]"
+          }`}
+          style={surfaceEffect}
         >
           <div className="flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-full border border-[var(--lab-border-strong)] bg-[var(--lab-elevated)]">
-              <Sparkles className="size-4 text-[var(--lab-primary)]" />
+            <span
+              className={`grid size-8 place-items-center border border-[var(--lab-border-strong)] bg-[var(--lab-primary)] text-[var(--lab-primary-fg)] ${
+                isHardEdge ? "rounded-[3px] border-2" : "rounded-full"
+              }`}
+            >
+              <Sparkles className="size-4" />
             </span>
             <span className="text-sm font-semibold">Token Studio</span>
           </div>
-          <div className="hidden items-center gap-4 text-xs text-[var(--lab-muted)] sm:flex">
+          <div className={`hidden items-center gap-4 text-xs text-[var(--lab-muted)] sm:flex ${isHardEdge ? "font-mono uppercase" : ""}`}>
             <span>Preview</span>
             <span>Tokens</span>
             <span>Apply</span>
           </div>
-          <span className="rounded-[var(--lab-radius-button)] bg-[var(--lab-primary)] px-3 py-1.5 text-xs font-semibold text-[var(--lab-primary-fg)]">
+          <span
+            className={`bg-[var(--lab-primary)] px-3 py-1.5 text-xs font-semibold text-[var(--lab-primary-fg)] ${
+              isHardEdge
+                ? "rounded-[var(--lab-radius-button)] border-2 border-[var(--lab-border-strong)] font-mono uppercase"
+                : "rounded-[var(--lab-radius-button)]"
+            }`}
+          >
             Export
           </span>
         </div>
 
         <div className="relative mt-5 grid gap-4 lg:grid-cols-[1.12fr_0.88fr]">
           <section
-            className="rounded-[var(--lab-radius-card)] border border-[var(--lab-border)] bg-[var(--lab-card)] p-5 shadow-[var(--lab-shadow-card)]"
-            style={{ backdropFilter: "var(--lab-blur)", WebkitBackdropFilter: "var(--lab-blur)" }}
+            className={`rounded-[var(--lab-radius-card)] border bg-[var(--lab-card)] p-5 ${
+              isHardEdge ? "border-2 border-[var(--lab-border-strong)]" : "border-[var(--lab-border)]"
+            }`}
+            style={surfaceEffect}
           >
-            <span className="inline-flex items-center gap-2 rounded-[var(--lab-radius-button)] border border-[var(--lab-border-strong)] bg-[var(--lab-elevated)] px-3 py-1.5 text-xs text-[var(--lab-muted)]">
-              <Palette className="size-3.5 text-[var(--lab-primary)]" />
+            <span
+              className={`inline-flex items-center gap-2 rounded-[var(--lab-radius-button)] border px-3 py-1.5 text-xs ${
+                isHardEdge
+                  ? "border-2 border-[var(--lab-border-strong)] bg-[var(--lab-primary)] font-mono uppercase text-[var(--lab-primary-fg)]"
+                  : "border-[var(--lab-border-strong)] bg-[var(--lab-elevated)] text-[var(--lab-muted)]"
+              }`}
+            >
+              <Palette className="size-3.5" />
               HTML first, tokens after
             </span>
-            <h2 className="mt-5 max-w-xl text-balance font-heading text-4xl font-semibold leading-[0.95] tracking-[-0.045em] sm:text-5xl">
+            <h2 className="mt-5 max-w-xl text-balance font-heading text-3xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl sm:leading-[0.95]">
               先看到风格，再沉淀变量
             </h2>
             <p className="mt-4 max-w-lg text-sm leading-6 text-[var(--lab-muted)]">
               同一组 token 必须同时撑住导航、Hero、按钮、输入框、卡片、代码块和浮层，才值得进入项目。
             </p>
+            {isHardEdge && (
+              <div className="mt-5 grid grid-cols-3 gap-2">
+                {[
+                  ["BORDER", "2PX"],
+                  ["RADIUS", theme.tokens.radiusCard],
+                  ["BLUR", "0"],
+                ].map(([label, value]) => (
+                  <div
+                    key={label}
+                    className="border-2 border-[var(--lab-border-strong)] bg-[var(--lab-accent)] p-2 font-mono text-[10px] uppercase text-[var(--lab-accent-fg)]"
+                  >
+                    <p>{label}</p>
+                    <p className="mt-1 text-sm font-semibold">{value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="mt-6 flex flex-wrap gap-2">
-              <button className="rounded-[var(--lab-radius-button)] bg-[var(--lab-primary)] px-4 py-2 text-sm font-semibold text-[var(--lab-primary-fg)] shadow-[var(--lab-shadow-card)]">
+              <button
+                className={`rounded-[var(--lab-radius-button)] bg-[var(--lab-primary)] px-4 py-2 text-sm font-semibold text-[var(--lab-primary-fg)] ${
+                  isHardEdge ? "border-2 border-[var(--lab-border-strong)] font-mono uppercase" : ""
+                }`}
+                style={isHardEdge ? { boxShadow: "var(--lab-shadow-card)" } : undefined}
+              >
                 提取 MD
               </button>
-              <button className="rounded-[var(--lab-radius-button)] border border-[var(--lab-border)] bg-[var(--lab-card)] px-4 py-2 text-sm font-semibold text-[var(--lab-fg)]">
+              <button
+                className={`rounded-[var(--lab-radius-button)] border bg-[var(--lab-card)] px-4 py-2 text-sm font-semibold text-[var(--lab-fg)] ${
+                  isHardEdge ? "border-2 border-[var(--lab-border-strong)] font-mono uppercase" : "border-[var(--lab-border)]"
+                }`}
+              >
                 查看组件
               </button>
             </div>
           </section>
 
           <aside className="grid gap-3">
-            <div className="rounded-[var(--lab-radius-card)] border border-[var(--lab-border)] bg-[var(--lab-card)] p-4 shadow-[var(--lab-shadow-card)]">
+            <div
+              className={`rounded-[var(--lab-radius-card)] border bg-[var(--lab-card)] p-4 ${
+                isHardEdge ? "border-2 border-[var(--lab-border-strong)]" : "border-[var(--lab-border)]"
+              }`}
+              style={surfaceEffect}
+            >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <span className="text-sm font-semibold">Quality gates</span>
                 <BadgeCheck className="size-4 text-[var(--lab-accent)]" />
@@ -430,21 +639,37 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
               ))}
             </div>
 
-            <label className="block rounded-[var(--lab-radius-card)] border border-[var(--lab-border)] bg-[var(--lab-card)] p-4 shadow-[var(--lab-shadow-card)]">
+            <label
+              className={`block rounded-[var(--lab-radius-card)] border bg-[var(--lab-card)] p-4 ${
+                isHardEdge ? "border-2 border-[var(--lab-border-strong)]" : "border-[var(--lab-border)]"
+              }`}
+              style={surfaceEffect}
+            >
               <span className="text-xs font-medium text-[var(--lab-muted)]">Style note</span>
               <input
                 readOnly
-                value="luxury glass with calm cyan"
-                className="mt-2 w-full rounded-[var(--lab-radius-button)] border border-[var(--lab-border)] bg-[var(--lab-elevated)] px-3 py-2 text-sm text-[var(--lab-fg)] outline-none ring-[var(--lab-ring)]"
+                value={isHardEdge ? "hard border / offset shadow / no blur" : theme.name}
+                className={`mt-2 w-full rounded-[var(--lab-radius-button)] border px-3 py-2 text-sm outline-none ring-[var(--lab-ring)] ${
+                  isHardEdge
+                    ? "border-2 border-[var(--lab-border-strong)] bg-[var(--lab-bg)] font-mono text-[var(--lab-fg)]"
+                    : "border-[var(--lab-border)] bg-[var(--lab-elevated)] text-[var(--lab-fg)]"
+                }`}
               />
             </label>
 
-            <div className="rounded-[var(--lab-radius-card)] border border-[var(--lab-border-strong)] bg-[var(--lab-elevated)] p-4 shadow-[var(--lab-shadow-floating)]">
-              <div className="flex items-center justify-between text-xs text-[var(--lab-muted)]">
+            <div
+              className={`rounded-[var(--lab-radius-card)] border p-4 ${
+                isHardEdge
+                  ? "border-2 border-[var(--lab-border-strong)] bg-[var(--lab-primary)] text-[var(--lab-primary-fg)]"
+                  : "border-[var(--lab-border-strong)] bg-[var(--lab-elevated)]"
+              }`}
+              style={{ boxShadow: "var(--lab-shadow-floating)" }}
+            >
+              <div className={`flex items-center justify-between text-xs ${isHardEdge ? "font-mono uppercase opacity-80" : "text-[var(--lab-muted)]"}`}>
                 <span>theme.css</span>
                 <Copy className="size-3.5" />
               </div>
-              <pre className="mt-3 overflow-hidden text-[11px] leading-5 text-[var(--lab-fg)]">
+              <pre className={`mt-3 overflow-hidden text-[11px] leading-5 ${isHardEdge ? "text-[var(--lab-primary-fg)]" : "text-[var(--lab-fg)]"}`}>
                 --primary: {theme.tokens.primary};{"\n"}
                 --radius-card: {theme.tokens.radiusCard};{"\n"}
                 --shadow-card: layered;
@@ -458,7 +683,7 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
 }
 
 export function DesignTokenLab() {
-  const [activeId, setActiveId] = useState(themes[0].id)
+  const [activeId, setActiveId] = useState("neo-brutal-studio")
   const activeTheme = themes.find((theme) => theme.id === activeId) ?? themes[0]
   const markdown = useMemo(() => generateMarkdown(activeTheme), [activeTheme])
 
@@ -486,21 +711,22 @@ export function DesignTokenLab() {
           <div className="glass-card flex min-h-[560px] flex-col justify-between overflow-hidden p-6 sm:p-8 lg:p-10">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-cyan-100/48">
-                design token lab
+                design token lab / hard edge set
               </p>
-              <h1 className="mt-5 max-w-3xl text-balance font-heading text-5xl font-semibold leading-[0.9] tracking-[-0.055em] text-white sm:text-6xl">
-                先看 HTML 风格，再提取 Tokens
+              <h1 className="mt-5 max-w-3xl text-balance font-heading text-4xl font-semibold leading-[1.04] tracking-[-0.035em] text-white sm:text-6xl sm:leading-[0.92]">
+                硬边实验室
+                <span className="block">继续扩容</span>
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">
-                不再收录提示词。这里用真实 UI 样张判断审美，满意后输出可给 Agent 应用到项目里的 design-tokens.md。
+                用真实 UI 样张判断审美，再输出可给 Agent 应用到项目里的 design-tokens.md。硬边方向现在有更多栅格、粗线、色块和偏移阴影。
               </p>
             </div>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-3">
               {[
-                ["5", "风格样张"],
-                ["9", "UI 部件"],
-                ["1", "MD 输出"],
+                [String(themes.length), "风格样张"],
+                ["12", "UI 部件"],
+                [String(hardEdgeThemes.length), "硬边方向"],
               ].map(([value, label]) => (
                 <div key={label} className="rounded-[24px] border border-white/10 bg-white/[0.055] p-4">
                   <p className="font-heading text-3xl font-semibold tracking-[-0.04em] text-white">
@@ -527,37 +753,88 @@ export function DesignTokenLab() {
               <Frame className="size-5 text-white/42" />
             </div>
 
-            {themes.map((theme) => (
-              <button
-                key={theme.id}
-                type="button"
-                onClick={() => setActiveId(theme.id)}
-                className={`group w-full rounded-[28px] border p-4 text-left transition ${
-                  activeTheme.id === theme.id
-                    ? "border-cyan-100/28 bg-cyan-100/10"
-                    : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.075]"
-                }`}
-              >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100/44">
-                      {theme.name}
-                    </p>
-                    <h3 className="mt-2 font-heading text-2xl font-semibold text-white">{theme.title}</h3>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">{theme.summary}</p>
+            <div className="mb-5 grid gap-2 sm:grid-cols-2">
+              {hardEdgeThemes.map((theme, index) => (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => setActiveId(theme.id)}
+                  className={`group border-2 p-3 text-left transition ${
+                    activeTheme.id === theme.id
+                      ? "border-yellow-200 bg-yellow-200/[0.12]"
+                      : "border-white/14 bg-white/[0.04] hover:border-yellow-200/60 hover:bg-yellow-200/[0.08]"
+                  }`}
+                >
+                  <div className="mb-3 flex items-center justify-between gap-3 font-mono text-[10px] uppercase text-white/42">
+                    <span>lab-{String(index + 1).padStart(2, "0")}</span>
+                    <span>{theme.name}</span>
                   </div>
-                  <div className="flex shrink-0 gap-1.5">
+                  <h3 className="font-heading text-xl font-semibold text-white">{theme.title}</h3>
+                  <div className="mt-3 flex gap-1">
                     {theme.swatches.map((color) => (
                       <span
                         key={color}
-                        className="size-8 rounded-full border border-white/14"
+                        className="h-5 flex-1 border border-white/16"
                         style={{ background: color }}
                       />
                     ))}
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
+
+            {themes.map((theme) => {
+              const isThemeHardEdge = theme.family === "hard-edge"
+
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => setActiveId(theme.id)}
+                  className={`group w-full border p-4 text-left transition ${
+                    isThemeHardEdge ? "rounded-[10px] border-2" : "rounded-[28px]"
+                  } ${
+                    activeTheme.id === theme.id
+                      ? isThemeHardEdge
+                        ? "border-yellow-200/80 bg-yellow-200/[0.09]"
+                        : "border-cyan-100/28 bg-cyan-100/10"
+                      : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.075]"
+                  }`}
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100/44">
+                          {theme.name}
+                        </p>
+                        {isThemeHardEdge && (
+                          <span className="border border-yellow-200/40 px-2 py-0.5 font-mono text-[10px] uppercase text-yellow-100/72">
+                            hard-edge
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="mt-2 font-heading text-2xl font-semibold text-white">
+                        {theme.title}
+                      </h3>
+                      <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">
+                        {theme.summary}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 gap-1.5">
+                      {theme.swatches.map((color) => (
+                        <span
+                          key={color}
+                          className={`size-8 border border-white/14 ${
+                            isThemeHardEdge ? "rounded-[2px]" : "rounded-full"
+                          }`}
+                          style={{ background: color }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </button>
+              )
+            })}
           </div>
 
           <div className="glass-card overflow-hidden">
