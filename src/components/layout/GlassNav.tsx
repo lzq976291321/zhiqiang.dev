@@ -4,8 +4,25 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowUpRight, BookOpen, Code2, Menu, X } from "lucide-react"
+import { BookOpen, Menu, X } from "lucide-react"
 import { navItems } from "@/config/navigation"
+
+function GitHubMark({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+    </svg>
+  )
+}
 
 export function GlassNav() {
   const pathname = usePathname()
@@ -59,15 +76,8 @@ export function GlassNav() {
             className="hidden size-9 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-white/62 transition hover:border-white/20 hover:bg-white/10 hover:text-white sm:grid"
             aria-label="GitHub"
           >
-            <Code2 className="size-4" />
+            <GitHubMark className="size-4" />
           </a>
-          <Link
-            href="/resume"
-            className="hidden items-center gap-1.5 rounded-full border border-cyan-200/20 bg-cyan-200/10 px-3.5 py-2 text-[12px] font-semibold text-cyan-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] transition hover:bg-cyan-200/16 sm:flex"
-          >
-            Resume
-            <ArrowUpRight className="size-3.5" />
-          </Link>
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}

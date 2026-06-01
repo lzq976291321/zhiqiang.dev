@@ -1,7 +1,7 @@
 "use client"
 
 import type { CSSProperties } from "react"
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import {
@@ -304,6 +304,36 @@ const themes: LabTheme[] = [
 
 const hardEdgeThemes = themes.filter((theme) => theme.family === "hard-edge")
 
+const componentRecipes = [
+  {
+    name: "Shell",
+    tokens: ["background", "foreground", "muted"],
+    note: "控制页面底色、主体文字和弱信息，不在业务组件里重新定义。",
+  },
+  {
+    name: "Card",
+    tokens: ["surfaceCard", "borderSubtle", "radiusCard", "shadowCard"],
+    note: "作为默认容器层，适合列表项、面板和信息块。",
+  },
+  {
+    name: "Action",
+    tokens: ["primary", "primaryForeground", "radiusButton", "ring"],
+    note: "只给主按钮、关键链接和可交互焦点使用。",
+  },
+  {
+    name: "Signal",
+    tokens: ["accent", "accentForeground", "borderStrong"],
+    note: "用于状态、Badge、强调信息和少量视觉锚点。",
+  },
+]
+
+const implementationChecklist = [
+  "先把 CSS Variables 放到主题入口，再接 Tailwind v4 mapping。",
+  "先替换 Page、Card、Button、Badge、Input 五类基础组件。",
+  "保留两级阴影、两级圆角和两级边框，避免每个组件造局部特例。",
+  "用真实页面做一次桌面和移动端检查，再把 tokens 写入项目文档。",
+]
+
 function themeStyle(theme: LabTheme): CSSProperties & Record<string, string> {
   const { tokens } = theme
 
@@ -461,6 +491,16 @@ ${tailwindTheme}
 | Badge | \`--accent\`, \`--accent-foreground\` |
 | Focus Ring | \`--ring\` |
 
+## Implementation Checklist
+
+${implementationChecklist.map((item) => `- ${item}`).join("\n")}
+
+## Agent Handoff Prompt
+
+\`\`\`text
+请把这套 Design Tokens 应用到当前项目。先映射 CSS variables 与 Tailwind v4 theme，再按 Page、Card、Button、Badge、Input 的顺序替换基础组件。不要新增无关视觉特效；如果现有组件缺少对应 token，优先复用语义最接近的 token。
+\`\`\`
+
 ## Usage Rules
 
 - 先应用到真实组件样张，再全局替换项目主题。
@@ -543,12 +583,12 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
             >
               <Sparkles className="size-4" />
             </span>
-            <span className="text-sm font-semibold">Token Studio</span>
+            <span className="text-sm font-semibold">Token 工坊</span>
           </div>
           <div className={`hidden items-center gap-4 text-xs text-[var(--lab-muted)] sm:flex ${isHardEdge ? "font-mono uppercase" : ""}`}>
-            <span>Preview</span>
+            <span>样张</span>
             <span>Tokens</span>
-            <span>Apply</span>
+            <span>应用</span>
           </div>
           <span
             className={`bg-[var(--lab-primary)] px-3 py-1.5 text-xs font-semibold text-[var(--lab-primary-fg)] ${
@@ -557,7 +597,7 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
                 : "rounded-[var(--lab-radius-button)]"
             }`}
           >
-            Export
+            导出
           </span>
         </div>
 
@@ -576,7 +616,7 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
               }`}
             >
               <Palette className="size-3.5" />
-              HTML first, tokens after
+              先验收样张，再导出 Tokens
             </span>
             <h2 className="mt-5 max-w-xl text-balance font-heading text-3xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl sm:leading-[0.95]">
               先看到风格，再沉淀变量
@@ -608,7 +648,7 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
                 }`}
                 style={isHardEdge ? { boxShadow: "var(--lab-shadow-card)" } : undefined}
               >
-                提取 MD
+                导出 MD
               </button>
               <button
                 className={`rounded-[var(--lab-radius-button)] border bg-[var(--lab-card)] px-4 py-2 text-sm font-semibold text-[var(--lab-fg)] ${
@@ -628,10 +668,10 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
               style={surfaceEffect}
             >
               <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold">Quality gates</span>
+                <span className="text-sm font-semibold">验收标准</span>
                 <BadgeCheck className="size-4 text-[var(--lab-accent)]" />
               </div>
-              {["contrast ok", "semantic tokens", "no random radius"].map((item) => (
+              {["对比度可读", "语义变量完整", "圆角层级统一"].map((item) => (
                 <div key={item} className="mb-2 flex items-center gap-2 text-xs text-[var(--lab-muted)] last:mb-0">
                   <Check className="size-3.5 text-[var(--lab-primary)]" />
                   {item}
@@ -645,10 +685,10 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
               }`}
               style={surfaceEffect}
             >
-              <span className="text-xs font-medium text-[var(--lab-muted)]">Style note</span>
+              <span className="text-xs font-medium text-[var(--lab-muted)]">风格备注</span>
               <input
                 readOnly
-                value={isHardEdge ? "hard border / offset shadow / no blur" : theme.name}
+                value={isHardEdge ? "硬边框 / 偏移阴影 / 无模糊" : theme.name}
                 className={`mt-2 w-full rounded-[var(--lab-radius-button)] border px-3 py-2 text-sm outline-none ring-[var(--lab-ring)] ${
                   isHardEdge
                     ? "border-2 border-[var(--lab-border-strong)] bg-[var(--lab-bg)] font-mono text-[var(--lab-fg)]"
@@ -682,16 +722,289 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
   )
 }
 
+function ThemeSelector({
+  activeTheme,
+  onSelect,
+}: {
+  activeTheme: LabTheme
+  onSelect: (themeId: string) => void
+}) {
+  return (
+    <aside className="glass-card overflow-hidden lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+      <div className="border-b border-white/10 p-4 sm:p-5">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
+          视觉方向
+        </p>
+        <div className="mt-2 flex items-center justify-between gap-4">
+          <h2 className="font-heading text-2xl font-semibold text-white sm:text-3xl">风格样张</h2>
+          <Frame className="size-5 text-white/42" />
+        </div>
+      </div>
+
+      <div className="p-3 sm:p-4">
+        <div className="-mx-3 mb-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:-mx-4 sm:px-4 lg:mx-0 lg:mb-4 lg:grid lg:grid-cols-1 lg:overflow-visible lg:px-0 lg:pb-0">
+          {hardEdgeThemes.map((theme, index) => (
+            <button
+              key={theme.id}
+              type="button"
+              aria-pressed={activeTheme.id === theme.id}
+              onClick={() => onSelect(theme.id)}
+              className={`group min-w-[240px] border-2 p-3 text-left transition lg:min-w-0 ${
+                activeTheme.id === theme.id
+                  ? "border-yellow-200 bg-yellow-200/[0.12]"
+                  : "border-white/14 bg-white/[0.04] hover:border-yellow-200/60 hover:bg-yellow-200/[0.08]"
+              }`}
+            >
+              <div className="mb-3 flex items-center justify-between gap-3 font-mono text-[10px] uppercase text-white/42">
+                <span>lab-{String(index + 1).padStart(2, "0")}</span>
+                <span>{theme.name}</span>
+              </div>
+              <h3 className="font-heading text-xl font-semibold text-white">{theme.title}</h3>
+              <div className="mt-3 flex gap-1">
+                {theme.swatches.map((color) => (
+                  <span
+                    key={color}
+                    className="h-5 flex-1 border border-white/16"
+                    style={{ background: color }}
+                  />
+                ))}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:-mx-4 sm:px-4 lg:mx-0 lg:block lg:space-y-2 lg:overflow-visible lg:px-0 lg:pb-0">
+          {themes.map((theme) => {
+            const isThemeHardEdge = theme.family === "hard-edge"
+
+            return (
+              <button
+                key={theme.id}
+                type="button"
+                aria-pressed={activeTheme.id === theme.id}
+                onClick={() => onSelect(theme.id)}
+                className={`group min-w-[230px] border p-3 text-left transition lg:w-full lg:min-w-0 ${
+                  isThemeHardEdge ? "rounded-[10px] border-2" : "rounded-[22px]"
+                } ${
+                  activeTheme.id === theme.id
+                    ? isThemeHardEdge
+                      ? "border-yellow-200/80 bg-yellow-200/[0.09]"
+                      : "border-cyan-100/28 bg-cyan-100/10"
+                    : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.075]"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100/44">
+                        {theme.name}
+                      </p>
+                      {isThemeHardEdge && (
+                        <span className="border border-yellow-200/40 px-2 py-0.5 font-mono text-[10px] uppercase text-yellow-100/72">
+                          hard-edge
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-2 font-heading text-xl font-semibold text-white">
+                      {theme.title}
+                    </h3>
+                  </div>
+                  <div className="mt-1 hidden shrink-0 gap-1 sm:flex">
+                    {theme.swatches.slice(0, 4).map((color) => (
+                      <span
+                        key={color}
+                        className={`size-5 border border-white/14 ${
+                          isThemeHardEdge ? "rounded-[2px]" : "rounded-full"
+                        }`}
+                        style={{ background: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-2 hidden text-sm leading-6 text-white/48 lg:line-clamp-2 lg:block">
+                  {theme.summary}
+                </p>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+function TokenArtifact({
+  activeTheme,
+  markdown,
+}: {
+  activeTheme: LabTheme
+  markdown: string
+}) {
+  return (
+    <aside className="glass-card overflow-hidden xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)]">
+      <div className="flex flex-col gap-4 border-b border-white/10 p-5 sm:flex-row sm:items-end sm:justify-between xl:flex-col xl:items-start">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
+            Token 文档
+          </p>
+          <h2 className="mt-2 font-heading text-3xl font-semibold text-white">
+            design-tokens.md
+          </h2>
+        </div>
+        <CopyButton text={markdown} className="self-start" />
+      </div>
+
+      <div className="grid gap-4 p-5 md:grid-cols-[0.9fr_1.1fr] xl:block xl:space-y-4">
+        <div>
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white/78">
+            <Layers3 className="size-4 text-cyan-100/62" />
+            Token 摘要
+          </h3>
+          <div className="space-y-2 text-sm leading-6 text-white/52">
+            <p>{activeTheme.intent}</p>
+            <p>适用：{activeTheme.fit}</p>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            {[
+              ["Primary", activeTheme.tokens.primary],
+              ["Accent", activeTheme.tokens.accent],
+              ["Radius", activeTheme.tokens.radiusCard],
+              ["Shadow", "2 levels"],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.045] p-3">
+                <p className="text-xs text-white/36">{label}</p>
+                <p className="mt-1 truncate font-mono text-xs text-white/66">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#06101e]">
+          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+            <span className="flex items-center gap-2 text-xs text-white/42">
+              <Braces className="size-4" />
+              文档预览
+            </span>
+            <span className="text-xs text-white/32">{activeTheme.name}</span>
+          </div>
+          <pre className="max-h-[360px] overflow-auto whitespace-pre-wrap p-4 font-mono text-[11px] leading-5 text-cyan-50/66 xl:max-h-[42vh]">
+            {markdown}
+          </pre>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+function TokenPlaybook({ activeTheme }: { activeTheme: LabTheme }) {
+  return (
+    <div className="mt-4 grid gap-4 md:grid-cols-[1.05fr_0.95fr]">
+      <section className="rounded-[24px] border border-white/10 bg-white/[0.045] p-5">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-100/40">
+              apply map
+            </p>
+            <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-white/86">
+              组件落点
+            </h3>
+          </div>
+          <Layers3 className="size-5 text-cyan-100/52" />
+        </div>
+
+        <div className="grid gap-2">
+          {componentRecipes.map((recipe) => (
+            <div
+              key={recipe.name}
+              className="grid gap-3 rounded-[18px] border border-white/10 bg-white/[0.04] p-3 sm:grid-cols-[96px_minmax(0,1fr)]"
+            >
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-white/70">
+                  {recipe.name}
+                </p>
+                <div className="mt-2 flex gap-1">
+                  {recipe.tokens.slice(0, 3).map((token) => (
+                    <span
+                      key={token}
+                      className="size-3 rounded-full border border-white/14"
+                      style={{
+                        background: (() => {
+                          const value = activeTheme.tokens[token as keyof TokenSet]
+                          return value.startsWith("#") || value.startsWith("rgb")
+                            ? value
+                            : activeTheme.tokens.primary
+                        })(),
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div className="flex flex-wrap gap-1.5">
+                  {recipe.tokens.map((token) => (
+                    <code
+                      key={token}
+                      className="rounded-md border border-white/10 bg-white/[0.055] px-1.5 py-0.5 font-mono text-[10px] text-cyan-50/62"
+                    >
+                      {token}
+                    </code>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs leading-5 text-white/45">{recipe.note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[24px] border border-white/10 bg-white/[0.045] p-5">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-emerald-100/40">
+              delivery
+            </p>
+            <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-white/86">
+              落地清单
+            </h3>
+          </div>
+          <BadgeCheck className="size-5 text-emerald-100/56" />
+        </div>
+
+        <div className="space-y-3">
+          {implementationChecklist.map((item, index) => (
+            <div key={item} className="flex gap-3 rounded-[18px] border border-white/10 bg-white/[0.04] p-3">
+              <span className="grid size-6 shrink-0 place-items-center rounded-full border border-cyan-100/16 bg-cyan-100/[0.08] font-mono text-[10px] text-cyan-50/64">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <p className="text-xs leading-5 text-white/52">{item}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
 export function DesignTokenLab() {
   const [activeId, setActiveId] = useState("neo-brutal-studio")
+  const previewRef = useRef<HTMLElement>(null)
   const activeTheme = themes.find((theme) => theme.id === activeId) ?? themes[0]
   const markdown = useMemo(() => generateMarkdown(activeTheme), [activeTheme])
+  const handleThemeSelect = (themeId: string) => {
+    setActiveId(themeId)
+
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      requestAnimationFrame(() => {
+        previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      })
+    }
+  }
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 pb-24 pt-28 sm:px-6 lg:pt-32">
+    <main className="relative min-h-screen overflow-hidden px-4 pb-24 pt-20 sm:px-6 lg:pt-28">
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[70vh] w-[94vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_18%_16%,rgba(255,209,138,0.18),transparent_34rem),radial-gradient(ellipse_at_78%_12%,rgba(159,232,255,0.24),transparent_34rem),radial-gradient(ellipse_at_58%_76%,rgba(184,247,212,0.14),transparent_32rem)]" />
 
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-[92rem]">
         <div className="mb-8 flex flex-wrap items-center gap-2 text-[13px] text-white/48">
           <Link
             href="/"
@@ -706,29 +1019,28 @@ export function DesignTokenLab() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.52, ease: [0.16, 1, 0.3, 1] }}
-          className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr]"
+          className="glass-card mb-4 overflow-hidden p-4 sm:mb-5 sm:p-6"
         >
-          <div className="glass-card flex min-h-[560px] flex-col justify-between overflow-hidden p-6 sm:p-8 lg:p-10">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-cyan-100/48">
-                design token lab / hard edge set
+                design token lab / token workshop
               </p>
-              <h1 className="mt-5 max-w-3xl text-balance font-heading text-4xl font-semibold leading-[1.04] tracking-[-0.035em] text-white sm:text-6xl sm:leading-[0.92]">
-                硬边实验室
-                <span className="block">继续扩容</span>
+              <h1 className="mt-3 max-w-4xl text-balance font-heading text-3xl font-semibold leading-[1.04] tracking-[-0.03em] text-white sm:mt-4 sm:text-5xl sm:tracking-[-0.035em]">
+                把视觉方向沉淀成 Design Tokens
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">
-                用真实 UI 样张判断审美，再输出可给 Agent 应用到项目里的 design-tokens.md。硬边方向现在有更多栅格、粗线、色块和偏移阴影。
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-white/62 sm:mt-4 sm:text-base sm:leading-7">
+                选择一套风格，先检查真实组件样张，再复制可落地的 design-tokens.md。适合给 Agent 或项目主题直接使用。
               </p>
             </div>
 
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            <div className="hidden gap-3 sm:grid sm:grid-cols-3 lg:w-[420px]">
               {[
                 [String(themes.length), "风格样张"],
                 ["12", "UI 部件"],
                 [String(hardEdgeThemes.length), "硬边方向"],
               ].map(([value, label]) => (
-                <div key={label} className="rounded-[24px] border border-white/10 bg-white/[0.055] p-4">
+                <div key={label} className="rounded-[18px] border border-white/10 bg-white/[0.055] p-4">
                   <p className="font-heading text-3xl font-semibold tracking-[-0.04em] text-white">
                     {value}
                   </p>
@@ -737,158 +1049,38 @@ export function DesignTokenLab() {
               ))}
             </div>
           </div>
-
-          <TokenPreview theme={activeTheme} />
         </motion.section>
 
-        <section className="mt-5 grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="space-y-3">
-            <div className="mb-4 flex items-end justify-between gap-4">
+        <section className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_360px]">
+          <ThemeSelector activeTheme={activeTheme} onSelect={handleThemeSelect} />
+
+          <section ref={previewRef} className="min-w-0 scroll-mt-20 lg:sticky lg:top-24 lg:self-start">
+            <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
-                  choose a direction
-                </p>
-                <h2 className="mt-2 font-heading text-3xl font-semibold text-white">风格样张</h2>
-              </div>
-              <Frame className="size-5 text-white/42" />
-            </div>
-
-            <div className="mb-5 grid gap-2 sm:grid-cols-2">
-              {hardEdgeThemes.map((theme, index) => (
-                <button
-                  key={theme.id}
-                  type="button"
-                  onClick={() => setActiveId(theme.id)}
-                  className={`group border-2 p-3 text-left transition ${
-                    activeTheme.id === theme.id
-                      ? "border-yellow-200 bg-yellow-200/[0.12]"
-                      : "border-white/14 bg-white/[0.04] hover:border-yellow-200/60 hover:bg-yellow-200/[0.08]"
-                  }`}
-                >
-                  <div className="mb-3 flex items-center justify-between gap-3 font-mono text-[10px] uppercase text-white/42">
-                    <span>lab-{String(index + 1).padStart(2, "0")}</span>
-                    <span>{theme.name}</span>
-                  </div>
-                  <h3 className="font-heading text-xl font-semibold text-white">{theme.title}</h3>
-                  <div className="mt-3 flex gap-1">
-                    {theme.swatches.map((color) => (
-                      <span
-                        key={color}
-                        className="h-5 flex-1 border border-white/16"
-                        style={{ background: color }}
-                      />
-                    ))}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {themes.map((theme) => {
-              const isThemeHardEdge = theme.family === "hard-edge"
-
-              return (
-                <button
-                  key={theme.id}
-                  type="button"
-                  onClick={() => setActiveId(theme.id)}
-                  className={`group w-full border p-4 text-left transition ${
-                    isThemeHardEdge ? "rounded-[10px] border-2" : "rounded-[28px]"
-                  } ${
-                    activeTheme.id === theme.id
-                      ? isThemeHardEdge
-                        ? "border-yellow-200/80 bg-yellow-200/[0.09]"
-                        : "border-cyan-100/28 bg-cyan-100/10"
-                      : "border-white/10 bg-white/[0.045] hover:border-white/18 hover:bg-white/[0.075]"
-                  }`}
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100/44">
-                          {theme.name}
-                        </p>
-                        {isThemeHardEdge && (
-                          <span className="border border-yellow-200/40 px-2 py-0.5 font-mono text-[10px] uppercase text-yellow-100/72">
-                            hard-edge
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="mt-2 font-heading text-2xl font-semibold text-white">
-                        {theme.title}
-                      </h3>
-                      <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">
-                        {theme.summary}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 gap-1.5">
-                      {theme.swatches.map((color) => (
-                        <span
-                          key={color}
-                          className={`size-8 border border-white/14 ${
-                            isThemeHardEdge ? "rounded-[2px]" : "rounded-full"
-                          }`}
-                          style={{ background: color }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-
-          <div className="glass-card overflow-hidden">
-            <div className="flex flex-col gap-4 border-b border-white/10 p-5 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-100/46">
-                  extracted artifact
+                  组件样张
                 </p>
                 <h2 className="mt-2 font-heading text-3xl font-semibold text-white">
-                  design-tokens.md
+                  {activeTheme.title}
                 </h2>
               </div>
-              <CopyButton text={markdown} className="self-start sm:self-auto" />
-            </div>
-
-            <div className="grid gap-4 p-5 lg:grid-cols-2">
-              <div>
-                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white/78">
-                  <Layers3 className="size-4 text-cyan-100/62" />
-                  Token 摘要
-                </h3>
-                <div className="space-y-2 text-sm leading-6 text-white/52">
-                  <p>{activeTheme.intent}</p>
-                  <p>适用：{activeTheme.fit}</p>
-                </div>
-                <div className="mt-5 grid grid-cols-2 gap-2">
-                  {[
-                    ["Primary", activeTheme.tokens.primary],
-                    ["Accent", activeTheme.tokens.accent],
-                    ["Radius", activeTheme.tokens.radiusCard],
-                    ["Shadow", "2 levels"],
-                  ].map(([label, value]) => (
-                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.045] p-3">
-                      <p className="text-xs text-white/36">{label}</p>
-                      <p className="mt-1 truncate font-mono text-xs text-white/66">{value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#06101e]">
-                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-                  <span className="flex items-center gap-2 text-xs text-white/42">
-                    <Braces className="size-4" />
-                    markdown preview
-                  </span>
-                  <span className="text-xs text-white/32">{activeTheme.name}</span>
-                </div>
-                <pre className="max-h-[420px] overflow-auto whitespace-pre-wrap p-4 font-mono text-[11px] leading-5 text-cyan-50/66">
-                  {markdown}
-                </pre>
+              <div className="flex gap-1.5">
+                {activeTheme.swatches.map((color) => (
+                  <span
+                    key={color}
+                    className={`size-8 border border-white/14 ${
+                      activeTheme.family === "hard-edge" ? "rounded-[2px]" : "rounded-full"
+                    }`}
+                    style={{ background: color }}
+                  />
+                ))}
               </div>
             </div>
-          </div>
+            <TokenPreview theme={activeTheme} />
+            <TokenPlaybook activeTheme={activeTheme} />
+          </section>
+
+          <TokenArtifact activeTheme={activeTheme} markdown={markdown} />
         </section>
       </div>
     </main>
