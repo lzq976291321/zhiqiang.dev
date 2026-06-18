@@ -2,6 +2,8 @@
 
 个人公开知识库与 Chat 入口。当前默认访问 `/` 会重定向到 `/chat`。
 
+线上地址：<https://zhiqiang.chat>
+
 ## 本地开发
 
 ```bash
