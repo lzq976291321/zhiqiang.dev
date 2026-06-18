@@ -84,6 +84,39 @@ const themes: LabTheme[] = [
     },
   },
   {
+    id: "liquid-glass",
+    name: "Liquid Glass",
+    title: "液态玻璃",
+    family: "polished",
+    summary: "接近系统级液态玻璃：中性透明、环境取色、厚边缘折射和柔和高光。",
+    intent: "把组件处理成一层带厚度的透明材料：颜色来自背后的环境，边缘有压缩折射，中心保持清透，阴影像玻璃浮在界面上。",
+    fit: "系统壳、导航、工具浮层、AI 助手、个人主页、轻量仪表盘",
+    avoid: ["不要做成蓝色霓虹玻璃", "不要让玻璃面板密集堆叠", "不要用厚重黑影制造悬浮感"],
+    swatches: ["#f8fbff", "#cfd8e3", "#8ab4ff", "#f6c8ff"],
+    tokens: {
+      background: "#11151c",
+      backgroundSoft: "#edf3fb",
+      foreground: "#fbfdff",
+      muted: "rgba(251, 253, 255, 0.70)",
+      surfaceCard: "rgba(255, 255, 255, 0.19)",
+      surfaceElevated: "rgba(255, 255, 255, 0.31)",
+      primary: "#f8fbff",
+      primaryForeground: "#11151c",
+      accent: "#8ab4ff",
+      accentForeground: "#061121",
+      borderSubtle: "rgba(255, 255, 255, 0.24)",
+      borderStrong: "rgba(255, 255, 255, 0.58)",
+      ring: "rgba(138, 180, 255, 0.46)",
+      radiusCard: "34px",
+      radiusButton: "999px",
+      shadowCard:
+        "inset 0 1px 0 rgba(255,255,255,.64), inset 0 -1px 0 rgba(255,255,255,.16), 0 18px 54px rgba(10,14,20,.22)",
+      shadowFloating:
+        "inset 0 1px 0 rgba(255,255,255,.78), inset 0 0 0 1px rgba(255,255,255,.16), 0 26px 88px rgba(10,14,20,.30), 0 2px 18px rgba(255,255,255,.12)",
+      blurGlass: "blur(38px) saturate(1.8) brightness(1.12)",
+    },
+  },
+  {
     id: "editorial-dark",
     name: "Editorial Dark",
     title: "黑金编辑部",
@@ -334,6 +367,502 @@ const implementationChecklist = [
   "用真实页面做一次桌面和移动端检查，再把 tokens 写入项目文档。",
 ]
 
+const liquidGlassDetailedTokens = `## Liquid Glass Extended Tokens
+
+这套扩展 token 偏“系统级液态玻璃”，不是蓝色霓虹玻璃。核心是透明材料会吸收背后环境色，边缘比中心更亮、更厚，悬浮感来自柔和投影和内高光，而不是强发光。
+
+## Video Distillation
+
+从「Apple 新一代最強 UI 設計！Liquid Glass 全面解析」这类系统级 Liquid Glass 拆解里，真正要落地的是四件事：
+
+- 材质不是装饰：玻璃层要承担导航、控制、浮层这类系统外壳角色，不能铺满所有内容卡片。
+- 环境决定颜色：玻璃本身保持中性，颜色来自背后的内容、壁纸、插画或状态背景。
+- 边缘表达厚度：用亮边、内阴影和轻微折射表现材料厚度，中心区域要保持可读。
+- 动效表达液态：交互时用小幅形变、亮边流动和柔和位移，不用夸张弹跳或大面积发光。
+
+\`\`\`ts
+export const liquidGlassTokens = {
+  color: {
+    base: {
+      ink: "#11151c",
+      graphite: "#1a2029",
+      mist: "#edf3fb",
+      frost: "#f8fbff",
+      pearl: "#ffffff",
+      shadow: "#0a0e14",
+    },
+    glass: {
+      clear: "rgba(255, 255, 255, 0.19)",
+      raised: "rgba(255, 255, 255, 0.31)",
+      pressed: "rgba(255, 255, 255, 0.14)",
+      veil: "rgba(255, 255, 255, 0.10)",
+      milk: "rgba(255, 255, 255, 0.42)",
+      chrome: "rgba(255, 255, 255, 0.72)",
+    },
+    refraction: {
+      sky: "#8ab4ff",
+      lilac: "#d9c7ff",
+      rose: "#f6c8ff",
+      mint: "#c8f5e6",
+      amber: "#ffe3a3",
+    },
+    text: {
+      primary: "#fbfdff",
+      secondary: "rgba(251, 253, 255, 0.70)",
+      tertiary: "rgba(251, 253, 255, 0.48)",
+      inverse: "#11151c",
+    },
+    border: {
+      hairline: "rgba(255, 255, 255, 0.24)",
+      edge: "rgba(255, 255, 255, 0.58)",
+      bright: "rgba(255, 255, 255, 0.78)",
+      inner: "rgba(255, 255, 255, 0.18)",
+      shadowEdge: "rgba(10, 14, 20, 0.18)",
+    },
+    state: {
+      success: "#86efac",
+      warning: "#fde68a",
+      danger: "#fda4af",
+      info: "#93c5fd",
+      selected: "rgba(255, 255, 255, 0.42)",
+      disabled: "rgba(251, 253, 255, 0.32)",
+    },
+  },
+
+  semantic: {
+    background: {
+      app: "#11151c",
+      environment: "linear-gradient(145deg, #11151c 0%, #1a2029 48%, #0f131a 100%)",
+      wallpaperGlow: "radial-gradient(circle at 18% 14%, rgba(138,180,255,.30), transparent 26rem), radial-gradient(circle at 82% 20%, rgba(246,200,255,.22), transparent 24rem)",
+      scrim: "rgba(17, 21, 28, 0.42)",
+    },
+    surface: {
+      base: "rgba(255, 255, 255, 0.14)",
+      raised: "rgba(255, 255, 255, 0.22)",
+      floating: "rgba(255, 255, 255, 0.31)",
+      selected: "rgba(255, 255, 255, 0.42)",
+      solidFallback: "rgba(28, 33, 42, 0.92)",
+    },
+    content: {
+      primary: "#fbfdff",
+      secondary: "rgba(251, 253, 255, 0.70)",
+      tertiary: "rgba(251, 253, 255, 0.48)",
+      disabled: "rgba(251, 253, 255, 0.32)",
+      onLightGlass: "#11151c",
+    },
+    outline: {
+      separator: "rgba(255, 255, 255, 0.16)",
+      control: "rgba(255, 255, 255, 0.42)",
+      focus: "rgba(138, 180, 255, 0.46)",
+      rim: "rgba(255, 255, 255, 0.78)",
+    },
+  },
+
+  gradient: {
+    page: "radial-gradient(circle at 18% 14%, rgba(138,180,255,.30), transparent 26rem), radial-gradient(circle at 82% 20%, rgba(246,200,255,.22), transparent 24rem), radial-gradient(circle at 52% 84%, rgba(200,245,230,.16), transparent 30rem), linear-gradient(145deg, #11151c 0%, #1a2029 48%, #0f131a 100%)",
+    environmentBand: "linear-gradient(115deg, rgba(138,180,255,.65), rgba(246,200,255,.48) 42%, rgba(255,227,163,.34) 70%, rgba(200,245,230,.46))",
+    glassSurface: "linear-gradient(145deg, rgba(255,255,255,.40), rgba(255,255,255,.18) 44%, rgba(255,255,255,.10) 100%)",
+    glassEdge: "linear-gradient(135deg, rgba(255,255,255,.82), rgba(255,255,255,.26) 40%, rgba(255,255,255,.12) 100%)",
+    refractionRim: "conic-gradient(from 210deg, rgba(255,255,255,.70), rgba(138,180,255,.36), rgba(246,200,255,.30), rgba(255,255,255,.62), rgba(200,245,230,.28), rgba(255,255,255,.70))",
+    specularSweep: "linear-gradient(100deg, transparent 0%, rgba(255,255,255,.72) 43%, transparent 66%)",
+    innerCaustic: "radial-gradient(circle at 22% 16%, rgba(255,255,255,.56), transparent 17%), radial-gradient(circle at 82% 76%, rgba(255,255,255,.18), transparent 28%)",
+  },
+
+  material: {
+    thinGlass: {
+      background: "rgba(255, 255, 255, 0.14)",
+      border: "1px solid rgba(255, 255, 255, 0.24)",
+      backdropFilter: "blur(24px) saturate(1.45) brightness(1.06)",
+    },
+    liquidGlass: {
+      background: "linear-gradient(145deg, rgba(255,255,255,.40), rgba(255,255,255,.18) 44%, rgba(255,255,255,.10) 100%)",
+      border: "1px solid rgba(255, 255, 255, 0.58)",
+      backdropFilter: "blur(38px) saturate(1.8) brightness(1.12)",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,.64), inset 0 -1px 0 rgba(255,255,255,.16), 0 18px 54px rgba(10,14,20,.22)",
+    },
+    floatingGlass: {
+      background: "rgba(255, 255, 255, 0.31)",
+      border: "1px solid rgba(255, 255, 255, 0.78)",
+      backdropFilter: "blur(46px) saturate(1.95) brightness(1.14)",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,.78), inset 0 0 0 1px rgba(255,255,255,.16), 0 26px 88px rgba(10,14,20,.30), 0 2px 18px rgba(255,255,255,.12)",
+    },
+    controlGlass: {
+      background: "rgba(255, 255, 255, 0.22)",
+      border: "1px solid rgba(255, 255, 255, 0.42)",
+      backdropFilter: "blur(30px) saturate(1.7) brightness(1.1)",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,.56), 0 10px 28px rgba(10,14,20,.18)",
+    },
+  },
+
+  radius: {
+    icon: "14px",
+    chip: "999px",
+    control: "22px",
+    card: "28px",
+    panel: "34px",
+    sheet: "46px",
+  },
+
+  space: {
+    0: "0px",
+    1: "4px",
+    2: "8px",
+    3: "12px",
+    4: "16px",
+    5: "20px",
+    6: "24px",
+    8: "32px",
+    10: "40px",
+    12: "48px",
+    16: "64px",
+  },
+
+  size: {
+    iconButton: {
+      sm: "32px",
+      md: "40px",
+      lg: "48px",
+    },
+    controlHeight: {
+      sm: "34px",
+      md: "42px",
+      lg: "52px",
+    },
+    navHeight: {
+      compact: "56px",
+      regular: "72px",
+    },
+    glassMinTarget: "44px",
+  },
+
+  typography: {
+    family: {
+      ui: "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', sans-serif",
+      display: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', sans-serif",
+      mono: "'SF Mono', ui-monospace, Menlo, monospace",
+    },
+    size: {
+      caption: "12px",
+      body: "15px",
+      callout: "16px",
+      title: "22px",
+      largeTitle: "34px",
+    },
+    weight: {
+      regular: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+    },
+    lineHeight: {
+      tight: 1.12,
+      body: 1.48,
+      relaxed: 1.68,
+    },
+    tracking: {
+      normal: "0",
+      label: "0.01em",
+    },
+  },
+
+  shadow: {
+    hairline: "inset 0 1px 0 rgba(255,255,255,.64)",
+    card: "inset 0 1px 0 rgba(255,255,255,.64), inset 0 -1px 0 rgba(255,255,255,.16), 0 18px 54px rgba(10,14,20,.22)",
+    floating: "inset 0 1px 0 rgba(255,255,255,.78), inset 0 0 0 1px rgba(255,255,255,.16), 0 26px 88px rgba(10,14,20,.30), 0 2px 18px rgba(255,255,255,.12)",
+    focus: "0 0 0 4px rgba(138,180,255,.18), 0 0 0 1px rgba(255,255,255,.54)",
+  },
+
+  motion: {
+    duration: {
+      tap: "120ms",
+      control: "220ms",
+      surface: "520ms",
+      ambient: "5600ms",
+    },
+    easing: {
+      standard: "cubic-bezier(0.2, 0, 0, 1)",
+      liquid: "cubic-bezier(0.65, 0, 0.35, 1)",
+      float: "cubic-bezier(0.16, 1, 0.3, 1)",
+    },
+  },
+
+  interaction: {
+    hover: {
+      transform: "translateY(-1px)",
+      background: "rgba(255, 255, 255, 0.34)",
+      borderColor: "rgba(255, 255, 255, 0.78)",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,.82), 0 18px 48px rgba(10,14,20,.24)",
+    },
+    active: {
+      transform: "translateY(0) scale(0.985)",
+      background: "rgba(255, 255, 255, 0.18)",
+      boxShadow: "inset 0 1px 8px rgba(10,14,20,.16)",
+    },
+    selected: {
+      background: "rgba(255, 255, 255, 0.42)",
+      borderColor: "rgba(255, 255, 255, 0.82)",
+    },
+  },
+
+  component: {
+    navBar: {
+      height: "72px",
+      material: "floatingGlass",
+      radius: "999px",
+      padding: "8px",
+      itemGap: "6px",
+      activeItem: "rgba(255, 255, 255, 0.42)",
+    },
+    tabBar: {
+      height: "56px",
+      material: "floatingGlass",
+      radius: "999px",
+      indicator: "rgba(255, 255, 255, 0.46)",
+      iconColor: "rgba(251, 253, 255, 0.70)",
+      activeIconColor: "#fbfdff",
+    },
+    sheet: {
+      material: "floatingGlass",
+      radius: "46px",
+      maxWidth: "720px",
+      padding: "24px",
+      backdrop: "rgba(17, 21, 28, 0.34)",
+    },
+    button: {
+      primary: {
+        height: "44px",
+        radius: "999px",
+        background: "rgba(255, 255, 255, 0.72)",
+        color: "#11151c",
+        border: "1px solid rgba(255, 255, 255, 0.78)",
+      },
+      secondary: {
+        height: "44px",
+        radius: "999px",
+        background: "rgba(255, 255, 255, 0.18)",
+        color: "#fbfdff",
+        border: "1px solid rgba(255, 255, 255, 0.42)",
+      },
+    },
+    input: {
+      height: "44px",
+      material: "controlGlass",
+      radius: "22px",
+      placeholder: "rgba(251, 253, 255, 0.42)",
+      focusRing: "0 0 0 4px rgba(138,180,255,.18), 0 0 0 1px rgba(255,255,255,.54)",
+    },
+    chip: {
+      height: "32px",
+      radius: "999px",
+      background: "rgba(255, 255, 255, 0.16)",
+      selectedBackground: "rgba(255, 255, 255, 0.42)",
+    },
+  },
+
+  layer: {
+    base: 0,
+    glass: 10,
+    nav: 100,
+    sheetBackdrop: 900,
+    sheet: 1000,
+    toast: 1100,
+  },
+
+  accessibility: {
+    minimumTextOnGlass: "rgba(251, 253, 255, 0.70)",
+    stableTextScrim: "linear-gradient(180deg, rgba(17,21,28,.24), rgba(17,21,28,.42))",
+    reduceTransparencyFallback: "rgba(28, 33, 42, 0.92)",
+    reduceMotionDuration: "120ms",
+  },
+} as const
+\`\`\`
+
+## Liquid Glass CSS Variables
+
+\`\`\`css
+:root {
+  --lg-ink: #11151c;
+  --lg-graphite: #1a2029;
+  --lg-mist: #edf3fb;
+  --lg-frost: #f8fbff;
+  --lg-pearl: #ffffff;
+
+  --lg-glass-clear: rgba(255, 255, 255, 0.19);
+  --lg-glass-raised: rgba(255, 255, 255, 0.31);
+  --lg-glass-pressed: rgba(255, 255, 255, 0.14);
+  --lg-glass-veil: rgba(255, 255, 255, 0.10);
+
+  --lg-surface-base: rgba(255, 255, 255, 0.14);
+  --lg-surface-raised: rgba(255, 255, 255, 0.22);
+  --lg-surface-floating: rgba(255, 255, 255, 0.31);
+  --lg-surface-selected: rgba(255, 255, 255, 0.42);
+  --lg-surface-solid-fallback: rgba(28, 33, 42, 0.92);
+
+  --lg-content-primary: #fbfdff;
+  --lg-content-secondary: rgba(251, 253, 255, 0.70);
+  --lg-content-tertiary: rgba(251, 253, 255, 0.48);
+  --lg-content-disabled: rgba(251, 253, 255, 0.32);
+  --lg-content-on-light-glass: #11151c;
+
+  --lg-sky: #8ab4ff;
+  --lg-lilac: #d9c7ff;
+  --lg-rose: #f6c8ff;
+  --lg-mint: #c8f5e6;
+  --lg-amber: #ffe3a3;
+
+  --lg-success: #86efac;
+  --lg-warning: #fde68a;
+  --lg-danger: #fda4af;
+  --lg-info: #93c5fd;
+
+  --lg-border-hairline: rgba(255, 255, 255, 0.24);
+  --lg-border-edge: rgba(255, 255, 255, 0.58);
+  --lg-border-bright: rgba(255, 255, 255, 0.78);
+  --lg-border-separator: rgba(255, 255, 255, 0.16);
+  --lg-border-control: rgba(255, 255, 255, 0.42);
+  --lg-border-focus: rgba(138, 180, 255, 0.46);
+
+  --lg-radius-icon: 14px;
+  --lg-radius-chip: 999px;
+  --lg-radius-control: 22px;
+  --lg-radius-card: 28px;
+  --lg-radius-panel: 34px;
+  --lg-radius-sheet: 46px;
+
+  --lg-space-1: 4px;
+  --lg-space-2: 8px;
+  --lg-space-3: 12px;
+  --lg-space-4: 16px;
+  --lg-space-5: 20px;
+  --lg-space-6: 24px;
+  --lg-space-8: 32px;
+  --lg-space-10: 40px;
+  --lg-space-12: 48px;
+
+  --lg-size-icon-button-sm: 32px;
+  --lg-size-icon-button-md: 40px;
+  --lg-size-icon-button-lg: 48px;
+  --lg-size-control-sm: 34px;
+  --lg-size-control-md: 42px;
+  --lg-size-control-lg: 52px;
+  --lg-size-nav-compact: 56px;
+  --lg-size-nav-regular: 72px;
+  --lg-size-min-target: 44px;
+
+  --lg-blur-thin: blur(24px) saturate(1.45) brightness(1.06);
+  --lg-blur-panel: blur(38px) saturate(1.8) brightness(1.12);
+  --lg-blur-floating: blur(46px) saturate(1.95) brightness(1.14);
+
+  --lg-shadow-card: inset 0 1px 0 rgba(255,255,255,.64), inset 0 -1px 0 rgba(255,255,255,.16), 0 18px 54px rgba(10,14,20,.22);
+  --lg-shadow-floating: inset 0 1px 0 rgba(255,255,255,.78), inset 0 0 0 1px rgba(255,255,255,.16), 0 26px 88px rgba(10,14,20,.30), 0 2px 18px rgba(255,255,255,.12);
+  --lg-shadow-focus: 0 0 0 4px rgba(138,180,255,.18), 0 0 0 1px rgba(255,255,255,.54);
+
+  --lg-hover-transform: translateY(-1px);
+  --lg-active-transform: translateY(0) scale(0.985);
+  --lg-text-scrim: linear-gradient(180deg, rgba(17,21,28,.24), rgba(17,21,28,.42));
+  --lg-reduce-transparency: rgba(28, 33, 42, 0.92);
+
+  --lg-font-ui: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+  --lg-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+  --lg-text-caption: 12px;
+  --lg-text-body: 15px;
+  --lg-text-callout: 16px;
+  --lg-text-title: 22px;
+  --lg-text-large-title: 34px;
+  --lg-leading-body: 1.48;
+  --lg-leading-relaxed: 1.68;
+
+  --lg-z-glass: 10;
+  --lg-z-nav: 100;
+  --lg-z-sheet-backdrop: 900;
+  --lg-z-sheet: 1000;
+  --lg-z-toast: 1100;
+}
+\`\`\`
+
+## CSS Utility Blueprint
+
+\`\`\`css
+.lg-material {
+  border: 1px solid var(--lg-border-edge);
+  background: linear-gradient(145deg, rgba(255,255,255,.40), rgba(255,255,255,.18) 44%, rgba(255,255,255,.10));
+  box-shadow: var(--lg-shadow-card);
+  backdrop-filter: var(--lg-blur-panel);
+  -webkit-backdrop-filter: var(--lg-blur-panel);
+}
+
+.lg-material::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.52), transparent 34%),
+    radial-gradient(circle at 22% 0%, rgba(255,255,255,.36), transparent 32%);
+  mask-image: linear-gradient(black, transparent 72%);
+}
+
+.lg-control {
+  min-height: var(--lg-size-min-target);
+  border-radius: var(--lg-radius-control);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0, 0, 1),
+    background 220ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.lg-control:hover {
+  transform: var(--lg-hover-transform);
+}
+
+.lg-control:active {
+  transform: var(--lg-active-transform);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lg-material {
+    background: var(--lg-reduce-transparency);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-control {
+    transition-duration: 120ms;
+  }
+}
+\`\`\`
+
+## Liquid Glass Component Rules
+
+- Page：背景必须有可被玻璃“吸收”的环境色块，玻璃本身不要承担主色。
+- Card：默认用 \`thinGlass\`；核心容器用 \`liquidGlass\`；弹层和导航才用 \`floatingGlass\`。
+- Button：主按钮可以是白色液态胶囊，辅按钮用透明玻璃；悬浮时只增加内高光和轻微上浮。
+- Input：使用 \`controlGlass\`，焦点只加浅蓝系统 ring，不做整块发光。
+- Nav / Tab：可以使用最高级别 \`floatingGlass\`，但需要固定高度、明确 hit area 和当前态。
+- Sheet / Modal：背景遮罩要轻，不要把页面压黑；浮层边缘比主体更亮。
+- State：成功、警告、危险色只做小面积状态，不改变玻璃主材质。
+- Edge：边缘高光要比中心更明显，模拟厚玻璃压缩后的亮边。
+- Text：正文放在暗面或稳定玻璃面上，不直接压在环境色带和高光扫线上。
+- Accessibility：正文所在玻璃层必须有暗色 scrim 或稳定底色；用户开启降低透明度时切到 \`--lg-reduce-transparency\`。
+
+## Liquid Glass Component Mapping
+
+| Component | Material | Key Tokens |
+| --- | --- | --- |
+| App Background | environment | \`semantic.background.environment\`, \`gradient.page\` |
+| Nav Bar | floatingGlass | \`component.navBar\`, \`layer.nav\` |
+| Tab Bar | floatingGlass | \`component.tabBar\`, \`component.tabBar.indicator\` |
+| Card | thinGlass | \`material.thinGlass\`, \`radius.card\`, \`shadow.card\` |
+| Primary Panel | liquidGlass | \`material.liquidGlass\`, \`gradient.glassEdge\` |
+| Sheet | floatingGlass | \`component.sheet\`, \`layer.sheet\` |
+| Button | controlGlass | \`component.button\`, \`interaction.hover\`, \`interaction.active\` |
+| Input | controlGlass | \`component.input\`, \`shadow.focus\` |
+| Chip | thinGlass | \`component.chip\`, \`semantic.surface.selected\` |
+`
+
 function themeStyle(theme: LabTheme): CSSProperties & Record<string, string> {
   const { tokens } = theme
 
@@ -401,6 +930,7 @@ function tokenJson(theme: LabTheme) {
 
 function generateMarkdown(theme: LabTheme) {
   const { tokens } = theme
+  const detailedTokens = theme.id === "liquid-glass" ? `\n${liquidGlassDetailedTokens}\n` : ""
   const hardEdgeGuidance =
     theme.family === "hard-edge"
       ? `
@@ -467,6 +997,7 @@ ${hardEdgeGuidance}
 \`\`\`json
 ${JSON.stringify(tokenJson(theme), null, 2)}
 \`\`\`
+${detailedTokens}
 
 ## CSS Variables
 
@@ -516,20 +1047,36 @@ ${theme.avoid.map((item) => `- ${item}`).join("\n")}
 
 function TokenPreview({ theme }: { theme: LabTheme }) {
   const isHardEdge = theme.family === "hard-edge"
+  const isLiquidGlass = theme.id === "liquid-glass"
   const previewStyle = themeStyle(theme)
   previewStyle.boxShadow = isHardEdge
     ? "var(--lab-shadow-floating)"
-    : "0 30px 120px rgba(0,0,0,0.34)"
+    : isLiquidGlass
+      ? "0 30px 110px rgba(10,14,20,0.32)"
+      : "0 30px 120px rgba(0,0,0,0.34)"
   const frameStyle: CSSProperties | undefined = isHardEdge
     ? {
         backgroundImage:
           "linear-gradient(90deg, var(--lab-border) 1px, transparent 1px), linear-gradient(var(--lab-border) 1px, transparent 1px), linear-gradient(135deg, var(--lab-bg), var(--lab-bg-soft))",
         backgroundSize: "34px 34px, 34px 34px, 100% 100%",
       }
+    : isLiquidGlass
+      ? {
+          backgroundImage:
+            "radial-gradient(circle at 18% 18%, rgba(138,180,255,.34), transparent 18rem), radial-gradient(circle at 82% 22%, rgba(246,200,255,.26), transparent 16rem), radial-gradient(circle at 56% 82%, rgba(255,227,163,.18), transparent 19rem), linear-gradient(145deg, #11151c, #1a2029 48%, #0f131a)",
+        }
     : undefined
   const surfaceEffect: CSSProperties = isHardEdge
     ? { boxShadow: "var(--lab-shadow-card)" }
-    : { backdropFilter: "var(--lab-blur)", WebkitBackdropFilter: "var(--lab-blur)" }
+    : isLiquidGlass
+      ? {
+          backdropFilter: "var(--lab-blur)",
+          WebkitBackdropFilter: "var(--lab-blur)",
+          backgroundImage:
+            "linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,.16) 48%, rgba(255,255,255,.08)), radial-gradient(circle at 18% 0%, rgba(255,255,255,.36), transparent 30%)",
+          boxShadow: "var(--lab-shadow-card)",
+        }
+      : { backdropFilter: "var(--lab-blur)", WebkitBackdropFilter: "var(--lab-blur)" }
 
   return (
     <div
@@ -559,6 +1106,13 @@ function TokenPreview({ theme }: { theme: LabTheme }) {
             />
             <div className="pointer-events-none absolute bottom-4 left-4 h-14 w-14 border-2 border-[var(--lab-border-strong)] bg-[var(--lab-primary)]" />
             <div className="pointer-events-none absolute bottom-8 left-10 h-14 w-14 border-2 border-[var(--lab-border-strong)] bg-[var(--lab-accent)]" />
+          </>
+        ) : isLiquidGlass ? (
+          <>
+            <div className="pointer-events-none absolute left-[8%] top-[10%] h-32 w-[72%] rotate-[-10deg] rounded-full bg-[linear-gradient(100deg,transparent,rgba(255,255,255,.44),transparent)] blur-md" />
+            <div className="pointer-events-none absolute right-[8%] top-[14%] h-28 w-28 rounded-full bg-[radial-gradient(circle_at_30%_24%,rgba(255,255,255,.74),rgba(255,255,255,.18)_44%,transparent_72%)]" />
+            <div className="pointer-events-none absolute bottom-[14%] left-[8%] h-40 w-40 rounded-[44px] border border-white/22 bg-white/[0.08] backdrop-blur-3xl" />
+            <div className="pointer-events-none absolute bottom-[12%] right-[10%] h-36 w-56 rounded-full bg-[conic-gradient(from_210deg,rgba(255,255,255,.54),rgba(138,180,255,.20),rgba(246,200,255,.18),rgba(255,255,255,.44),rgba(200,245,230,.16),rgba(255,255,255,.54))] opacity-55 blur-[1px]" />
           </>
         ) : (
           <>
@@ -986,7 +1540,7 @@ function TokenPlaybook({ activeTheme }: { activeTheme: LabTheme }) {
 }
 
 export function DesignTokenLab() {
-  const [activeId, setActiveId] = useState("neo-brutal-studio")
+  const [activeId, setActiveId] = useState("liquid-glass")
   const previewRef = useRef<HTMLElement>(null)
   const activeTheme = themes.find((theme) => theme.id === activeId) ?? themes[0]
   const markdown = useMemo(() => generateMarkdown(activeTheme), [activeTheme])

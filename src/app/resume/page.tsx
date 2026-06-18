@@ -1,6 +1,3 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { BackHome } from "@/components/shared/BackHome"
 
 export default function ResumePage() {
@@ -148,20 +145,18 @@ export default function ResumePage() {
 
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={className}>
+    <div className={`animate-fade-in-up ${className}`}>
       {children}
-    </motion.div>
+    </div>
   )
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <motion.section initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="mb-10">
+    <section className="mb-10">
       <h2 className="text-xs font-mono tracking-[0.15em] uppercase text-foreground/20 mb-4">{title}</h2>
       {children}
-    </motion.section>
+    </section>
   )
 }
 

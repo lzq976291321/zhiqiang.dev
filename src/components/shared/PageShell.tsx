@@ -1,7 +1,4 @@
-"use client"
-
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { ArrowLeft } from "lucide-react"
 
 interface PageShellProps {
@@ -43,12 +40,7 @@ export function PageShell({ children, title, subtitle, accent = "#C8A97E", paren
           ) : null}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-12 grid gap-5 lg:grid-cols-[1fr_360px]"
-        >
+        <div className="animate-fade-in-up mb-12 grid gap-5 lg:grid-cols-[1fr_360px]">
           <div>
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-cyan-100/46">
               zhiqiang.chat / knowledge system
@@ -62,7 +54,7 @@ export function PageShell({ children, title, subtitle, accent = "#C8A97E", paren
               <p className="text-base leading-7 text-white/60">{subtitle}</p>
             </div>
           ) : null}
-        </motion.div>
+        </div>
 
         {children}
       </div>

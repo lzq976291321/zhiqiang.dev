@@ -24,6 +24,32 @@ function getTerms(question: string) {
   return Array.from(new Set([...asciiTerms, ...getCjkBigrams(question)]))
 }
 
+function hasProfileIntent(question: string) {
+  const normalized = normalizeForSearch(question)
+  const profileTerms = [
+    "你",
+    "志强",
+    "林志强",
+    "开发",
+    "经历",
+    "项目",
+    "能力",
+    "合作",
+    "技术栈",
+    "agent",
+    "mcp",
+    "skill",
+    "skills",
+    "design token",
+    "design",
+    "token",
+    "seo",
+    "博客",
+  ]
+
+  return profileTerms.some((term) => normalized.includes(term))
+}
+
 function toSource(chunk: ChatChunk): ChatSource {
   const { id, title, path, category, excerpt } = chunk
   return { id, title, path, category, excerpt }
@@ -76,15 +102,15 @@ export function getDefaultProfileSources(limit = 4): ChatSource[] {
 }
 
 export function getChatKnowledgeSources(question: string, limit = 12): ChatSource[] {
-  const profileSources = getDefaultProfileSources(5)
   const relevantSources = retrieveChatSources(question, limit)
-  const relevantProfileSources = relevantSources.filter(
-    (source) => source.category === "profile"
-  )
+  const shouldAddProfileContext = hasProfileIntent(question)
+
+  if (relevantSources.length === 0) {
+    return shouldAddProfileContext ? getDefaultProfileSources(Math.min(5, limit)) : []
+  }
 
   return uniqueSources([
-    ...relevantProfileSources,
-    ...profileSources,
     ...relevantSources,
+    ...(shouldAddProfileContext ? getDefaultProfileSources(3) : []),
   ]).slice(0, limit)
 }

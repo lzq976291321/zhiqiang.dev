@@ -1,6 +1,3 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { PageShell } from "@/components/shared/PageShell"
 
 const PROJECTS = [
@@ -92,15 +89,13 @@ export default function ProjectsPage() {
     <PageShell title="项目" subtitle="个人作品与开源项目" accent="#B8F7D4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {PROJECTS.map((p, i) => (
-          <motion.a
+          <a
             key={p.title}
             href={p.href}
             target={p.href.startsWith("http") ? "_blank" : undefined}
             rel={p.href.startsWith("http") ? "noopener noreferrer" : undefined}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className={`glass-card group block p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-100/22 hover:bg-white/[0.095] ${p.span}`}
+            className={`glass-card animate-fade-in-up group block p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-100/22 hover:bg-white/[0.095] ${p.span}`}
+            style={{ animationDelay: `${i * 80}ms` }}
           >
             {/* 顶部色条 */}
             <div
@@ -135,18 +130,12 @@ export default function ProjectsPage() {
                 <path d="M7 7h10v10" />
               </svg>
             </div>
-          </motion.a>
+          </a>
         ))}
       </div>
 
       <section id="sj" className="mt-16 scroll-mt-28">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-5 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]"
-        >
+        <div className="animate-fade-in-up mb-5 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="glass-card p-6 sm:p-7">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.22em] text-emerald-100/48">
               SJ Project Archive
@@ -173,17 +162,14 @@ export default function ProjectsPage() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
           {SJ_PROJECT_GROUPS.map((group, index) => (
-            <motion.article
+            <article
               key={group.title}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.06, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="glass-card overflow-hidden p-5 sm:p-6"
+              className="glass-card animate-fade-in-up overflow-hidden p-5 sm:p-6"
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <div className="mb-5 flex items-start justify-between gap-4">
                 <div>
@@ -222,7 +208,7 @@ export default function ProjectsPage() {
                   </span>
                 ))}
               </div>
-            </motion.article>
+            </article>
           ))}
         </div>
       </section>

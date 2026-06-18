@@ -1,10 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
 import type { McpServer } from "@/lib/types"
 import { CopyButton } from "@/components/shared/CopyButton"
-import { PageShell } from "@/components/shared/PageShell"
 
 const ROLES = ["全部", "Agent 工程师", "前端开发者", "后端开发者", "独立开发者", "产品经理", "安全合规"]
 
@@ -42,14 +40,11 @@ const riskColor: Record<McpServer["risk"], string> = {
   high: "border-rose-100/18 bg-rose-100/10 text-rose-50/70",
 }
 
-function McpCard({ server, index }: { server: McpServer; index: number }) {
+function McpCard({ server }: { server: McpServer }) {
   const isEssential = server.tier === "essential"
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+    <article
       className={`glass-card p-6 transition-all duration-300 hover:-translate-y-0.5 ${
         isEssential
           ? "border-cyan-100/20 bg-cyan-100/[0.08]"
@@ -113,7 +108,7 @@ function McpCard({ server, index }: { server: McpServer; index: number }) {
           {server.content.split("\n").filter(Boolean).join(" ")}
         </p>
       )}
-    </motion.div>
+    </article>
   )
 }
 
@@ -124,11 +119,7 @@ export function McpList({ servers }: { servers: McpServer[] }) {
   const recommended = filtered.filter((s) => s.tier === "recommended")
 
   return (
-    <PageShell
-      title="MCP"
-      subtitle="按角色筛选值得接入的 MCP：优先官方、只读、低权限、可审计"
-      accent="#B8F7D4"
-    >
+    <>
       <div className="glass-card mb-6 p-5">
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-100/46">
           Role fit
@@ -169,8 +160,8 @@ export function McpList({ servers }: { servers: McpServer[] }) {
             必装第一梯队
           </h2>
           <div className="flex flex-col gap-3">
-            {essential.map((s, i) => (
-              <McpCard key={s.slug} server={s} index={i} />
+            {essential.map((s) => (
+              <McpCard key={s.slug} server={s} />
             ))}
           </div>
         </div>
@@ -183,8 +174,8 @@ export function McpList({ servers }: { servers: McpServer[] }) {
             按需安装
           </h2>
           <div className="flex flex-col gap-3">
-            {recommended.map((s, i) => (
-              <McpCard key={s.slug} server={s} index={i + essential.length} />
+            {recommended.map((s) => (
+              <McpCard key={s.slug} server={s} />
             ))}
           </div>
         </div>
@@ -193,6 +184,6 @@ export function McpList({ servers }: { servers: McpServer[] }) {
       {filtered.length === 0 && (
         <p className="py-20 text-center text-sm text-white/36">暂无匹配的 MCP</p>
       )}
-    </PageShell>
+    </>
   )
 }

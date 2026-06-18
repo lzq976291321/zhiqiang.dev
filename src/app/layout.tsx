@@ -1,31 +1,8 @@
 import type { Metadata } from "next"
-import {
-  Bricolage_Grotesque,
-  IBM_Plex_Mono,
-  Instrument_Sans,
-} from "next/font/google"
+import { SiteVisitTracker } from "@/components/analytics/SiteVisitTracker"
 import { GlassNav } from "@/components/layout/GlassNav"
 import { siteConfig } from "@/config/site"
 import "./globals.css"
-
-const instrument = Instrument_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  display: "swap",
-})
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  display: "swap",
-})
-
-const mono = IBM_Plex_Mono({
-  variable: "--font-mono",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-})
 
 export const metadata: Metadata = {
   title: {
@@ -52,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${instrument.variable} ${bricolage.variable} ${mono.variable} dark`}
+      className="dark"
     >
       <body className="min-h-screen overflow-x-hidden antialiased bg-background text-foreground">
         <script
@@ -73,6 +50,7 @@ export default function RootLayout({
         />
         <GlassNav />
         {children}
+        <SiteVisitTracker />
       </body>
     </html>
   )

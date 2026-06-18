@@ -1,6 +1,3 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { PageShell } from "@/components/shared/PageShell"
 
 const TIMELINE = [
@@ -21,27 +18,21 @@ const SKILLS = [
 
 function SkillBar({ name, level, index }: { name: string; level: number; index: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div className="animate-fade-in-up" style={{ animationDelay: `${index * 60}ms` }}>
       <div className="mb-1.5 flex items-center justify-between">
         <span className="text-sm text-white/56">{name}</span>
         <span className="font-mono text-[11px] text-white/34">{level}%</span>
       </div>
       <div className="h-1 overflow-hidden rounded-full bg-white/[0.08]">
-        <motion.div
+        <div
           className="h-full rounded-full"
-          style={{ background: "linear-gradient(90deg, #9FE8FF, #B8F7D4)" }}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 + index * 0.06, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            width: `${level}%`,
+            background: "linear-gradient(90deg, #9FE8FF, #B8F7D4)",
+          }}
         />
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -56,13 +47,10 @@ export default function AboutPage() {
           </h2>
           <div className="glass-card space-y-8 p-6">
             {TIMELINE.map((item, i) => (
-              <motion.div
+              <div
                 key={item.year}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="relative border-l border-white/10 pl-6"
+                className="animate-fade-in-up relative border-l border-white/10 pl-6"
+                style={{ animationDelay: `${i * 100}ms` }}
               >
                 {/* 圆点 */}
                 <div
@@ -78,7 +66,7 @@ export default function AboutPage() {
                 <p className="text-sm leading-relaxed text-white/48">
                   {item.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
 

@@ -9,6 +9,7 @@ import {
 import type { ChatChunk } from "./types"
 
 const contentDir = path.join(process.cwd(), "src/content")
+let cachedChatCorpus: ChatChunk[] | null = null
 
 function normalizeText(value: string) {
   return value
@@ -188,10 +189,14 @@ function readMcpChunks() {
 }
 
 export function getChatCorpus(): ChatChunk[] {
-  return [
+  if (cachedChatCorpus) return cachedChatCorpus
+
+  cachedChatCorpus = [
     ...readProfileChunks(),
     ...readAgentChunks(),
     ...readSkillChunks(),
     ...readMcpChunks(),
   ]
+
+  return cachedChatCorpus
 }

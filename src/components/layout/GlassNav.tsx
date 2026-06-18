@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
 import { BookOpen, Menu, X } from "lucide-react"
 import { navItems } from "@/config/navigation"
 
@@ -57,10 +56,9 @@ export function GlassNav() {
               }`}
             >
               {isActive(item.href) ? (
-                <motion.span
-                  layoutId="glass-nav-active"
+                <span
+                  aria-hidden="true"
                   className="absolute inset-0 rounded-full border border-white/12 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
-                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
                 />
               ) : null}
               <span className="relative">{item.label}</span>
@@ -90,32 +88,24 @@ export function GlassNav() {
         </div>
       </nav>
 
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-            className="mx-auto mt-3 max-w-7xl overflow-hidden rounded-[28px] border border-white/12 bg-[#08111f]/88 p-2 shadow-[0_24px_90px_rgba(0,0,0,0.4)] backdrop-blur-2xl md:hidden"
-          >
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`block rounded-2xl px-4 py-3 text-sm font-medium ${
-                  isActive(item.href)
-                    ? "bg-white/10 text-white"
-                    : "text-white/58 hover:bg-white/[0.06] hover:text-white"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {open ? (
+        <div className="animate-fade-in-down mx-auto mt-3 max-w-7xl overflow-hidden rounded-[28px] border border-white/12 bg-[#08111f]/88 p-2 shadow-[0_24px_90px_rgba(0,0,0,0.4)] backdrop-blur-2xl md:hidden">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className={`block rounded-2xl px-4 py-3 text-sm font-medium ${
+                isActive(item.href)
+                  ? "bg-white/10 text-white"
+                  : "text-white/58 hover:bg-white/[0.06] hover:text-white"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </header>
   )
 }

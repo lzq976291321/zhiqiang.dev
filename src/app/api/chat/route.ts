@@ -6,7 +6,11 @@ import {
   hasDeepSeekApiKey,
 } from "@/lib/chat/answer"
 import { getChatKnowledgeSources } from "@/lib/chat/retrieval"
-import { logChatQuestion } from "@/lib/chat/question-log"
+import {
+  createChatQuestionLog,
+  updateChatQuestionLog,
+} from "@/lib/chat/question-log"
+import { checkChatRateLimit } from "@/lib/chat/rate-limit"
 import type {
   ChatMessage,
   ChatSource,
@@ -19,10 +23,10 @@ export const runtime = "nodejs"
 const MAX_MESSAGES = 12
 const MAX_MESSAGE_LENGTH = 1600
 const MAX_TOTAL_LENGTH = 6000
+const MAX_REQUEST_BODY_LENGTH = 20_000
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX = 12
 
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
 const encoder = new TextEncoder()
 
 class DeepSeekApiError extends Error {
@@ -36,21 +40,6 @@ function getClientId(request: NextRequest) {
   return forwardedFor?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "local"
 }
 
-function checkRateLimit(clientId: string) {
-  const now = Date.now()
-  const bucket = rateLimitStore.get(clientId)
-
-  if (!bucket || bucket.resetAt <= now) {
-    rateLimitStore.set(clientId, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
-    return true
-  }
-
-  if (bucket.count >= RATE_LIMIT_MAX) return false
-
-  bucket.count += 1
-  return true
-}
-
 function isChatMessage(value: unknown): value is ChatMessage {
   if (!value || typeof value !== "object") return false
 
@@ -61,6 +50,11 @@ function isChatMessage(value: unknown): value is ChatMessage {
     message.content.trim().length > 0 &&
     message.content.length <= MAX_MESSAGE_LENGTH
   )
+}
+
+function isRequestBodyTooLarge(request: NextRequest) {
+  const contentLength = Number(request.headers.get("content-length"))
+  return Number.isFinite(contentLength) && contentLength > MAX_REQUEST_BODY_LENGTH
 }
 
 async function parseChatRequest(request: NextRequest) {
@@ -89,6 +83,10 @@ function getLatestQuestion(messages: ChatMessage[]) {
   }
 
   return ""
+}
+
+function getTotalMessageLength(messages: ChatMessage[]) {
+  return messages.reduce((sum, message) => sum + message.content.length, 0)
 }
 
 function createStreamResponse(
@@ -140,6 +138,23 @@ function sendMeta(
   })
 }
 
+async function createQuestionLogSafely(input: Parameters<typeof createChatQuestionLog>[0]) {
+  try {
+    return await createChatQuestionLog(input)
+  } catch (error) {
+    console.error("Failed to create chat question log", error)
+    return null
+  }
+}
+
+async function updateQuestionLogSafely(input: Parameters<typeof updateChatQuestionLog>[0]) {
+  try {
+    await updateChatQuestionLog(input)
+  } catch (error) {
+    console.error("Failed to update chat question log", error)
+  }
+}
+
 async function proxyDeepSeekStream({
   controller,
   question,
@@ -168,6 +183,7 @@ async function proxyDeepSeekStream({
   const reader = upstream.body.getReader()
   const decoder = new TextDecoder()
   let buffer = ""
+  let responseLength = 0
 
   while (true) {
     const { done, value } = await reader.read()
@@ -182,25 +198,26 @@ async function proxyDeepSeekStream({
       const { content, done: streamDone } = extractDeepSeekDelta(event)
 
       if (content) {
+        responseLength += content.length
         send(controller, { type: "delta", content })
       }
 
       if (streamDone) {
         send(controller, { type: "done" })
-        return
+        return responseLength
       }
     }
   }
 
   send(controller, { type: "done" })
+  return responseLength
 }
 
 export async function POST(request: NextRequest) {
-  if (!checkRateLimit(getClientId(request))) {
-    return Response.json(
-      { error: "请求过于频繁，请稍后再试。" },
-      { status: 429 }
-    )
+  const clientId = getClientId(request)
+
+  if (isRequestBodyTooLarge(request)) {
+    return Response.json({ error: "请求体太大。" }, { status: 413 })
   }
 
   let chatRequest: { messages: ChatMessage[]; sessionId?: string } | null = null
@@ -219,34 +236,67 @@ export async function POST(request: NextRequest) {
   }
 
   const { messages, sessionId } = chatRequest
+  const allowed = await checkChatRateLimit({
+    clientId,
+    sessionId,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+    maxRequests: RATE_LIMIT_MAX,
+  })
+
+  if (!allowed) {
+    return Response.json(
+      { error: "请求过于频繁，请稍后再试。" },
+      { status: 429 }
+    )
+  }
+
   const question = getLatestQuestion(messages)
   const sources = getChatKnowledgeSources(question)
-
-  logChatQuestion({
+  const startedAt = Date.now()
+  const mode: ChatStreamMode = hasDeepSeekApiKey() ? "deepseek" : "local_fallback"
+  const logId = await createQuestionLogSafely({
     question,
     sourceIds: sources.map((source) => source.id),
     sessionId,
+    clientId,
+    messageCount: messages.length,
+    totalMessageLength: getTotalMessageLength(messages),
     userAgent: request.headers.get("user-agent"),
     referrer: request.headers.get("referer"),
   })
 
   return createStreamResponse(async (controller) => {
     try {
-      if (hasDeepSeekApiKey()) {
-        sendMeta(controller, "deepseek")
-        await proxyDeepSeekStream({
+      if (mode === "deepseek") {
+        sendMeta(controller, mode)
+        const responseLength = await proxyDeepSeekStream({
           controller,
           question,
           messages,
           sources,
         })
+        await updateQuestionLogSafely({
+          id: logId,
+          status: "completed",
+          durationMs: Date.now() - startedAt,
+          mode,
+          responseLength,
+        })
         controller.close()
         return
       }
 
-      sendMeta(controller, "local_fallback")
-      await streamText(controller, generateLocalAnswer(question, sources))
+      const fallbackAnswer = generateLocalAnswer(question, sources)
+      sendMeta(controller, mode)
+      await streamText(controller, fallbackAnswer)
       send(controller, { type: "done" })
+      await updateQuestionLogSafely({
+        id: logId,
+        status: "completed",
+        durationMs: Date.now() - startedAt,
+        mode,
+        responseLength: fallbackAnswer.length,
+      })
       controller.close()
     } catch (error) {
       console.error(error)
@@ -255,6 +305,14 @@ export async function POST(request: NextRequest) {
         error: error instanceof DeepSeekApiError
           ? getDeepSeekErrorMessage(error.status)
           : "模型输出失败，已停止本次回答。",
+      })
+      await updateQuestionLogSafely({
+        id: logId,
+        status: "failed",
+        durationMs: Date.now() - startedAt,
+        mode,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        upstreamStatus: error instanceof DeepSeekApiError ? error.status : undefined,
       })
       controller.close()
     }

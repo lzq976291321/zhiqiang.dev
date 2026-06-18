@@ -63,7 +63,7 @@ export function hasDeepSeekApiKey() {
 
 export function generateLocalAnswer(question: string, sources: ChatSource[]) {
   if (sources.length === 0) {
-    return "当前没有可用模型，也没有检索到可用知识库上下文，所以只能先暂停回答。配置模型后，这里会支持开放式对话。"
+    return "模型服务当前没有接上，这个问题需要模型生成，暂时不能给出可靠回答。请检查生产环境的 DeepSeek 配置。"
   }
 
   const sourceLines = sources
@@ -72,10 +72,13 @@ export function generateLocalAnswer(question: string, sources: ChatSource[]) {
     .join("\n")
 
   return [
-    "当前没有可用模型，先基于知识库给一个简要版本：",
+    "模型服务当前没有接上，所以不能生成完整开放式回答。",
+    "",
+    "下面只是知识库中最相关的几条线索：",
     sourceLines,
     "",
-    `针对“${question}”，完整开放式回答需要模型服务可用后生成。`,
+    `问题：${question}`,
+    "修好模型环境变量后，这里会恢复完整对话。",
   ].join("\n")
 }
 

@@ -3,6 +3,8 @@ import {
   type FormEvent,
   type KeyboardEvent,
   type ReactNode,
+  memo,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -109,7 +111,7 @@ function renderInlineMarkdown(text: string) {
   })
 }
 
-function ChatMarkdown({ content }: { content: string }) {
+const ChatMarkdown = memo(function ChatMarkdown({ content }: { content: string }) {
   const lines = cleanAssistantMarkdown(content).replace(/\r\n/g, "\n").split("\n")
   const blocks: ReactNode[] = []
   let index = 0
@@ -229,7 +231,7 @@ function ChatMarkdown({ content }: { content: string }) {
   }
 
   return <div className="space-y-4 text-sm leading-7">{blocks}</div>
-}
+})
 
 export function ChatRoom() {
   const [messages, setMessages] = useState<UiMessage[]>([welcomeMessage])
@@ -239,6 +241,8 @@ export function ChatRoom() {
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const sessionIdRef = useRef<string | null>(null)
+  const streamBufferRef = useRef("")
+  const streamFrameRef = useRef<number | null>(null)
 
   const apiMessages = useMemo(
     () =>
@@ -248,15 +252,59 @@ export function ChatRoom() {
     [messages]
   )
 
-  useEffect(() => {
-    viewportRef.current?.scrollTo({
-      top: viewportRef.current.scrollHeight,
-      behavior: "smooth",
+  const flushStreamBuffer = useCallback((assistantId: string) => {
+    if (streamFrameRef.current !== null) {
+      cancelAnimationFrame(streamFrameRef.current)
+      streamFrameRef.current = null
+    }
+
+    const bufferedContent = streamBufferRef.current
+    if (!bufferedContent) return
+
+    streamBufferRef.current = ""
+    setMessages((current) =>
+      current.map((message) =>
+        message.id === assistantId
+          ? { ...message, content: message.content + bufferedContent }
+          : message
+      )
+    )
+  }, [])
+
+  const queueAssistantDelta = useCallback((assistantId: string, content: string) => {
+    streamBufferRef.current += content
+    if (streamFrameRef.current !== null) return
+
+    streamFrameRef.current = requestAnimationFrame(() => {
+      streamFrameRef.current = null
+      flushStreamBuffer(assistantId)
     })
+  }, [flushStreamBuffer])
+
+  useEffect(() => {
+    const viewport = viewportRef.current
+    if (!viewport) return
+
+    const frame = requestAnimationFrame(() => {
+      viewport.scrollTo({
+        top: viewport.scrollHeight,
+        behavior: pending ? "auto" : "smooth",
+      })
+    })
+
+    return () => cancelAnimationFrame(frame)
   }, [messages, pending])
 
   useEffect(() => {
     sessionIdRef.current = getSessionId()
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (streamFrameRef.current !== null) {
+        cancelAnimationFrame(streamFrameRef.current)
+      }
+    }
   }, [])
 
   async function submitQuestion(question: string) {
@@ -336,13 +384,7 @@ export function ChatRoom() {
             }
 
             if (payload.type === "delta") {
-              setMessages((current) =>
-                current.map((message) =>
-                  message.id === assistantId
-                    ? { ...message, content: message.content + payload.content }
-                    : message
-                )
-              )
+              queueAssistantDelta(assistantId, payload.content)
             }
 
             if (payload.type === "error") {
@@ -350,17 +392,20 @@ export function ChatRoom() {
             }
 
             if (payload.type === "done") {
+              flushStreamBuffer(assistantId)
               setStreamingMessageId(null)
             }
           }
         }
       }
     } catch (requestError) {
+      flushStreamBuffer(assistantId)
       setError(requestError instanceof Error ? requestError.message : "请求失败")
       setMessages((current) =>
         current.filter((message) => message.id !== assistantId || message.content)
       )
     } finally {
+      flushStreamBuffer(assistantId)
       setPending(false)
       setStreamingMessageId(null)
     }

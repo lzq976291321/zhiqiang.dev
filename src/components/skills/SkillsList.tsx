@@ -1,9 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import type { Skill } from "@/lib/types"
-import { PageShell } from "@/components/shared/PageShell"
 
 const ROLES = ["全部", "Agent 工程师", "前端开发者", "后端开发者", "独立开发者", "产品经理", "安全合规"]
 
@@ -35,17 +33,11 @@ const fitColor: Record<Skill["fit"], string> = {
   watch: "border-amber-100/18 bg-amber-100/10 text-amber-50/72",
 }
 
-function SkillCard({ skill, index }: { skill: Skill; index: number }) {
+function SkillCard({ skill }: { skill: Skill }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ delay: index * 0.04, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-card overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:border-cyan-100/22 hover:bg-white/[0.09]"
-    >
+    <div className="glass-card overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:border-cyan-100/22 hover:bg-white/[0.09]">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-start justify-between gap-4 p-5 text-left sm:p-6"
@@ -72,50 +64,38 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
           </div>
         </div>
 
-        <motion.svg
+        <svg
           width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-          className="mt-1 shrink-0 text-white/32"
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
+          className={`mt-1 shrink-0 text-white/32 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         >
           <path d="m6 9 6 6 6-6" />
-        </motion.svg>
+        </svg>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="border-t border-white/10 px-5 pb-5 pt-4 sm:px-6">
-              {skill.trigger && (
-                <p className="mb-2 text-[12px] text-white/42">
-                  <span className="text-white/62">触发方式：</span>{skill.trigger}
-                </p>
-              )}
-              <p className="mb-2 text-[12px] leading-relaxed text-white/42">
-                <span className="text-white/62">是否值得：</span>{skill.worth}
-              </p>
-              {skill.installs && (
-                <p className="text-[12px] text-white/42">
-                  <span className="text-white/62">安装量：</span>{skill.installs.toLocaleString()}+
-                </p>
-              )}
-              <div className="mt-3 text-sm leading-relaxed text-white/46">
-                {skill.content.split("\n").filter(Boolean).map((line, i) => (
-                  <p key={i} className="mb-1">{line}</p>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      {open ? (
+        <div className="border-t border-white/10 px-5 pb-5 pt-4 sm:px-6">
+          {skill.trigger && (
+            <p className="mb-2 text-[12px] text-white/42">
+              <span className="text-white/62">触发方式：</span>{skill.trigger}
+            </p>
+          )}
+          <p className="mb-2 text-[12px] leading-relaxed text-white/42">
+            <span className="text-white/62">是否值得：</span>{skill.worth}
+          </p>
+          {skill.installs && (
+            <p className="text-[12px] text-white/42">
+              <span className="text-white/62">安装量：</span>{skill.installs.toLocaleString()}+
+            </p>
+          )}
+          <div className="mt-3 text-sm leading-relaxed text-white/46">
+            {skill.content.split("\n").filter(Boolean).map((line, i) => (
+              <p key={i} className="mb-1">{line}</p>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </div>
   )
 }
 
@@ -124,7 +104,7 @@ export function SkillsList({ skills }: { skills: Skill[] }) {
   const filtered = role === "全部" ? skills : skills.filter((s) => s.roles.includes(role))
 
   return (
-    <PageShell title="Skills" subtitle="按角色筛选 Claude Code Skills：只保留能稳定提高产出的能力" accent="#B8F7D4">
+    <>
       <div className="glass-card mb-6 p-5">
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-100/46">
           Role fit
@@ -152,16 +132,14 @@ export function SkillsList({ skills }: { skills: Skill[] }) {
       </div>
 
       <div className="flex flex-col gap-3">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((s, i) => (
-            <SkillCard key={s.slug} skill={s} index={i} />
-          ))}
-        </AnimatePresence>
+        {filtered.map((s) => (
+          <SkillCard key={s.slug} skill={s} />
+        ))}
       </div>
 
       {filtered.length === 0 && (
         <p className="py-20 text-center text-sm text-white/36">暂无匹配的 Skill</p>
       )}
-    </PageShell>
+    </>
   )
 }

@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
 
 // 路由 → 首页 section id 的映射
 const routeToSection: Record<string, string> = {
@@ -22,11 +21,7 @@ export function BackHome() {
   const hash = routeToSection[base] ?? ""
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4 }}
-    >
+    <div className="animate-fade-in-up">
       <Link
         href={hash ? `/#${hash}` : "/"}
         className="inline-flex items-center gap-2 text-[13px] text-foreground/30 hover:text-foreground/60 transition-colors group"
@@ -41,6 +36,6 @@ export function BackHome() {
         </svg>
         zhiqiang.chat
       </Link>
-    </motion.div>
+    </div>
   )
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { getAllSkills } from "@/lib/content"
 import { SkillsList } from "@/components/skills/SkillsList"
+import { PageShell } from "@/components/shared/PageShell"
 
 export const metadata: Metadata = {
   title: "Skills",
@@ -10,5 +11,13 @@ export const metadata: Metadata = {
 
 export default function SkillsPage() {
   const skills = getAllSkills()
-  return <SkillsList skills={skills} />
+  return (
+    <PageShell
+      title="Skills"
+      subtitle="按角色筛选 Claude Code Skills：只保留能稳定提高产出的能力"
+      accent="#B8F7D4"
+    >
+      <SkillsList skills={skills} />
+    </PageShell>
+  )
 }

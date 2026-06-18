@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { useMemo, useState } from "react"
-import { motion } from "framer-motion"
 import {
   ArrowUpRight,
   BrainCircuit,
@@ -52,12 +51,7 @@ export function AgentIndex({ articles }: { articles: AgentArticle[] }) {
     <div className="space-y-8">
       <section className="grid items-start gap-5 lg:grid-cols-[1.15fr_0.85fr]">
         {featured ? (
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-card overflow-hidden p-6 sm:p-8"
-          >
+          <div className="glass-card animate-fade-in-up overflow-hidden p-6 sm:p-8">
             <div className="mb-8 flex items-center justify-between gap-4">
               <span className="rounded-full border border-cyan-100/18 bg-cyan-100/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-50/80">
                 Start here
@@ -81,27 +75,19 @@ export function AgentIndex({ articles }: { articles: AgentArticle[] }) {
               </Link>
               <span className="font-mono text-xs text-white/38">{featured.readTime}</span>
             </div>
-          </motion.div>
+          </div>
         ) : null}
 
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-card p-5 sm:p-6"
-        >
+        <div className="glass-card animate-fade-in-up p-5 sm:p-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-emerald-100/55">
             Agent system map
           </p>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            {modules.map((item, index) => {
+            {modules.map((item) => {
               const Icon = item.icon
               return (
-                <motion.div
+                <div
                   key={item.label}
-                  initial={{ opacity: 0, x: 12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.12 + index * 0.05, duration: 0.4 }}
                   className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 transition hover:border-cyan-100/20 hover:bg-white/[0.075]"
                 >
                   <span className="grid size-10 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-cyan-50/78">
@@ -111,11 +97,11 @@ export function AgentIndex({ articles }: { articles: AgentArticle[] }) {
                     <span className="block text-sm font-semibold text-white/86">{item.label}</span>
                     <span className="text-xs text-white/42">{item.desc}</span>
                   </span>
-                </motion.div>
+                </div>
               )
             })}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       <section className="glass-card p-3 sm:p-4">
@@ -143,12 +129,9 @@ export function AgentIndex({ articles }: { articles: AgentArticle[] }) {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
-        {filteredArticles.map((article, index) => (
-          <motion.article
+        {filteredArticles.map((article) => (
+          <article
             key={article.slug}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05, duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
           >
             <Link
               href={`/agent/${article.slug}`}
@@ -182,7 +165,7 @@ export function AgentIndex({ articles }: { articles: AgentArticle[] }) {
                 <ArrowUpRight className="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </div>
             </Link>
-          </motion.article>
+          </article>
         ))}
       </section>
     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { getAllMcpServers } from "@/lib/content"
 import { McpList } from "@/components/mcp/McpList"
+import { PageShell } from "@/components/shared/PageShell"
 
 export const metadata: Metadata = {
   title: "MCP",
@@ -10,5 +11,13 @@ export const metadata: Metadata = {
 
 export default function McpPage() {
   const servers = getAllMcpServers()
-  return <McpList servers={servers} />
+  return (
+    <PageShell
+      title="MCP"
+      subtitle="按角色筛选值得接入的 MCP：优先官方、只读、低权限、可审计"
+      accent="#B8F7D4"
+    >
+      <McpList servers={servers} />
+    </PageShell>
+  )
 }
