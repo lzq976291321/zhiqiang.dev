@@ -5,8 +5,8 @@
 ## 本地开发
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 默认端口：`http://localhost:54129`
@@ -14,9 +14,11 @@ npm run dev
 生产预览：
 
 ```bash
-npm run build
-npm run start
+pnpm run build
+pnpm run start
 ```
+
+部署平台：Vercel。服务端函数区域通过 `vercel.json` 固定为 `sin1`，方便后续 Supabase 选择 `ap-southeast-1`。
 
 ## 核心目录
 
@@ -25,18 +27,15 @@ npm run start
 - `src/lib/chat`：知识库读取、检索、DeepSeek SSE 代理、问题日志。
 - `src/content/profile`：Chat 的个人公开知识库。
 - `src/content/agent`、`src/content/mcp`、`src/content/skills`：站内文章和工具资料。
-- `docs`：工程知识沉淀。
+- `docs`：本地工程知识沉淀，不提交远端。
 
 ## 文档
 
-- [项目总览](./docs/README.md)
-- [Chat 模块](./docs/chat.md)
-- [知识库维护](./docs/knowledge-base.md)
-- [部署与环境](./docs/deployment.md)
+工程文档放在本地 `docs/`，用于记录架构、部署、知识库维护和阶段性决策。这个目录默认被 Git 忽略，不作为开源仓库内容。
 
 ## 常用命令
 
 ```bash
-npm run lint
-npm run build
+pnpm run lint
+pnpm run build
 ```
