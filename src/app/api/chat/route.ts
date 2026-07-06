@@ -138,6 +138,16 @@ function sendMeta(
   })
 }
 
+function sendSources(
+  controller: ReadableStreamDefaultController<Uint8Array>,
+  sources: ChatSource[]
+) {
+  send(controller, {
+    type: "sources",
+    sources: sources.slice(0, 6),
+  })
+}
+
 async function createQuestionLogSafely(input: Parameters<typeof createChatQuestionLog>[0]) {
   try {
     return await createChatQuestionLog(input)
@@ -269,6 +279,7 @@ export async function POST(request: NextRequest) {
     try {
       if (mode === "deepseek") {
         sendMeta(controller, mode)
+        sendSources(controller, sources)
         const responseLength = await proxyDeepSeekStream({
           controller,
           question,
@@ -288,6 +299,7 @@ export async function POST(request: NextRequest) {
 
       const fallbackAnswer = generateLocalAnswer(question, sources)
       sendMeta(controller, mode)
+      sendSources(controller, sources)
       await streamText(controller, fallbackAnswer)
       send(controller, { type: "done" })
       await updateQuestionLogSafely({

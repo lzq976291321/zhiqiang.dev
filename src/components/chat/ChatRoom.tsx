@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import type {
   ChatMessage,
+  ChatSource,
   ChatStreamEvent,
   ChatStreamMode,
 } from "@/lib/chat/types"
@@ -28,6 +29,7 @@ import type {
 interface UiMessage extends ChatMessage {
   id: string
   mode?: ChatStreamMode
+  sources?: ChatSource[]
 }
 
 const welcomeMessage: UiMessage = {
@@ -71,9 +73,9 @@ function createMessageId() {
 }
 
 const internalReferencePattern =
-  /[ \t]*\[(?:profile|agent|skill|mcp)(?:\.[a-z0-9_-]+)+\][ \t]*/gi
+  /[ \t]*\[(?:profile|agent|skill|mcp|knowledge)(?:\.[a-z0-9_-]+)+\][ \t]*/gi
 const trailingInternalReferencePattern =
-  /[ \t]*\[(?:profile|agent|skill|mcp)(?:\.[a-z0-9_-]*)*$/i
+  /[ \t]*\[(?:profile|agent|skill|mcp|knowledge)(?:\.[a-z0-9_-]*)*$/i
 
 function cleanAssistantMarkdown(content: string) {
   return content
@@ -82,6 +84,16 @@ function cleanAssistantMarkdown(content: string) {
     .replace(/\s+([，。！？；：,.!?;:])/g, "$1")
     .replace(/[ \t]{2,}/g, " ")
     .trim()
+}
+
+function getSourceCategoryLabel(category: string) {
+  if (category === "knowledge") return "知识库"
+  if (category === "profile") return "Profile"
+  if (category === "agent") return "Agent"
+  if (category === "skills") return "Skills"
+  if (category === "mcp") return "MCP"
+
+  return category
 }
 
 function renderInlineMarkdown(text: string) {
@@ -233,6 +245,43 @@ const ChatMarkdown = memo(function ChatMarkdown({ content }: { content: string }
   return <div className="space-y-4 text-sm leading-7">{blocks}</div>
 })
 
+const SourceReferences = memo(function SourceReferences({
+  sources,
+}: {
+  sources: ChatSource[]
+}) {
+  if (sources.length === 0) return null
+
+  return (
+    <div className="mt-4 border-t border-white/10 pt-3">
+      <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/34">
+        参考知识
+      </p>
+      <div className="grid gap-2">
+        {sources.slice(0, 3).map((source) => (
+          <a
+            key={source.id}
+            href={source.path}
+            className="group rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-2 transition hover:border-cyan-100/22 hover:bg-cyan-100/10"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="line-clamp-1 text-xs font-medium text-white/72">
+                {source.title}
+              </span>
+              <span className="shrink-0 rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-white/38 group-hover:text-cyan-50/70">
+                {getSourceCategoryLabel(source.category)}
+              </span>
+            </div>
+            <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/42">
+              {source.excerpt}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+})
+
 export function ChatRoom() {
   const [messages, setMessages] = useState<UiMessage[]>([welcomeMessage])
   const [input, setInput] = useState("")
@@ -377,6 +426,19 @@ export function ChatRoom() {
                     ? {
                         ...message,
                         mode: payload.mode,
+                      }
+                    : message
+                )
+              )
+            }
+
+            if (payload.type === "sources") {
+              setMessages((current) =>
+                current.map((message) =>
+                  message.id === assistantId
+                    ? {
+                        ...message,
+                        sources: payload.sources,
                       }
                     : message
                 )
@@ -536,6 +598,9 @@ export function ChatRoom() {
                     ) : (
                       <div>
                         {message.content ? <ChatMarkdown content={message.content} /> : null}
+                        {message.content && message.sources ? (
+                          <SourceReferences sources={message.sources} />
+                        ) : null}
                         {streamingMessageId === message.id ? (
                           <span className="ml-1 inline-block h-4 w-1 translate-y-0.5 animate-pulse rounded-full bg-cyan-100/70" />
                         ) : null}

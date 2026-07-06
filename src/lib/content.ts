@@ -1,5 +1,22 @@
 import { getMdxFiles } from "./mdx"
-import type { AgentArticle, Skill, McpServer } from "./types"
+import type {
+  AgentArticle,
+  KnowledgeConfidence,
+  KnowledgeEntry,
+  KnowledgeStatus,
+  McpServer,
+  Skill,
+} from "./types"
+
+function getKnowledgeStatus(value: unknown): KnowledgeStatus {
+  if (value === "draft" || value === "reviewed" || value === "published") return value
+  return "draft"
+}
+
+function getKnowledgeConfidence(value: unknown): KnowledgeConfidence {
+  if (value === "low" || value === "medium" || value === "high") return value
+  return "medium"
+}
 
 // ===== Skills =====
 export function getAllSkills(): Skill[] {
@@ -64,4 +81,23 @@ export function getAgentArticleBySlug(slug: string): AgentArticle | null {
 
 export function getAgentCategories(): string[] {
   return Array.from(new Set(getAllAgentArticles().map((article) => article.category)))
+}
+
+// ===== Knowledge =====
+export function getAllKnowledgeEntries(): KnowledgeEntry[] {
+  return getMdxFiles("knowledge")
+    .map(({ slug, frontmatter, content }) => ({
+      slug,
+      id: frontmatter.id ?? slug,
+      title: frontmatter.title ?? "",
+      description: frontmatter.description ?? "",
+      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
+      status: getKnowledgeStatus(frontmatter.status),
+      confidence: getKnowledgeConfidence(frontmatter.confidence),
+      updatedAt: frontmatter.updatedAt ?? "",
+      sourceId: frontmatter.sourceId ?? `knowledge.${slug}`,
+      publicPath: frontmatter.publicPath ?? "/chat#knowledge",
+      content,
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title, "zh-CN"))
 }

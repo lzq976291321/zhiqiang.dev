@@ -3,6 +3,7 @@ import path from "path"
 import matter from "gray-matter"
 import {
   getAllAgentArticles,
+  getAllKnowledgeEntries,
   getAllMcpServers,
   getAllSkills,
 } from "@/lib/content"
@@ -188,11 +189,37 @@ function readMcpChunks() {
   )
 }
 
+function readKnowledgeChunks() {
+  return getAllKnowledgeEntries()
+    .filter((entry) => entry.status === "published")
+    .flatMap((entry) =>
+      chunkMarkdown({
+        content: [
+          entry.description,
+          `标签：${entry.tags.join("、")}`,
+          `置信度：${entry.confidence}`,
+          `更新时间：${entry.updatedAt}`,
+          entry.content,
+        ].join("\n\n"),
+        sourceBaseId: entry.sourceId,
+        title: entry.title,
+        path: entry.publicPath,
+        category: "knowledge",
+        keywords: [
+          entry.id,
+          entry.confidence,
+          ...entry.tags,
+        ],
+      })
+    )
+}
+
 export function getChatCorpus(): ChatChunk[] {
   if (cachedChatCorpus) return cachedChatCorpus
 
   cachedChatCorpus = [
     ...readProfileChunks(),
+    ...readKnowledgeChunks(),
     ...readAgentChunks(),
     ...readSkillChunks(),
     ...readMcpChunks(),

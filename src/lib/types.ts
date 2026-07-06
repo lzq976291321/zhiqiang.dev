@@ -40,4 +40,21 @@ export interface AgentArticle {
   content: string
 }
 
-export type ContentType = "skill" | "mcp" | "agent"
+export type KnowledgeStatus = "draft" | "reviewed" | "published"
+export type KnowledgeConfidence = "low" | "medium" | "high"
+
+export interface KnowledgeEntry {
+  slug: string
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  status: KnowledgeStatus
+  confidence: KnowledgeConfidence
+  updatedAt: string
+  sourceId: string
+  publicPath: string
+  content: string
+}
+
+export type ContentType = "skill" | "mcp" | "agent" | "knowledge"

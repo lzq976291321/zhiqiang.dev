@@ -34,6 +34,10 @@ export type ChatStreamEvent =
       mode: ChatStreamMode
     }
   | {
+      type: "sources"
+      sources: ChatSource[]
+    }
+  | {
       type: "delta"
       content: string
     }

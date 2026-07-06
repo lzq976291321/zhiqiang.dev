@@ -100,6 +100,17 @@ function getModeLabel(mode: string | null) {
   return mode ?? "-"
 }
 
+function getKnowledgeSourceCount(sourceIds: string[] | null) {
+  if (!sourceIds) return 0
+
+  let count = 0
+  for (const sourceId of sourceIds) {
+    if (sourceId.startsWith("knowledge.")) count += 1
+  }
+
+  return count
+}
+
 export default function ChatLogsPage() {
   const [token, setToken] = useState("")
   const [query, setQuery] = useState("")
@@ -117,20 +128,38 @@ export default function ChatLogsPage() {
   }, [])
 
   const filteredSummary = useMemo(() => {
-    const completedCount = logs.filter((log) => log.status === "completed").length
-    const failedCount = logs.filter((log) => log.status === "failed" || log.error_message).length
-    const timedLogs = logs.filter(
-      (log): log is ChatLog & { duration_ms: number } => typeof log.duration_ms === "number"
-    )
-    const totalDuration = timedLogs.reduce((sum, log) => sum + log.duration_ms, 0)
-    const rejectedRateLimitCount = rateLimitEvents.filter((event) => event.event === "rejected").length
+    let completedCount = 0
+    let failedCount = 0
+    let noSourceCount = 0
+    let knowledgeHitCount = 0
+    let totalDuration = 0
+    let timedLogCount = 0
+    let rejectedRateLimitCount = 0
+
+    for (const log of logs) {
+      if (log.status === "completed") completedCount += 1
+      if (log.status === "failed" || log.error_message) failedCount += 1
+      if (log.source_count === 0) noSourceCount += 1
+      if (getKnowledgeSourceCount(log.source_ids) > 0) knowledgeHitCount += 1
+
+      if (typeof log.duration_ms === "number") {
+        totalDuration += log.duration_ms
+        timedLogCount += 1
+      }
+    }
+
+    for (const event of rateLimitEvents) {
+      if (event.event === "rejected") rejectedRateLimitCount += 1
+    }
 
     return {
       count: logs.length,
       visitCount: siteVisitLogs.length,
       completedCount,
       failedCount,
-      averageDuration: timedLogs.length ? Math.round(totalDuration / timedLogs.length) : 0,
+      noSourceCount,
+      knowledgeHitCount,
+      averageDuration: timedLogCount ? Math.round(totalDuration / timedLogCount) : 0,
       rejectedRateLimitCount,
     }
   }, [logs, rateLimitEvents, siteVisitLogs])
@@ -224,7 +253,7 @@ export default function ChatLogsPage() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           <div className="glass-card p-4">
             <p className="text-xs text-white/42">访问数</p>
             <p className="mt-2 text-2xl font-semibold text-white">{filteredSummary.visitCount}</p>
@@ -243,6 +272,12 @@ export default function ChatLogsPage() {
             <p className="text-xs text-white/42">平均耗时</p>
             <p className="mt-2 text-2xl font-semibold text-white">
               {filteredSummary.averageDuration ? `${filteredSummary.averageDuration}ms` : "-"}
+            </p>
+          </div>
+          <div className="glass-card p-4">
+            <p className="text-xs text-white/42">知识命中 / 缺口</p>
+            <p className="mt-2 text-2xl font-semibold text-white">
+              {filteredSummary.knowledgeHitCount} / {filteredSummary.noSourceCount}
             </p>
           </div>
           <div className="glass-card p-4">
@@ -330,7 +365,10 @@ export default function ChatLogsPage() {
                       {getModeLabel(log.mode)}
                     </td>
                     <td className="border-b border-white/[0.08] px-3 py-3 align-top">
-                      {log.source_count}
+                      <p>{log.source_count}</p>
+                      <p className="mt-1 text-xs text-white/36">
+                        知识 {getKnowledgeSourceCount(log.source_ids)}
+                      </p>
                     </td>
                     <td className="border-b border-white/[0.08] px-3 py-3 align-top">
                       {log.duration_ms ? `${log.duration_ms}ms` : "-"}
