@@ -47,14 +47,35 @@ function createComponents() {
     p: (props: ComponentPropsWithoutRef<"p">) => (
       <p {...props} className="mt-5 text-[17px] leading-8 text-white/66" />
     ),
+    a: (props: ComponentPropsWithoutRef<"a">) => (
+      <a
+        {...props}
+        className="font-medium text-cyan-100 underline decoration-cyan-100/30 underline-offset-4 transition hover:text-white hover:decoration-white/55"
+      />
+    ),
+    strong: (props: ComponentPropsWithoutRef<"strong">) => (
+      <strong {...props} className="font-semibold text-white/88" />
+    ),
     ul: (props: ComponentPropsWithoutRef<"ul">) => (
-      <ul {...props} className="mt-5 space-y-3 text-white/66" />
+      <ul {...props} className="mt-5 list-disc space-y-3 pl-5 text-white/66 marker:text-cyan-200/70" />
+    ),
+    ol: (props: ComponentPropsWithoutRef<"ol">) => (
+      <ol
+        {...props}
+        className="mt-5 list-decimal space-y-3 pl-5 text-white/66 marker:font-mono marker:text-cyan-200/70"
+      />
     ),
     li: (props: ComponentPropsWithoutRef<"li">) => (
-      <li
+      <li {...props} className="pl-1 leading-7" />
+    ),
+    blockquote: (props: ComponentPropsWithoutRef<"blockquote">) => (
+      <blockquote
         {...props}
-        className="relative pl-6 leading-7 before:absolute before:left-0 before:top-3 before:size-1.5 before:rounded-full before:bg-cyan-200/70"
+        className="mt-8 border-l border-cyan-100/30 bg-cyan-100/[0.055] px-5 py-4 text-lg leading-8 text-cyan-50/78"
       />
+    ),
+    hr: (props: ComponentPropsWithoutRef<"hr">) => (
+      <hr {...props} className="my-10 border-0 border-t border-white/10" />
     ),
     pre: (props: ComponentPropsWithoutRef<"pre">) => (
       <pre

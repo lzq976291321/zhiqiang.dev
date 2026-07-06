@@ -68,52 +68,6 @@ export default async function AgentArticlePage({ params }: PageProps) {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_304px]">
           <div className="min-w-0 space-y-6">
-            <section className="glass-card overflow-hidden p-4 lg:hidden">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-100/46">
-                    Series progress
-                  </p>
-                  <p className="mt-2 font-heading text-3xl font-semibold tracking-[-0.04em] text-white">
-                    {stepLabel}
-                    <span className="text-white/24"> / {totalLabel}</span>
-                  </p>
-                </div>
-                <span className="rounded-full border border-white/10 bg-white/[0.055] px-3 py-1 text-xs text-white/46">
-                  {progress}%
-                </span>
-              </div>
-              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan-100 via-white to-emerald-100"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-
-              {headings.length > 0 ? (
-                <div className="mt-4 border-t border-white/10 pt-4">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white/70">
-                    <ListTree className="size-4 text-cyan-100/60" />
-                    目录
-                  </div>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {headings.map((heading, index) => (
-                      <a
-                        key={heading.id}
-                        href={`#${heading.id}`}
-                        className="group flex min-w-0 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white/50 transition hover:border-cyan-100/20 hover:bg-white/[0.075] hover:text-white/82"
-                      >
-                        <span className="font-mono text-[10px] text-cyan-100/38">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <span className="min-w-0 truncate">{heading.title}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-            </section>
-
             <article className="overflow-hidden rounded-[34px] border border-white/12 bg-white/[0.075] shadow-[0_30px_110px_rgba(0,0,0,0.36)] backdrop-blur-2xl">
               <header className="relative overflow-hidden border-b border-white/10 p-6 sm:p-9 lg:p-12">
                 <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(159,232,255,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(184,247,212,0.16),transparent_32%)]" />
@@ -137,6 +91,46 @@ export default async function AgentArticlePage({ params }: PageProps) {
                   {article.description}
                 </p>
               </header>
+
+              <section className="border-b border-white/10 px-6 py-4 sm:px-9 lg:hidden">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-100/46">
+                    {stepLabel} / {totalLabel}
+                  </p>
+                  <span className="rounded-full border border-white/10 bg-white/[0.055] px-3 py-1 text-xs text-white/46">
+                    {progress}%
+                  </span>
+                </div>
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-100 via-white to-emerald-100"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+
+                {headings.length > 0 ? (
+                  <div className="mt-4">
+                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white/70">
+                      <ListTree className="size-4 text-cyan-100/60" />
+                      目录
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {headings.map((heading, index) => (
+                        <a
+                          key={heading.id}
+                          href={`#${heading.id}`}
+                          className="group flex min-w-0 items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white/50 transition hover:border-cyan-100/20 hover:bg-white/[0.075] hover:text-white/82"
+                        >
+                          <span className="font-mono text-[10px] text-cyan-100/38">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="min-w-0 truncate">{heading.title}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </section>
 
               <div className="px-6 py-4 sm:px-9 lg:px-12">
                 <div className="flex flex-wrap gap-2">

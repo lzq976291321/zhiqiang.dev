@@ -1,7 +1,8 @@
 import { PageShell } from "@/components/shared/PageShell"
 
 const TIMELINE = [
-  { year: "现在", title: "独立开发者", desc: "一个人全干：产品设计、前后端开发、部署运维。专注 AI 工具链与个人品牌建设。" },
+  { year: "现在", title: "全栈开发者", desc: "工作主责以前端、后端和部署运维为主，专注把 AI 工具链和业务需求落到可运行系统里。" },
+  { year: "补位", title: "产品判断", desc: "如果项目缺少产品角色，我可以基于经验梳理需求和交互，并直接在项目中呈现可用形态；不以传统产品经理方式单独交付原型或设计稿。" },
   { year: "持续", title: "技术栈", desc: "Next.js + React + Tailwind CSS（前端）/ NestJS + Prisma + Supabase（后端）/ Vercel + Railway（部署）" },
   { year: "关注", title: "方向", desc: "SEO/AEO 优化、AIGC 工具链（Claude Skills / MCP / Prompt 工程）、独立产品。" },
 ]
@@ -38,7 +39,7 @@ function SkillBar({ name, level, index }: { name: string; level: number; index: 
 
 export default function AboutPage() {
   return (
-    <PageShell title="关于" subtitle="一个人全干的独立开发者" accent="#9FE8FF">
+    <PageShell title="关于" subtitle="前后端、部署运维与 Agent 工程实践" accent="#9FE8FF">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
         {/* 左侧：时间线 */}
         <div className="lg:col-span-3">
