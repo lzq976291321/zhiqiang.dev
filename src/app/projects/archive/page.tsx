@@ -94,7 +94,7 @@ export default function ProjectsPage() {
             ))}
           </div>
         </section>
-        <footer className={styles.pageFooter}><span>zhiqiang.chat</span><Link href="/resume">查看完整简历<ArrowUpRight size={13} aria-hidden="true" /></Link></footer>
+        <footer className={styles.pageFooter}><span>zhiqiang.chat</span><Link href="/chat">聊一聊<ArrowUpRight size={13} aria-hidden="true" /></Link></footer>
       </div>
     </main>
   )

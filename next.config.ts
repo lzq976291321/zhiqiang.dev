@@ -1,6 +1,15 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/resume.docx",
+        // 下载文件与简历页面一样，只供访客按需查看，不进入搜索结果。
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ]
+  },
   outputFileTracingIncludes: {
     "/api/chat": ["./src/features/chat/skills/vendor/sun-ge/**/*.md"],
   },

@@ -56,7 +56,7 @@ export default function HomePage() {
             </div>
           </section>
         </div>
-        <footer className={styles.footer}><span>zhiqiang.chat · 保持好奇，持续构建。</span><div><Link href="/resume">简历</Link><Link href="/chat">聊一聊 ↗</Link></div></footer>
+        <footer className={styles.footer}><span>zhiqiang.chat · 保持好奇，持续构建。</span><div><Link href="/chat">聊一聊 ↗</Link></div></footer>
       </div>
     </main>
   )
