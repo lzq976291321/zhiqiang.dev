@@ -1,37 +1,27 @@
-import { BackHome } from "@/components/shared/BackHome"
+import Link from "next/link"
+import { ArrowLeft, Download } from "lucide-react"
+import styles from "@/features/site/components/Profile.module.css"
 
 export default function ResumePage() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="absolute top-0 left-0 right-0 h-[30vh] -z-10 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60vw] h-[40vh] rounded-full opacity-[0.03]"
-          style={{ background: "radial-gradient(ellipse, #A78BFA, transparent 70%)", filter: "blur(80px)" }}
-        />
-      </div>
-
-      <div className="max-w-4xl mx-auto px-5 sm:px-8 pt-8 pb-20">
-        <div className="flex items-center justify-between">
-          <BackHome />
-          <a href="/resume.docx" download
-            className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-[11px] font-mono tracking-wider text-foreground/25 hover:text-foreground/50 border border-foreground/[0.06] hover:border-foreground/[0.12] transition-all">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            下载 DOCX
-          </a>
+    <main className={styles.page}>
+      <div className={styles.resumeWrap}>
+        <div className={styles.resumeToolbar}>
+          <Link href="/" className={styles.backLink}><ArrowLeft size={14} aria-hidden="true" />zhiqiang.chat</Link>
+          <a href="/resume.docx" download className={styles.download}><Download size={14} aria-hidden="true" />下载 DOCX</a>
         </div>
 
         {/* 头部 */}
-        <Reveal className="mt-12 mb-10">
-          <h1 className="text-4xl font-heading font-black text-foreground/90">林志强</h1>
-          <p className="text-lg text-gold/70 font-medium mt-1">全栈 Agent 开发工程师</p>
-          <p className="text-sm text-foreground/25 mt-2 font-mono">男 · 28岁 · 深圳  |  13544042869  |  sz976291321@gmail.com</p>
-          <p className="text-sm text-foreground/35 mt-2">6年经验 · 擅长 AI Agent 驱动的全栈产品研发 · OpenClaw 多智能体平台作者</p>
-        </Reveal>
+        <header className={styles.resumeHeader}>
+          <h1 className={styles.name}>林志强</h1>
+          <p className={styles.role}>全栈 Agent 开发工程师</p>
+          <p className={styles.contact}>男 · 28岁 · 深圳  |  13544042869  |  sz976291321@gmail.com</p>
+          <p className={styles.summary}>6年经验 · 擅长 AI Agent 驱动的全栈产品研发 · OpenClaw 多智能体平台作者</p>
+        </header>
 
         {/* 核心优势 */}
         <Section title="核心优势">
-          <div className="space-y-4">
+          <div className={styles.strengths}>
             <Item title="OpenClaw 多智能体平台作者">
               自研本地多 Agent 调度平台 OpenClaw，实现主 Agent 调度 + 子 Agent 并发执行架构，集成飞书 30+ 工具、SearXNG 搜索引擎、Chrome DevTools 浏览器控制，通过 Skill 编排和 Hooks 自动化将 AI Agent 深度嵌入研发全流程
             </Item>
@@ -49,7 +39,7 @@ export default function ResumePage() {
 
         {/* OpenClaw */}
         <Section title="OpenClaw · 自研多智能体 AI 平台">
-          <p className="text-sm text-foreground/30 mb-4 leading-relaxed">
+          <p className={styles.sectionIntro}>
             本地部署的多 Agent 调度平台，主 Agent 按决策树自动分发任务给专业子 Agent 并发执行，集成飞书生态和本地开发工具链。
           </p>
           <SubSection title="架构设计">
@@ -89,7 +79,7 @@ export default function ResumePage() {
         <Section title="项目经历">
           {/* 闪剪 */}
           <Project name="闪剪 Web 端 · 视频创作平台" tech="React + TypeScript + MobX" time="2022.03 — 2025.12">
-            <p className="text-xs text-foreground/25 mb-3 leading-relaxed">
+            <p className={styles.projectIntro}>
               面向内容创作者的视频创作平台，支持视频编辑、直播管理、数字人生成、AI 配音、多平台发布，服务数十万创作者。
             </p>
             <SubSection title="视频编辑器架构设计（核心职责）">
@@ -134,83 +124,43 @@ export default function ResumePage() {
 
         {/* 教育 */}
         <Section title="教育经历">
-          <p className="text-sm text-foreground/30">广州华南商贸职业学院 · 大专 · 计算机及应用 · 2016 — 2019</p>
+          <p className={styles.education}>广州华南商贸职业学院 · 大专 · 计算机及应用 · 2016 — 2019</p>
         </Section>
       </div>
-    </div>
+    </main>
   )
 }
 
 /* ===== 子组件 ===== */
 
-function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`animate-fade-in-up ${className}`}>
-      {children}
-    </div>
-  )
-}
-
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mb-10">
-      <h2 className="text-xs font-mono tracking-[0.15em] uppercase text-foreground/20 mb-4">{title}</h2>
-      {children}
-    </section>
-  )
+  return <section className={styles.resumeSection}><h2>{title}</h2><div className={styles.sectionContent}>{children}</div></section>
 }
 
 function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-3">
-      <h4 className="text-xs font-bold text-foreground/40 mb-1.5">{title}</h4>
-      <ul className="space-y-1">{children}</ul>
-    </div>
-  )
+  return <div className={styles.subSection}><h4>{title}</h4><ul>{children}</ul></div>
 }
 
 function Item({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="p-4 rounded-xl border border-foreground/[0.04] bg-surface/30">
-      <h3 className="text-sm font-bold text-foreground/70 mb-1.5">{title}</h3>
-      <p className="text-xs text-foreground/25 leading-relaxed">{children}</p>
-    </div>
-  )
+  return <div className={styles.strength}><h3>{title}</h3><p>{children}</p></div>
 }
 
 function Li({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="text-xs text-foreground/25 leading-relaxed pl-3 relative before:content-['·'] before:absolute before:left-0 before:text-gold/30">
-      {children}
-    </li>
-  )
+  return <li className={styles.bullet}>{children}</li>
 }
 
 function Tags({ items }: { items: string[] }) {
-  return (
-    <div className="flex flex-wrap gap-1.5 mb-2">
-      {items.map((t) => (
-        <span key={t} className="text-[11px] font-mono px-2 py-0.5 rounded bg-foreground/[0.04] text-foreground/30">
-          {t}
-        </span>
-      ))}
-    </div>
-  )
+  return <div className={styles.skillRow}>{items.map((item) => <span key={item}>{item}</span>)}</div>
 }
 
 function Job({ company, role, time, current, children }: {
   company: string; role: string; time: string; current?: boolean; children?: React.ReactNode
 }) {
   return (
-    <div className="relative pl-5 border-l border-foreground/[0.06] mb-5">
-      <div className="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full -translate-x-[3.5px]"
-        style={{ background: current ? "#C8A97E" : "rgba(200,169,126,0.2)" }} />
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5">
-        <h3 className="text-sm font-bold text-foreground/70">{company}</h3>
-        <span className="text-[11px] font-mono text-foreground/20">{time}</span>
-      </div>
-      <p className="text-xs text-gold/40 mt-0.5">{role}</p>
-      {children && <p className="text-xs text-foreground/25 mt-1.5 leading-relaxed">{children}</p>}
+    <div className={`${styles.job} ${current ? styles.currentJob : ""}`}>
+      <div className={styles.entryHeading}><h3>{company}</h3><span>{time}</span></div>
+      <p className={styles.jobRole}>{role}</p>
+      {children ? <p className={styles.jobDescription}>{children}</p> : null}
     </div>
   )
 }
@@ -218,14 +168,5 @@ function Job({ company, role, time, current, children }: {
 function Project({ name, tech, time, children }: {
   name: string; tech: string; time: string; children: React.ReactNode
 }) {
-  return (
-    <div className="mb-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 mb-2">
-        <h3 className="text-sm font-bold text-foreground/70">▎{name}</h3>
-        <span className="text-[11px] font-mono text-foreground/20">{time}</span>
-      </div>
-      <p className="text-[11px] font-mono text-foreground/20 mb-3">{tech}</p>
-      {children}
-    </div>
-  )
+  return <article className={styles.resumeProject}><div className={styles.entryHeading}><h3>{name}</h3><span>{time}</span></div><p className={styles.tech}>{tech}</p>{children}</article>
 }

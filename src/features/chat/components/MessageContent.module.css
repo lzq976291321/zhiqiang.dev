@@ -1,0 +1,133 @@
+.content {
+  min-width: 0;
+  color: #424751;
+  font-size: 14px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.content > * + * {
+  margin-top: 1em;
+}
+
+.content p,
+.content li {
+  white-space: pre-wrap;
+}
+
+.content h2,
+.content h3 {
+  color: #292e37;
+  font-weight: 650;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+}
+
+.content h2 {
+  font-size: 1.2em;
+}
+
+.content h3 {
+  font-size: 1.07em;
+}
+
+.content strong {
+  color: #333945;
+  font-weight: 650;
+}
+
+.content ol,
+.content ul {
+  padding-left: 1.45em;
+}
+
+.content ol {
+  list-style-type: decimal;
+}
+
+.content ul {
+  list-style-type: disc;
+}
+
+.content li {
+  padding-left: 0.2em;
+}
+
+.content li + li {
+  margin-top: 0.45em;
+}
+
+.content li::marker {
+  color: #939aaa;
+}
+
+.content a {
+  color: #526dce;
+  text-decoration: underline;
+  text-decoration-color: #bac6f1;
+  text-underline-offset: 0.2em;
+  transition: color 150ms ease;
+}
+
+.content a:hover {
+  color: #324eb4;
+}
+
+.content a:focus-visible,
+.content pre:focus-visible {
+  outline: 2px solid #526dfe;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.content code {
+  border: 1px solid #e3e7ef;
+  border-radius: 5px;
+  background: #eef1f6;
+  padding: 0.12em 0.35em;
+  color: #59677f;
+  font-family: var(--font-geist-mono, ui-monospace), SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+
+.codeBlock {
+  overflow: hidden;
+  border: 1px solid #e3e7ef;
+  border-radius: 12px;
+  background: #f1f3f7;
+}
+
+.codeLanguage {
+  border-bottom: 1px solid #e1e6ef;
+  padding: 7px 15px;
+  color: #8792a5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.codeBlock pre {
+  margin: 0;
+  overflow-x: auto;
+  padding: 15px 17px;
+  line-height: 1.75;
+  tab-size: 2;
+}
+
+.codeBlock pre code {
+  display: block;
+  min-width: max-content;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+@media (min-width: 640px) {
+  .content {
+    font-size: 15px;
+  }
+}

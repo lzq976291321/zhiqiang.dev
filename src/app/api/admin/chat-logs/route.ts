@@ -114,6 +114,8 @@ export async function GET(request: NextRequest) {
   const status = cleanFilterValue(searchParams.get("status"))
   const query = cleanFilterValue(searchParams.get("q"))
   const limit = getLimit(searchParams.get("limit"))
+  const rawOffset = Number(searchParams.get("offset") ?? 0)
+  const offset = Number.isSafeInteger(rawOffset) && rawOffset >= 0 ? rawOffset : 0
 
   const url = new URL(`${supabaseUrl}/rest/v1/${tableName}`)
   url.searchParams.set(
@@ -141,8 +143,9 @@ export async function GET(request: NextRequest) {
       "referrer",
     ].join(",")
   )
-  url.searchParams.set("order", "created_at.desc")
+  url.searchParams.set("order", "created_at.desc,id.desc")
   url.searchParams.set("limit", String(limit))
+  url.searchParams.set("offset", String(offset))
 
   if (status && status !== "all") {
     url.searchParams.set("status", `eq.${status}`)
@@ -191,7 +194,7 @@ export async function GET(request: NextRequest) {
   }
 
   const [response, rateLimitResponse, siteVisitResponse] = await Promise.all([
-    fetch(url, { headers: requestHeaders }),
+    fetch(url, { headers: { ...requestHeaders, Prefer: "count=exact" }, cache: "no-store" }),
     fetch(rateLimitUrl, { headers: requestHeaders }),
     fetch(siteVisitUrl, { headers: requestHeaders }),
   ])
@@ -204,6 +207,8 @@ export async function GET(request: NextRequest) {
   }
 
   const logs = (await response.json()) as RemoteChatLog[]
+  const count = response.headers.get("content-range")?.split("/")[1]
+  const total = count && count !== "*" ? Number(count) : null
   const rateLimitEvents = rateLimitResponse.ok
     ? ((await rateLimitResponse.json()) as RemoteRateLimitEvent[])
     : []
@@ -214,6 +219,9 @@ export async function GET(request: NextRequest) {
   return jsonResponse({
     configured: true,
     logs,
+    total,
+    offset,
+    hasMore: total !== null ? offset + logs.length < total : logs.length === limit,
     rateLimitEvents,
     siteVisitLogs,
     rateLimitError: rateLimitResponse.ok

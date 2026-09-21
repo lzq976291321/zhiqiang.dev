@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "zhiqiang.chat",
-  title: "zhiqiang.chat — Agent Engineering & Design Token Lab",
+  title: "志强的开发现场 — 知识、设计与作品",
   description:
-    "全栈 Agent 开发者的公开知识库，记录 Claude Code、Agent 设计、Design Token Lab、MCP、Skills 与独立产品交付实践",
+    "探索我的工程知识与技术判断，体验 UI Lab 的界面与交互，打开实际落地的作品。",
   url: "https://zhiqiang.chat",
   author: {
     name: "Lin Zhiqiang",

@@ -1,8 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
-  AlertTriangle,
   Database,
   LockKeyhole,
   RefreshCw,
@@ -58,6 +57,8 @@ interface ChatLogResponse {
   logs: ChatLog[]
   rateLimitEvents: RateLimitEvent[]
   siteVisitLogs: SiteVisitLog[]
+  total?: number | null
+  hasMore?: boolean
   message?: string
   error?: string
   rateLimitError?: string
@@ -113,6 +114,8 @@ function getKnowledgeSourceCount(sourceIds: string[] | null) {
 
 export default function ChatLogsPage() {
   const [token, setToken] = useState("")
+  const [tokenInput, setTokenInput] = useState("")
+  const [authenticated, setAuthenticated] = useState(false)
   const [query, setQuery] = useState("")
   const [status, setStatus] = useState("all")
   const [logs, setLogs] = useState<ChatLog[]>([])
@@ -122,9 +125,20 @@ export default function ChatLogsPage() {
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [offset, setOffset] = useState(0)
+  const [total, setTotal] = useState<number | null>(null)
+  const [hasMore, setHasMore] = useState(false)
+  const requestRef = useRef<AbortController | null>(null)
+  const pageSize = 80
 
   useEffect(() => {
-    setToken(window.sessionStorage.getItem(tokenStorageKey) ?? "")
+    try {
+      const saved = window.sessionStorage.getItem(tokenStorageKey) ?? ""
+      setTokenInput(saved)
+      setToken(saved)
+    } catch {
+      // 浏览器禁用存储时，仍可手动输入口令查看。
+    }
   }, [])
 
   const filteredSummary = useMemo(() => {
@@ -165,14 +179,19 @@ export default function ChatLogsPage() {
   }, [logs, rateLimitEvents, siteVisitLogs])
 
   const loadLogs = useCallback(async () => {
+    if (!token) return
+    requestRef.current?.abort()
+    const controller = new AbortController()
+    requestRef.current = controller
     setLoading(true)
     setError("")
     setMessage("")
 
     try {
       const searchParams = new URLSearchParams({
-        limit: "80",
+        limit: String(pageSize),
         status,
+        offset: String(offset),
       })
 
       if (query.trim()) {
@@ -181,34 +200,49 @@ export default function ChatLogsPage() {
 
       const response = await fetch(`/api/admin/chat-logs?${searchParams}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        signal: controller.signal,
       })
       const payload = (await response.json()) as ChatLogResponse
+      if (controller.signal.aborted) return
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setAuthenticated(false)
+          setToken("")
+          try { window.sessionStorage.removeItem(tokenStorageKey) } catch {}
+          throw new Error("口令不正确或已失效，请重新输入后台访问口令。")
+        }
         throw new Error(payload.error ?? "读取日志失败。")
       }
 
+      setAuthenticated(true)
       setConfigured(payload.configured)
       setLogs(payload.logs)
+      setTotal(payload.total ?? null)
+      setHasMore(payload.hasMore ?? false)
       setRateLimitEvents(payload.rateLimitEvents ?? [])
       setSiteVisitLogs(payload.siteVisitLogs ?? [])
       setMessage(payload.message ?? payload.rateLimitError ?? payload.siteVisitError ?? "")
 
       if (token) {
-        window.sessionStorage.setItem(tokenStorageKey, token)
+        try { window.sessionStorage.setItem(tokenStorageKey, token) } catch {}
       }
     } catch (requestError) {
+      if (controller.signal.aborted) return
       setLogs([])
+      setTotal(null)
+      setHasMore(false)
       setRateLimitEvents([])
       setSiteVisitLogs([])
       setError(requestError instanceof Error ? requestError.message : "读取日志失败。")
     } finally {
-      setLoading(false)
+      if (requestRef.current === controller) setLoading(false)
     }
-  }, [query, status, token])
+  }, [query, status, token, offset])
 
   useEffect(() => {
     void loadLogs()
+    return () => requestRef.current?.abort()
   }, [loadLogs])
 
   return (
@@ -222,37 +256,51 @@ export default function ChatLogsPage() {
                 Chat logs
               </div>
               <h1 className="text-2xl font-semibold tracking-normal text-white sm:text-3xl">
-                聊天日志
+                用户提问
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/54">
-                只看问题、命中资料和错误状态，不在这里展示完整对话。
+                问题会在回答结束或中断后自动收集。展开查看全文，搜索关键词，找出值得补充的知识。
               </p>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+            <form className="grid gap-2 sm:grid-cols-[1fr_auto]" onSubmit={(event) => {
+              event.preventDefault()
+              const submitted = tokenInput.trim()
+              if (!submitted) return
+              setError("")
+              if (submitted === token && offset === 0) void loadLogs()
+              else { setOffset(0); setToken(submitted) }
+            }}>
               <label className="relative block">
                 <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/36" />
                 <input
-                  value={token}
-                  onChange={(event) => setToken(event.target.value)}
+                  value={tokenInput}
+                  onChange={(event) => setTokenInput(event.target.value)}
                   type="password"
+                  aria-label="后台访问口令"
+                  autoComplete="current-password"
+                  required
                   placeholder="后台访问口令"
                   className="h-11 w-full min-w-64 rounded-2xl border border-white/10 bg-white/[0.05] pl-9 pr-3 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-cyan-100/32"
                 />
               </label>
               <button
-                type="button"
-                onClick={() => void loadLogs()}
-                disabled={loading}
+                type="submit"
+                disabled={loading || !tokenInput.trim()}
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-cyan-100/20 bg-cyan-100/12 px-4 text-sm text-cyan-50 transition hover:bg-cyan-100/18 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
-                刷新
+                {loading ? "正在读取" : authenticated ? "刷新" : "查看提问"}
               </button>
-            </div>
+            </form>
           </div>
+          {!authenticated ? (
+            <p className="mt-4 text-sm text-white/54" role="status">请输入后台访问口令，再点击“查看提问”。口令仅在当前标签页记住。</p>
+          ) : null}
+          {error ? <p className="mt-4 text-sm text-red-100/80" role="alert">{error}</p> : null}
         </div>
 
+        {authenticated ? <>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           <div className="glass-card p-4">
             <p className="text-xs text-white/42">访问数</p>
@@ -294,14 +342,14 @@ export default function ChatLogsPage() {
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/36" />
               <input
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => { setQuery(event.target.value); setOffset(0) }}
                 placeholder="搜索问题关键词"
                 className="h-11 w-full rounded-2xl border border-white/10 bg-white/[0.045] pl-9 pr-3 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-cyan-100/32"
               />
             </label>
             <select
               value={status}
-              onChange={(event) => setStatus(event.target.value)}
+              onChange={(event) => { setStatus(event.target.value); setOffset(0) }}
               className="h-11 rounded-2xl border border-white/10 bg-[#111827] px-3 text-sm text-white outline-none focus:border-cyan-100/32"
             >
               {statusOptions.map((option) => (
@@ -311,13 +359,6 @@ export default function ChatLogsPage() {
               ))}
             </select>
           </div>
-
-          {error ? (
-            <div className="mb-4 flex items-center gap-2 rounded-2xl border border-red-300/20 bg-red-400/10 px-3 py-2 text-sm text-red-100/78">
-              <AlertTriangle className="size-4" />
-              {error}
-            </div>
-          ) : null}
 
           {message || !configured ? (
             <div className="mb-4 rounded-2xl border border-amber-200/18 bg-amber-200/10 px-3 py-2 text-sm text-amber-50/76">
@@ -345,7 +386,16 @@ export default function ChatLogsPage() {
                       {formatDate(log.created_at)}
                     </td>
                     <td className="max-w-[28rem] border-b border-white/[0.08] px-3 py-3 align-top">
-                      <p className="line-clamp-2 leading-6">{log.question_preview}</p>
+                      <details>
+                        <summary className="cursor-pointer leading-6">
+                          <span className="whitespace-pre-wrap break-words">{log.question_preview.slice(0, 100)}{log.question_preview.length > 100 ? "…" : ""}</span>
+                          <span className="ml-2 text-xs text-cyan-100/70">展开全文</span>
+                        </summary>
+                        <p className="mt-3 whitespace-pre-wrap break-words leading-6">{log.question_preview}</p>
+                        {log.question_length > 500 && log.question_preview.length <= 500 ? (
+                          <p className="mt-2 text-xs text-amber-100/60">旧记录仅保留了问题摘要。</p>
+                        ) : null}
+                      </details>
                       <p className="mt-1 text-xs text-white/36">
                         消息 {log.message_count ?? "-"} 条
                         {" · "}
@@ -383,6 +433,14 @@ export default function ChatLogsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-white/54">
+            <span>{total === null ? `本页 ${logs.length} 条` : `共 ${total} 条`} · 第 {Math.floor(offset / pageSize) + 1} 页</span>
+            <div className="flex gap-3">
+              <button type="button" disabled={loading || offset === 0} onClick={() => setOffset(Math.max(0, offset - pageSize))} className="rounded-xl border border-white/10 px-4 py-2 disabled:opacity-30">上一页</button>
+              <button type="button" disabled={loading || !hasMore} onClick={() => setOffset(offset + pageSize)} className="rounded-xl border border-white/10 px-4 py-2 disabled:opacity-30">下一页</button>
+            </div>
           </div>
 
           {!loading && logs.length === 0 ? (
@@ -436,6 +494,7 @@ export default function ChatLogsPage() {
             </div>
           ) : null}
         </div>
+        </> : null}
       </section>
     </main>
   )

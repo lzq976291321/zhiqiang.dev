@@ -30,6 +30,7 @@ export default function RootLayout({
     <html
       lang="zh-CN"
       className="dark"
+      data-scroll-behavior="smooth"
     >
       <body className="min-h-screen overflow-x-hidden antialiased bg-background text-foreground">
         <script

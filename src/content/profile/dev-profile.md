@@ -3,13 +3,14 @@ title: "我的公开 Profile"
 description: "zhiqiang.chat Chat 使用的公开知识库"
 sourceId: "profile"
 category: "profile"
+updatedAt: "2026-09-20"
 ---
 
 # 我的开发侧公开 Profile
 
 > source id: `profile`
 
-这是 `zhiqiang.chat` 的公开知识库入口，重点覆盖我的开发能力、项目经验、Agent 设计、MCP、Skills、Design Token Lab、工程偏好和合作方向。
+这是 `zhiqiang.chat` 的公开知识库入口，重点覆盖我的开发能力、项目经验、Agent 设计、MCP、Skills、UI Lab、工程偏好和合作方向。
 
 Chat 可以进行开放式对话；当问题涉及我的经历、项目、技术判断或合作方向时，优先结合这里的资料回答。没有公开资料支撑的个人事实不编造，可以转为通用建议或说明资料未覆盖。
 
@@ -35,7 +36,7 @@ Chat 可以进行开放式对话；当问题涉及我的经历、项目、技术
 
 > source id: `profile.career_positioning`
 
-我当前对外表达的核心身份是求职者，目标是通过公开知识库更完整地展示我的开发经历、AI 应用理解、工程判断和个人能力魅力。
+我的固定立场是独立开发者，通过可体验的作品、阅读积累和工程方案表达能力。面对面试官时，以求职者的姿态讲清判断和实现；面对求解决方案的人时，以老师的方式给出可落地的详细方案。
 
 介绍我时，不应该只把我包装成项目列表里的执行型开发者，而应该强调我对 AI 应用开发、工作流提效、业务交付和工程落地的理解。我的求职方向更偏 AI 应用层开发、Agent 工程化、全栈产品交付和 AI 驱动的研发效率提升。
 
@@ -291,7 +292,8 @@ OpenClaw 审查产品经理文档时，重点不只是按通用清单检查需�
 - Falcocut：AI 视频营销工具套件。使用 Next.js、NestJS、Supabase 等技术做全栈独立开发，包含热门视频采集、Gemini 反推提示词、批量 AI 视频生成、SEO Content Generator 和自动化内容生产链路。
 - ov-admin：Landing Page 运营管理系统。使用 NestJS、Prisma、React/Vite、Ant Design，支持 Section 模板、可视化编辑、Google Sheets 同步、多语言 SEO、结构化数据、权限管理和部署优化。
 - 流量卡办理：已上线在 `https://liuliangka.netlify.app/` 的流量卡筛选与办理页面，围绕地区、月租、通用流量、周期、人群和运营商做信息架构与商品筛选体验，部署平台为 Netlify。
-- RC模友圈：遥控模型垂直社区，重点在内容社区、SEO 和产品独立运营；本知识库里用户提到“RC 项目”时默认指 RC模友圈，不是 OpenClaw；公开资料未沉淀它的部署平台，回答时不要猜测；展示优先级低于 Agent、全栈交付、视频产品线、SEO/AEO 和工具型产品。
+- RC Boat Arena：可驾驶、可调参、可回放的 3D 遥控船作品，重点在交互设计、Three.js 场景和游戏体验。
+- RC模友圈：遥控模型垂直社区，重点在内容社区、SEO 和产品独立运营；公开资料未沉淀它的部署平台，回答时不要猜测。
 
 ## 视频编辑器与前端架构经验
 
@@ -336,13 +338,21 @@ OpenClaw 是我自研的本地多 Agent 调度平台：主 Agent 根据任务类
 
 这个项目体现了我的关注点：多 Agent 编排、上下文压缩、工具权限、流程自动化、可验证交付和本地工程环境协作。
 
-## Design Token Lab
+## RC Boat Arena
+
+> source id: `profile.rc_boat_arena`
+
+RC Boat Arena 是我的 3D 遥控船作品，公开地址为 `https://rc-boat-arena.vercel.app/`，基于 Three.js、WebGL 2 和 Vite。松岚湖场景提供三圈计时赛、AI 驾驶演示、船艇调校与回放，支持键盘驾驶和触屏控制。
+
+它与 RC 模友圈是不同作品：前者是可驾驶的 3D 交互体验，后者是模型爱好者社区。用户简称“RC 项目”时，结合驾驶、竞速或社区的上下文区分，不默认指向其中一个。
+
+## UI Lab 与 Design Tokens
 
 > source id: `profile.design_lab`
 
-Design Token Lab 是 `zhiqiang.chat` 中的站内工具页。它的产品判断是：审美判断应该先发生在真实 HTML 样张里，而不是先看变量表。用户先比较多套真实 UI 风格，满意后再提取为可复用的 `design-tokens.md`。
+UI Lab 位于 `zhiqiang.chat/lab`，将主题预览和 Design Tokens 放在同一工作台。先通过完整的阅读空间、AI 任务台和项目工作台比较排版、层次和信息密度，再查看和导出实际驱动预览的 CSS、JSON 或 `design-tokens.md`。
 
-第一版服务当前博客技术栈：Next.js、React、Tailwind v4、CSS variables 和玻璃质感视觉系统。
+主题样例是站内交互演示，不属于额外独立交付的产品。Design Token Lab 不再作为单独入口。
 
 ## Skills 与 MCP 判断
 
@@ -356,11 +366,12 @@ Skills 更像“按场景加载的专业工作方式”，MCP 更像“让 Agent
 
 > source id: `profile.projects`
 
-- `zhiqiang.chat`：Agent 知识库、Design Token Lab、个人公开 Profile Chat。
+- `zhiqiang.chat`：书籍阅读、融合 Design Tokens 的 UI Lab、个人知识对话与作品展示。
+- RC Boat Arena：3D 遥控船交互作品，公开地址为 `https://rc-boat-arena.vercel.app/`。
 - 流量卡办理：流量卡筛选与办理工具，公开地址为 `https://liuliangka.netlify.app/`，关注信息架构、商品筛选、转化路径和 Netlify 静态站点部署。
 - OpenClaw：本地多 Agent 调度平台，服务研发自动化。
 - Falcocut / ov-admin 相关经验：AI 视频营销工具、Landing Page 运营管理、多语言 SEO、自动化内容生产和后台系统。
-- RC模友圈：遥控模型垂直社区，作为内容社区和 SEO 方向的补充项目；如果用户简称“RC”，默认就是这个项目；部署平台未在公开知识库中沉淀。
+- RC模友圈：遥控模型垂直社区，展示内容社区和 SEO 实践；与 RC Boat Arena 分开展示，部署平台未在公开知识库中沉淀。
 
 ## 适合的合作方向
 

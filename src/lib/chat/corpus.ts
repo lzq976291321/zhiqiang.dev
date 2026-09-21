@@ -1,16 +1,20 @@
-import fs from "fs"
-import path from "path"
-import matter from "gray-matter"
-import {
-  getAllAgentArticles,
-  getAllKnowledgeEntries,
-  getAllMcpServers,
-  getAllSkills,
-} from "@/lib/content"
+import { getMdxFiles } from "@/lib/mdx"
+import { getAllKnowledgeEntries } from "@/lib/content"
 import type { ChatChunk } from "./types"
 
-const contentDir = path.join(process.cwd(), "src/content")
 let cachedChatCorpus: ChatChunk[] | null = null
+
+export function isPublicKnowledge(data: { status?: unknown; confidence?: unknown }) {
+  return (data.status === undefined || data.status === "published") && data.confidence !== "low"
+}
+
+function sourceDate(value: unknown): string | undefined {
+  if (value instanceof Date && !Number.isFinite(value.getTime())) return undefined
+  const date = value instanceof Date ? value.toISOString().slice(0, 10) : value
+  if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return undefined
+  const parsed = new Date(`${date}T00:00:00Z`)
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date ? date : undefined
+}
 
 function normalizeText(value: string) {
   return value
@@ -79,6 +83,7 @@ function chunkMarkdown({
   path: sourcePath,
   category,
   keywords = [],
+  updatedAt,
 }: {
   content: string
   sourceBaseId: string
@@ -86,6 +91,7 @@ function chunkMarkdown({
   path: string
   category: string
   keywords?: string[]
+  updatedAt?: unknown
 }): ChatChunk[] {
   return splitMarkdownSections(content)
     .map((section) => {
@@ -100,22 +106,16 @@ function chunkMarkdown({
         excerpt: excerpt(text),
         text,
         keywords: [title, section.heading, category, sourcePath, ...keywords],
+        updatedAt: sourceDate(updatedAt),
       }
     })
     .filter((chunk) => chunk.text.length > 40)
 }
 
 function readProfileChunks() {
-  const profileDir = path.join(contentDir, "profile")
-  if (!fs.existsSync(profileDir)) return []
-
-  return fs
-    .readdirSync(profileDir)
-    .filter((filename) => /\.(md|mdx)$/.test(filename))
-    .flatMap((filename) => {
-      const filePath = path.join(profileDir, filename)
-      const raw = fs.readFileSync(filePath, "utf-8")
-      const { data, content } = matter(raw)
+  return getMdxFiles("profile")
+    .flatMap(({ frontmatter: data, content }) => {
+      if (!isPublicKnowledge(data)) return []
 
       return chunkMarkdown({
         content,
@@ -123,6 +123,7 @@ function readProfileChunks() {
         title: data.title ?? "开发侧公开 Profile",
         path: data.publicPath ?? "/chat#profile",
         category: "profile",
+        updatedAt: data.updatedAt ?? data.date,
         keywords: [
           "开发侧",
           "公开资料",
@@ -134,77 +135,21 @@ function readProfileChunks() {
     })
 }
 
-function readAgentChunks() {
-  return getAllAgentArticles().flatMap((article) =>
-    chunkMarkdown({
-      content: `${article.description}\n\n${article.content}`,
-      sourceBaseId: `agent.${article.slug}`,
-      title: article.title,
-      path: `/agent/${article.slug}`,
-      category: "agent",
-      keywords: [
-        article.series,
-        article.category,
-        article.level,
-        ...article.tags,
-      ],
-    })
-  )
-}
-
-function readSkillChunks() {
-  return getAllSkills().flatMap((skill) =>
-    chunkMarkdown({
-      content: [
-        skill.description,
-        `触发：${skill.trigger}`,
-        `价值判断：${skill.worth}`,
-        skill.content,
-      ].join("\n\n"),
-      sourceBaseId: `skill.${skill.slug}`,
-      title: skill.title,
-      path: "/skills",
-      category: "skills",
-      keywords: [skill.fit, skill.source, ...skill.roles],
-    })
-  )
-}
-
-function readMcpChunks() {
-  return getAllMcpServers().flatMap((server) =>
-    chunkMarkdown({
-      content: [
-        server.description,
-        `适合人群：${server.whoNeeds}`,
-        `价值判断：${server.worth}`,
-        `风险：${server.risk}`,
-        server.content,
-      ].join("\n\n"),
-      sourceBaseId: `mcp.${server.slug}`,
-      title: server.title,
-      path: "/mcp",
-      category: "mcp",
-      keywords: [server.maintainer, server.fit, server.tier, server.risk, ...server.roles],
-    })
-  )
-}
-
 function readKnowledgeChunks() {
   return getAllKnowledgeEntries()
-    .filter((entry) => entry.status === "published")
+    .filter((entry) => entry.status === "published" && isPublicKnowledge(entry))
     .flatMap((entry) =>
       chunkMarkdown({
         content: [
           entry.description,
           `标签：${entry.tags.join("、")}`,
-          `置信度：${entry.confidence}`,
-          `更新时间：${entry.updatedAt}`,
           entry.content,
         ].join("\n\n"),
         sourceBaseId: entry.sourceId,
         title: entry.title,
-        path: entry.publicPath,
+        path: `/knowledge/${entry.slug}`,
         category: "knowledge",
+        updatedAt: entry.updatedAt || entry.date,
         keywords: [
           entry.id,
           entry.confidence,
@@ -215,14 +160,11 @@ function readKnowledgeChunks() {
 }
 
 export function getChatCorpus(): ChatChunk[] {
-  if (cachedChatCorpus) return cachedChatCorpus
+  if (cachedChatCorpus && process.env.NODE_ENV === "production") return cachedChatCorpus
 
   cachedChatCorpus = [
     ...readProfileChunks(),
     ...readKnowledgeChunks(),
-    ...readAgentChunks(),
-    ...readSkillChunks(),
-    ...readMcpChunks(),
   ]
 
   return cachedChatCorpus

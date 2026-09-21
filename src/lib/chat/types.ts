@@ -11,6 +11,7 @@ export interface ChatSource {
   path: string
   category: string
   excerpt: string
+  updatedAt?: string
 }
 
 export interface ChatChunk extends ChatSource {
