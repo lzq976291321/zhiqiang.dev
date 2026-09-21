@@ -9,7 +9,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## 项目定位
 
 - 这是个人项目和个人全栈项目，默认由一个人同时负责产品、前端、后端、内容、SEO、部署和运维。
-- 当前站点是 `zhiqiang.chat`：公开知识库、开发侧 Profile Agent、Agent Engineering / MCP / Skills / Design Token Lab 内容入口。
+- 当前站点是 `zhiqiang.chat`，围绕三个方向发展：对话 + 知识库（知识是核心）、UI Lab（设计与交互）、作品展示（实际交付）。目标是通过可体验的作品与知识深度增加面试机会和认可，而非主要依赖自我介绍。
+- 每个方向先做完整样板，优先主流生态与细节完成度，不横向堆功能。外部 UI 资源收藏与原创作品分开呈现。
 - 优先做可运行、可维护、认知负担低的方案；不为假想团队流程或未来需求提前堆抽象。
 - C 端公开页面默认重视 SEO；后台、调试页、管理页不额外背 SEO 包袱。
 

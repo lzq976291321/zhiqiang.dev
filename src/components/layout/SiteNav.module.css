@@ -1,0 +1,21 @@
+.header { position: absolute; top: 0; inset-inline: 0; z-index: 50; color: #27292e; background: #fafafaf5; border-bottom: 1px solid #e6e7eb; }
+.inner { display: flex; align-items: center; max-width: 1184px; min-height: 72px; padding: 0 32px; margin: auto; gap: 48px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; letter-spacing: -.055em; white-space: nowrap; }
+.mark { display: grid; place-items: center; width: 27px; height: 27px; color: white; background: #292b31; border-radius: 7px; font: 17px/1 var(--font-mono); letter-spacing: -.13em; padding-right: 2px; transform: rotate(-4deg); }
+.brand b { color: #5268e8; }
+.inner nav { display: flex; align-items: center; gap: 4px; }
+.inner nav a { color: #6b707a; font-size: 12px; padding: 8px 15px; border-radius: 6px; transition: background .18s, color .18s; }
+.inner nav a[aria-current] { background: #eeeff2; color: #23262d; }
+.inner nav a:hover { color: #23262d; background: #f0f1f4; }
+.chat { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 8px 13px; background: #fff; border: 1px solid #e0e2e8; border-radius: 7px; box-shadow: 0 1px 2px #20212404; color: #4f5663; font-size: 11px; white-space: nowrap; }
+.chat:hover { border-color: #bfc7ed; color: #5268e8; }
+.header a:focus-visible { outline: 2px solid #5268e8; outline-offset: 4px; border-radius: 6px; }
+@media (max-width: 680px) {
+  .inner { min-height: 64px; padding: 0 20px; gap: 12px; }
+  .brand { font-size: 17px; gap: 7px; }
+  .mark { width: 24px; height: 24px; font-size: 15px; }
+  .inner nav { margin-left: auto; gap: 0; }
+  .inner nav a { padding: 7px 9px; font-size: 11px; }
+  .chat { display: none; }
+}
+@media (max-width: 360px) { .brand > span:last-child { display: none; } }

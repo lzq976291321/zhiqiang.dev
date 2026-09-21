@@ -1,4 +1,14 @@
-export interface Skill {
+export type KnowledgeStatus = "draft" | "reviewed" | "published"
+export type KnowledgeConfidence = "low" | "medium" | "high"
+
+export interface ContentMetadata {
+  status?: KnowledgeStatus
+  confidence?: KnowledgeConfidence
+  date?: string
+  updatedAt?: string
+}
+
+export interface Skill extends ContentMetadata {
   slug: string
   title: string
   description: string
@@ -11,7 +21,7 @@ export interface Skill {
   content: string
 }
 
-export interface McpServer {
+export interface McpServer extends ContentMetadata {
   slug: string
   title: string
   description: string
@@ -26,7 +36,7 @@ export interface McpServer {
   content: string
 }
 
-export interface AgentArticle {
+export interface AgentArticle extends ContentMetadata {
   slug: string
   title: string
   description: string
@@ -40,10 +50,7 @@ export interface AgentArticle {
   content: string
 }
 
-export type KnowledgeStatus = "draft" | "reviewed" | "published"
-export type KnowledgeConfidence = "low" | "medium" | "high"
-
-export interface KnowledgeEntry {
+export interface KnowledgeEntry extends ContentMetadata {
   slug: string
   id: string
   title: string

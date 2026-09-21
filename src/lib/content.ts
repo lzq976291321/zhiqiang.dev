@@ -1,6 +1,7 @@
 import { getMdxFiles } from "./mdx"
 import type {
   AgentArticle,
+  ContentMetadata,
   KnowledgeConfidence,
   KnowledgeEntry,
   KnowledgeStatus,
@@ -18,9 +19,34 @@ function getKnowledgeConfidence(value: unknown): KnowledgeConfidence {
   return "medium"
 }
 
+function getContentDate(value: unknown): string | undefined {
+  const date = value instanceof Date ? value.toISOString().slice(0, 10) : value
+  if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return undefined
+  const parsed = new Date(`${date}T00:00:00Z`)
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date ? date : undefined
+}
+
+function getContentMetadata(frontmatter: Record<string, unknown>): ContentMetadata {
+  return {
+    // 旧文章没有发布状态，继续视为已公开；新增或错误状态不会意外公开。
+    status: frontmatter.status === undefined ? "published" : getKnowledgeStatus(frontmatter.status),
+    confidence: frontmatter.confidence === undefined ? undefined : getKnowledgeConfidence(frontmatter.confidence),
+    date: getContentDate(frontmatter.date),
+    updatedAt: getContentDate(frontmatter.updatedAt),
+  }
+}
+
+function getPublishedFiles(dir: string) {
+  return getMdxFiles(dir).filter(({ frontmatter }) => {
+    const metadata = getContentMetadata(frontmatter)
+    return metadata.status === "published" && metadata.confidence !== "low"
+  })
+}
+
 // ===== Skills =====
 export function getAllSkills(): Skill[] {
-  return getMdxFiles("skills").map(({ slug, frontmatter, content }) => ({
+  return getPublishedFiles("skills").map(({ slug, frontmatter, content }) => ({
+    ...getContentMetadata(frontmatter),
     slug,
     title: frontmatter.title ?? "",
     description: frontmatter.description ?? "",
@@ -40,7 +66,8 @@ export function getSkillsByRole(role: string): Skill[] {
 
 // ===== MCP =====
 export function getAllMcpServers(): McpServer[] {
-  return getMdxFiles("mcp").map(({ slug, frontmatter, content }) => ({
+  return getPublishedFiles("mcp").map(({ slug, frontmatter, content }) => ({
+    ...getContentMetadata(frontmatter),
     slug,
     title: frontmatter.title ?? "",
     description: frontmatter.description ?? "",
@@ -58,8 +85,9 @@ export function getAllMcpServers(): McpServer[] {
 
 // ===== Agent Engineering =====
 export function getAllAgentArticles(): AgentArticle[] {
-  return getMdxFiles("agent")
+  return getPublishedFiles("agent")
     .map(({ slug, frontmatter, content }) => ({
+      ...getContentMetadata(frontmatter),
       slug,
       title: frontmatter.title ?? "",
       description: frontmatter.description ?? "",
@@ -67,7 +95,7 @@ export function getAllAgentArticles(): AgentArticle[] {
       series: frontmatter.series ?? "Agent Engineering",
       order: frontmatter.order ?? 999,
       tags: frontmatter.tags ?? [],
-      date: frontmatter.date ?? "",
+      date: getContentDate(frontmatter.date) ?? "",
       readTime: frontmatter.readTime ?? "5 min",
       level: frontmatter.level ?? "foundation",
       content,
@@ -94,9 +122,10 @@ export function getAllKnowledgeEntries(): KnowledgeEntry[] {
       tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
       status: getKnowledgeStatus(frontmatter.status),
       confidence: getKnowledgeConfidence(frontmatter.confidence),
-      updatedAt: frontmatter.updatedAt ?? "",
+      date: getContentDate(frontmatter.date),
+      updatedAt: getContentDate(frontmatter.updatedAt) ?? "",
       sourceId: frontmatter.sourceId ?? `knowledge.${slug}`,
-      publicPath: frontmatter.publicPath ?? "/chat#knowledge",
+      publicPath: frontmatter.publicPath ?? "/#knowledge",
       content,
     }))
     .sort((a, b) => a.title.localeCompare(b.title, "zh-CN"))

@@ -1,17 +1,23 @@
 import type { Metadata } from "next"
-import { ChatRoom } from "@/components/chat/ChatRoom"
+import { ChatRoom } from "@/features/chat/components/ChatRoom"
 
 export const metadata: Metadata = {
-  title: "Chat",
-  description:
-    "公开开发侧 Profile Agent，结合公开技术资料回答开发能力、项目、Agent 设计、MCP、Skills 和合作方向。",
-  openGraph: {
-    title: "Chat | zhiqiang.chat",
-    description:
-      "公开开发侧 Profile Agent，回答开发能力、项目、Agent 设计和合作方向。",
-  },
+  title: "知识对话",
+  description: "围绕公开知识、工程实践与技术判断继续提问。",
+  alternates: { canonical: "/chat" },
 }
 
-export default function ChatPage() {
-  return <ChatRoom />
+export default async function ChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ topic?: string; question?: string }>
+}) {
+  const { topic, question } = await searchParams
+  return (
+    <ChatRoom
+      key={JSON.stringify([topic, question])}
+      topic={typeof topic === "string" ? topic.slice(0, 200) : undefined}
+      question={typeof question === "string" ? question.slice(0, 1000) : undefined}
+    />
+  )
 }

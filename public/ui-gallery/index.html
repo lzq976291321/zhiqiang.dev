@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UI 优秀作品橱窗 · 54 个值得反复看的界面资源</title>
+<style>
+  :root{
+    --paper:#F7F5F0;
+    --paper-2:#FFFFFF;
+    --ink:#141414;
+    --ink-soft:#5C5852;
+    --ink-faint:#8B857C;
+    --line:#E2DDD3;
+    --line-soft:#EDE9E1;
+    --accent:#1B4DFF;
+    --accent-soft:#E8EDFF;
+    --hot:#C8452D;
+    --radius:16px;
+    --shadow-sm:0 1px 2px rgba(20,20,20,.04), 0 8px 24px -16px rgba(20,20,20,.18);
+    --shadow-lg:0 2px 6px rgba(20,20,20,.06), 0 28px 60px -32px rgba(20,20,20,.35);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:15px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background-image:
+      linear-gradient(to right, rgba(20,20,20,.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(20,20,20,.035) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(1000px 600px at 20% -10%, #000 0%, transparent 75%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px 96px}
+
+  /* ---------- masthead ---------- */
+  .masthead{padding:72px 0 26px;position:relative}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:600;
+    border:1px solid var(--line);border-radius:999px;
+    padding:6px 14px;background:rgba(255,255,255,.6);
+  }
+  .kicker b{color:var(--accent);font-weight:700}
+  h1{
+    font-size:clamp(38px,5.4vw,66px);
+    line-height:1.03;letter-spacing:-.03em;
+    margin:22px 0 0;font-weight:800;
+  }
+  h1 em{font-style:normal;color:var(--accent)}
+  .lede{max-width:60ch;color:var(--ink-soft);font-size:17px;margin:20px 0 0}
+  .stats{display:flex;flex-wrap:wrap;gap:34px;margin-top:36px;border-top:1px solid var(--line);padding-top:22px}
+  .stat span{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .stat strong{font-size:27px;letter-spacing:-.02em;font-weight:750}
+
+  /* ---------- filters ---------- */
+  .controls{
+    position:sticky;top:0;z-index:20;
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    padding:14px 0 16px;margin-top:14px;
+    background:linear-gradient(to bottom, var(--paper) 62%, rgba(247,245,240,0));
+    backdrop-filter:blur(6px);
+  }
+  .chip{
+    appearance:none;cursor:pointer;
+    font:inherit;font-size:13.5px;font-weight:600;
+    color:var(--ink-soft);background:var(--paper-2);
+    border:1px solid var(--line);border-radius:999px;
+    padding:8px 15px;display:inline-flex;gap:8px;align-items:center;
+    transition:transform .16s ease, background .16s ease, color .16s ease, border-color .16s ease;
+  }
+  .chip i{font-style:normal;font-size:11.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+  .chip:hover{transform:translateY(-1px);border-color:#CFC8BA}
+  .chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip[aria-pressed="true"] i{color:rgba(255,255,255,.6)}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .search{
+    margin-left:auto;position:relative;min-width:220px;flex:1 1 220px;max-width:300px;
+  }
+  .search input{
+    width:100%;font:inherit;font-size:14px;color:var(--ink);
+    background:var(--paper-2);border:1px solid var(--line);border-radius:999px;
+    padding:9px 16px 9px 38px;
+  }
+  .search input::placeholder{color:var(--ink-faint)}
+  .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.45}
+
+  /* ---------- grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:12px}
+  @media (max-width:1080px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:700px){.grid{grid-template-columns:1fr}.wrap{padding:0 18px 72px}.masthead{padding-top:48px}}
+
+  .card{
+    position:relative;display:flex;flex-direction:column;
+    background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow-sm);
+    transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .18s ease, border-color .18s ease;
+    animation:card-in .42s cubic-bezier(.2,.7,.3,1) both;
+  }
+  /* 入场动画纯 CSS 驱动：即使脚本失效卡片也一定可见 */
+  @keyframes card-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:#D6D0C4}
+  .card:hover .thumb::after{opacity:1;transform:translate(0,0)}
+  .card:hover .name a{border-color:var(--accent)}
+
+  .thumb{
+    position:relative;height:112px;overflow:hidden;
+    border-bottom:1px solid var(--line-soft);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .thumb::before{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(to right, rgba(255,255,255,.22) 1px, transparent 1px);
+    background-size:26px 26px;opacity:.55;
+  }
+  .thumb::after{
+    content:"";position:absolute;width:150px;height:150px;right:-50px;bottom:-70px;
+    background:radial-gradient(circle at center, rgba(255,255,255,.85), rgba(255,255,255,0) 70%);
+    opacity:0;transform:translate(16px,16px);transition:opacity .25s ease, transform .35s cubic-bezier(.2,.7,.3,1);
+  }
+  .mono{
+    position:relative;z-index:1;
+    width:56px;height:56px;border-radius:15px;
+    display:grid;place-items:center;
+    font-size:23px;font-weight:800;letter-spacing:-.04em;
+    color:#fff;background:rgba(255,255,255,.17);
+    border:1px solid rgba(255,255,255,.45);
+    backdrop-filter:blur(3px);
+    box-shadow:0 10px 24px -14px rgba(0,0,0,.6);
+  }
+  .cat-pill{
+    position:absolute;z-index:2;top:11px;left:12px;
+    font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    color:#fff;background:rgba(0,0,0,.26);
+    border:1px solid rgba(255,255,255,.28);
+    border-radius:999px;padding:3px 9px;backdrop-filter:blur(4px);
+  }
+  .body{padding:16px 17px 17px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .name{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .name a{
+    color:var(--ink);text-decoration:none;font-weight:700;font-size:16.5px;letter-spacing:-.01em;
+    border-bottom:1.5px solid transparent;transition:border-color .16s ease,color .16s ease;
+  }
+  .name a:hover{color:var(--accent)}
+  .name .host{font-size:12px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+  .tagline{margin:0;color:var(--ink-soft);font-size:13.5px;line-height:1.62}
+  .highlights{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+  .highlights li{position:relative;padding-left:16px;font-size:13px;color:var(--ink-soft);line-height:1.55}
+  .highlights li::before{
+    content:"";position:absolute;left:2px;top:.62em;
+    width:5px;height:5px;border-radius:2px;background:var(--accent);opacity:.75;
+  }
+  .tags{margin-top:auto;padding-top:12px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px dashed var(--line)}
+  .tag{
+    font-size:11.5px;color:var(--ink-faint);
+    background:#FAF8F4;border:1px solid var(--line-soft);border-radius:6px;
+    padding:3px 7px;letter-spacing:.01em;
+  }
+
+  .empty{
+    grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--ink-faint);
+    border:1px dashed var(--line);border-radius:var(--radius);background:rgba(255,255,255,.5);
+  }
+  .empty strong{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+
+  footer{
+    margin-top:56px;border-top:1px solid var(--line);padding-top:26px;
+    display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  footer h4{margin:0 0 10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+  footer ol{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+  footer p{margin:0 0 8px}
+  footer code{background:#EFEBE3;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12px}
+  @media (max-width:820px){footer{grid-template-columns:1fr}}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important}
+  }
+  .site-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:32px;font-size:13px;color:var(--ink-soft)}
+  .site-nav a{color:inherit;text-decoration:none;min-height:40px;display:inline-flex;align-items:center}
+  .site-nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+  .site-nav a:focus-visible{outline:2px solid currentColor;outline-offset:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site-nav" aria-label="作品导航">
+    <a href="/">← 回到对话</a>
+    <a href="https://rc-boat-arena.vercel.app/" target="_blank" rel="noopener noreferrer">RC Boat Arena ↗</a>
+  </nav>
+
+  <header class="masthead">
+    <div class="kicker">UI Gallery · <b id="total">0</b> 个条目</div>
+    <h1>值得反复看的<br /><em>界面作品</em>与组件库</h1>
+    <p class="lede">
+      挑的标准只有一条：能直接看出“这个决定为什么好”。分四层——先看真实产品怎么把复杂功能做安静，
+      再看组件库怎么把样式交还给你，然后是规范文档和动效素材。每张卡都写了该看什么，不是只丢链接。
+    </p>
+    <div class="stats">
+      <div class="stat"><span>条目</span><strong id="s-total">0</strong></div>
+      <div class="stat"><span>分类</span><strong id="s-cats">0</strong></div>
+      <div class="stat"><span>建议入口</span><strong style="font-size:17px;line-height:2">Linear · shadcn/ui · Mobbin</strong></div>
+    </div>
+  </header>
+
+  <div class="controls" id="controls"></div>
+  <main class="grid" id="grid" aria-live="polite"></main>
+
+  <footer>
+    <div>
+      <h4>怎么用这份橱窗</h4>
+      <p>看某个产品时别只看首页，优先点进“登录后的界面”或文档页——营销页好看是常态，能反映功力的是密集信息的排布。</p>
+      <p>每张卡的要点是判断依据，不是事实断言；界面会改版，看到不一致时以你眼前的实际页面为准。</p>
+    </div>
+    <div>
+      <h4>推荐路线</h4>
+      <ol>
+        <li>先挑 3 个产品界面，截图存成一册</li>
+        <li>挑 1 个组件库跑起来，只改 token 换配色</li>
+        <li>用 Codrops / CodePen 抄一个微交互</li>
+        <li>回到自己的页面，只改间距与层级</li>
+      </ol>
+    </div>
+    <div>
+      <h4>说明</h4>
+      <p>本页是离线清单，数据都写在 HTML 里。想加条目：编辑 <code>SOURCES</code> 数组。</p>
+      <p>本地直接双击 <code>index.html</code> 打开即可，不需要联网构建。</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* 分类 → 渐变主题（决定卡片顶部色块），刻意用同一色系保持整页克制 */
+var THEMES = {
+  "产品界面":      "linear-gradient(135deg,#1D2A44 0%,#39527F 55%,#5C7BB5 100%)",
+  "灵感画廊":      "linear-gradient(135deg,#4A1F2E 0%,#8C3A4F 55%,#C2707F 100%)",
+  "组件库":        "linear-gradient(135deg,#123A33 0%,#1F6B5C 55%,#3E9E8A 100%)",
+  "设计系统":      "linear-gradient(135deg,#3A2E12 0%,#7A5F1E 55%,#B99239 100%)",
+  "动效与视觉":    "linear-gradient(135deg,#2C1B44 0%,#5B3690 55%,#8E6BC7 100%)",
+  "资源与素材":    "linear-gradient(135deg,#1F2B36 0%,#3E5A70 55%,#6E8CA3 100%)"
+};
+var CATS = Object.keys(THEMES);
+
+var SOURCES = [
+  /* ---------------- 产品界面 ---------------- */
+  { name:"Linear", url:"https://linear.app", cat:"产品界面", mono:"L", theme:"#39527F",
+    tagline:"把高密度项目管理做得很安静的标杆：暗色底、极细描边、克制的动效，命令面板是核心入口。",
+    points:["信息密度高但不吵：靠间距和层级而不是分割线来分区","键盘优先（Cmd K / 单键快捷键），鼠标只是备选","动效只用来解释状态变化，不做装饰"],
+    tags:["暗色","SaaS","动效","命令行"] },
+  { name:"Vercel Dashboard", url:"https://vercel.com", mono:"V", theme:"#141414", cat:"产品界面",
+    tagline:"营销页的排版和后台的数据表格是两套语言，同一个品牌下切换得很干净。",
+    points:["黑白灰为主，彩色只留给状态与图表","Geist 字体与自家组件库同源，字体即品牌","空状态、加载骨架、错误信息都当成正式设计来写"],
+    tags:["极简","设计系统","数据表格"] },
+  { name:"Stripe Docs", url:"https://stripe.com/docs", mono:"S", theme:"#635BFF", cat:"产品界面",
+    tagline:"文档站的排版范本：三栏布局、右侧代码多语言切换、正文行宽严格控制。",
+    points:["代码与说明并排，读者不用来回滚动","API 参考由结构化数据生成，所以永远和真实接口一致","每段都可深链接，方便贴给同事"],
+    tags:["文档","开发者体验","排版"] },
+  { name:"Raycast", url:"https://raycast.com", mono:"R", theme:"#FF6363", cat:"产品界面",
+    tagline:"桌面级命令面板的交互范本：模糊搜索、分组结果、键盘操作提示始终可见。",
+    points:["结果列表的每一行都告诉你按哪个键能做什么","深浅两套主题都由 token 驱动，扩展开发者不用自己配色","把“安装插件”做成了一等公民界面"],
+    tags:["桌面端","搜索","键盘"] },
+  { name:"Arc Browser", url:"https://arc.net", mono:"A", theme:"#FC5C4C", cat:"产品界面",
+    tagline:"把浏览器侧边栏重新设计了一遍，敢把网页安全区让给内容、把控制收纳到侧栏。",
+    points:["侧栏 + 空间的导航结构，替代传统标签栏","空格切换、Peek 预览等强手势配合清晰反馈","官网本身也很好看，滚动叙事克制不啰嗦"],
+    tags:["macOS","创新布局","手势"] },
+  { name:"Framer", url:"https://framer.com", mono:"F", theme:"#0055FF", cat:"产品界面",
+    tagline:"网页设计工具的官网，本身就是一份“滚动动效怎么做才不俗”的示范。",
+    points:["首屏动画叙事清楚，不靠堆特效","模板画廊把编辑器的产出直接当作品墙","定价页对比表在窄屏下重排得很干净"],
+    tags:["动效","建站","营销页"] },
+  { name:"Superhuman", url:"https://superhuman.com", mono:"S", theme:"#1B1B1B", cat:"产品界面",
+    tagline:"邮件客户端里唯一把“快”当成设计语言的：快捷键无处不在，界面几乎不出现按钮。",
+    points:["不常用功能藏进命令面板，主界面只留常用动作","状态切换（已读/待办）用极轻的视觉反馈，不打断阅读","文案像人话，错误提示会告诉你怎么修"],
+    tags:["键盘","效率","暗色"] },
+  { name:"飞书开放平台", url:"https://open.feishu.cn", mono:"飞", theme:"#3370FF", cat:"产品界面",
+    tagline:"复杂 B 端系统怎么做信息架构的国内参照：导航层级、卡片密度、表单校验都比较成熟。",
+    points:["同一套组件在文档、控制台、开放平台之间保持一致","权限、审批这类长流程用清晰步骤条降低焦虑","中文排版与中英混排的处理值得单独看"],
+    tags:["B 端","中文","信息架构"] },
+  { name:"Apple HIG", url:"https://developer.apple.com/design/", mono:"", theme:"#86868B", cat:"产品界面",
+    tagline:"不是作品而是尺子：想判断一个界面是否合格，翻这份规范比看十个作品集有用。",
+    points:["触控目标尺寸、对比度、动效时长都有明确下限","“少即是多”的具体做法：逐层剥离直到不能再减","每一条都配了正反例，便于拿去说服人"],
+    tags:["规范","可访问性","移动端"] },
+
+  /* ---------------- 灵感画廊 ---------------- */
+  { name:"Mobbin", url:"https://mobbin.com", mono:"M", theme:"#8C3A4F", cat:"灵感画廊",
+    tagline:"真实 App 与网页的界面截图库，按屏幕类型和流程组织，最适合查“别人这一步怎么做”。",
+    points:["搜的是具体界面（如 paywall、onboarding），不是整站截图","能看到完整流程，理解前后步骤而非单张美图","免费额度够日常查阅"],
+    tags:["截图库","流程","移动端"] },
+  { name:"Awwwards", url:"https://www.awwwards.com", mono:"A", theme:"#C2707F", cat:"灵感画廊",
+    tagline:"偏品牌与创意型网页，评审打分维度公开（设计、可用性、创意、内容）。",
+    points:["每天翻一次获奖页，能跟上滚动叙事的做法演变","每个作品都标注了技术栈，可直接判断实现难度","Sites of the Day 是个稳定的高质量订阅源"],
+    tags:["网页","评审","创意"] },
+  { name:"Godly", url:"https://godly.website", mono:"G", theme:"#7A2E3F", cat:"灵感画廊",
+    tagline:"人工挑选的网页作品集，风格偏前卫，适合找“排版可以这样破”的刺激。",
+    points:["选品质量高于数量，几乎不会点到平庸之作","适合观察字体尺度与留白的大胆用法","注意区分艺术表达与可用性，别直接照抄到产品里"],
+    tags:["精选","排版","前卫"] },
+  { name:"Land-book", url:"https://land-book.com", mono:"L", theme:"#A24C5E", cat:"灵感画廊",
+    tagline:"只收落地页并按行业与区块分类，做营销页时检索效率最高，适合快速凑齐一屏参考。",
+    points:["可以直接找“定价区怎么排”“社会证明放哪”","同一行业的多种解法横向对比很方便","对首屏文案与按钮位置的参考价值大于视觉"],
+    tags:["落地页","营销","分类"] },
+  { name:"Lazyweb", url:"https://www.lazyweb.com", mono:"L", theme:"#B85C6E", cat:"灵感画廊",
+    tagline:"按界面区域做设计检索：输入自己的截图，看别人同一个模块怎么设计。",
+    points:["解决“我这一块卡住了”的具体问题，而不是泛泛找灵感","适合做设计评审时快速给出备选方案","注意它是启发来源，不是可以直接抄的规范"],
+    tags:["检索","模块","对比"] },
+  { name:"Httpster", url:"https://httpster.net", mono:"H", theme:"#9C4457", cat:"灵感画廊",
+    tagline:"老牌精选站，风格偏干净利落的商业网页，适合找“稳一点”的参考。",
+    points:["选品克制，适合给客户看而不引起争议","按月归档，能看出审美潮流的缓慢漂移","页面本身加载快，阅读体验友好"],
+    tags:["精选","商业","归档"] },
+  { name:"Siteinspire", url:"https://www.siteinspire.com", mono:"S", theme:"#8A3B4D", cat:"灵感画廊",
+    tagline:"按风格与类型双维度筛选的网站画廊，过滤器做得比多数同类好用。",
+    points:["可以按“极简 / 复古 / 大字排版”等风格精确缩小范围","每条都标了设计与开发团队，方便追作者","适合建立自己行业内的参照集"],
+    tags:["筛选","风格","网站"] },
+  { name:"SaaS Landing Page", url:"https://saaslandingpage.com", mono:"S", theme:"#A85065", cat:"灵感画廊",
+    tagline:"专门收集 SaaS 官网，做 B 端产品官网时最对口的参考库。",
+    points:["能看到同类产品如何讲价值、如何排功能模块","适合对照检查自己官网缺了哪一块","视觉水平参差，重点看结构与叙事"],
+    tags:["SaaS","官网","叙事"] },
+  { name:"SaaSframe", url:"https://www.saasframe.io", mono:"S", theme:"#C07080", cat:"灵感画廊",
+    tagline:"SaaS 营销页的拆解式参考，把页面切成模块逐个展示并说明用途。",
+    points:["按模块（hero、定价、FAQ）归类，找零件很方便","带真实产品截图，能看界面与文案的配合","适合写官网需求文档时当模板"],
+    tags:["模块","营销","拆解"] },
+
+  /* ---------------- 组件库 ---------------- */
+  { name:"shadcn/ui", url:"https://ui.shadcn.com", mono:"sh", theme:"#1F6B5C", cat:"组件库",
+    tagline:"代码直接复制进仓库而不是装依赖，样式用 CSS 变量与 Tailwind 控制，改起来毫无阻力。",
+    points:["没有黑盒：每个组件的实现都在你项目里，能读能改","主题是一组 CSS 变量，换配色不用碰组件","无障碍基座来自 Radix，自己只管视觉"],
+    tags:["React","Tailwind","可复制"] },
+  { name:"Radix Primitives", url:"https://www.radix-ui.com/primitives", mono:"R", theme:"#2E7D6B", cat:"组件库",
+    tagline:"不带样式但把交互做对了：焦点管理、键盘导航、屏幕阅读器播报都由它兜底。",
+    points:["弹层、下拉、菜单这类难写的组件可以直接用","把“行为”和“外观”彻底拆开，样式完全自由","文档里明确写出每个组件的无障碍承诺"],
+    tags:["无头组件","无障碍","React"] },
+  { name:"Base UI", url:"https://base-ui.com", mono:"B", theme:"#155E52", cat:"组件库",
+    tagline:"Radix 与 MUI 两个团队的人组队重做的无头组件库，把过去踩过的坑写进了新设计。",
+    points:["API 更统一，弹层与组合式组件的写法一致","不受旧的样式包袱限制，值得新项目关注","仍在演进，选之前先看版本与迁移说明"],
+    tags:["无头组件","新一代","React"] },
+  { name:"Tailwind Plus", url:"https://tailwindcss.com/plus", mono:"T", theme:"#0B4F6C", cat:"组件库",
+    tagline:"官方出的付费组件与模板集，优点不是多而是稳：结构与响应式都经得起推敲。",
+    points:["几十套完整营销页，拿来做官网省一半时间","组件写法保守，后续维护成本低","适合当“不要再自己造轮子”的起点"],
+    tags:["模板","营销页","付费"] },
+  { name:"Park UI", url:"https://park-ui.com", mono:"P", theme:"#26806D", cat:"组件库",
+    tagline:"Ark UI 的行为层加上 Panda CSS 的样式层，同时覆盖 React、Vue、Solid。",
+    points:["多框架同源，团队技术栈切换不用重做设计","token 体系清晰，适合建自己的主题","相比 shadcn 更成体系，但少了点自由度"],
+    tags:["多框架","Panda CSS","token"] },
+  { name:"Ant Design", url:"https://ant.design", mono:"A", theme:"#1677FF", cat:"组件库",
+    tagline:"国内中后台的事实标准，表格、表单、复杂数据场景的完成度经过海量项目验证。",
+    points:["组件数量与场景覆盖最全，遇到怪需求基本都有","中文文档完整，团队协作沟通成本低","默认视觉偏重，建议按 Design Token 调一轮再用"],
+    tags:["B 端","中后台","中文"] },
+  { name:"Mantine", url:"https://mantine.dev", mono:"M", theme:"#2B8A79", cat:"组件库",
+    tagline:"组件齐全 + 100 多个 hooks + 默认样式就好看，一个人做完整产品时非常省事。",
+    points:["表单、日期、富文本这些重活都有现成实现","暗色模式与响应式 props 是内建的","文档示例可交互，改参数就能看到结果"],
+    tags:["React","全功能","hooks"] },
+  { name:"Nuxt UI", url:"https://ui.nuxt.com", mono:"N", theme:"#00A67E", cat:"组件库",
+    tagline:"Vue 生态里设计完成度最高的一套：底层 Reka UI，样式走 Tailwind 变量。",
+    points:["默认视觉就很完整，适合直接交付","与 Nuxt 的约定式配置结合紧，少写胶水代码","非 Nuxt 的 Vue 项目也能单独接入"],
+    tags:["Vue","Tailwind","成品感"] },
+  { name:"HeroUI", url:"https://www.heroui.com", mono:"H", theme:"#0E7C66", cat:"组件库",
+    tagline:"前身 NextUI，动效细腻、暗色模式完善，做 C 端产品很容易出效果。",
+    points:["基于 React Aria，交互与无障碍底子扎实","动画细节丰富但可整体关闭，不绑架性能","主题生成器能快速试色"],
+    tags:["React","动效","暗色"] },
+  { name:"Magic UI", url:"https://magicui.design", mono:"M", theme:"#1E6F60", cat:"组件库",
+    tagline:"动效组件合集：光晕、粒子、滚动揭示、跑马灯，copy 就能用。",
+    points:["适合营销页首屏快速出效果，别整站都用","多数组件基于 Motion 与 framer-motion，可控","注意过度使用会拖慢首屏，务必测性能"],
+    tags:["动效","营销页","复制即用"] },
+  { name:"Aceternity UI", url:"https://ui.aceternity.com", mono:"A", theme:"#2A7A6A", cat:"组件库",
+    tagline:"更炫的动效组件库，3D 卡片、光束背景这类效果几乎开箱即用。",
+    points:["做作品集或活动页时能省大量时间","实现多为 CSS + Motion，容易读改","视觉密度高，产品后台慎用"],
+    tags:["动效","3D","视觉"] },
+  { name:"Tremor", url:"https://tremor.so", mono:"T", theme:"#14695B", cat:"组件库",
+    tagline:"补上组件库最常缺的一块：图表与看板组件，面积图、条形图、KPI 卡片都是现成的。",
+    points:["默认样式干净，不用从零调 ECharts 主题","基于 Tailwind，改颜色跟改按钮一样直观","只做常用图表，复杂可视化仍需专业库"],
+    tags:["图表","看板","Tailwind"] },
+
+  /* ---------------- 设计系统 ---------------- */
+  { name:"Material Design 3", url:"https://m3.material.io", mono:"M", theme:"#7A5F1E", cat:"设计系统",
+    tagline:"现在最完整的一套公开规范，动态取色与 token 分层讲得非常细。",
+    points:["Color roles 体系解决了“颜色该用在哪”的问题","组件状态（hover/disabled）定义明确，不易漏","是规范文档写法的模板，可套用到自家系统"],
+    tags:["规范","token","跨平台"] },
+  { name:"Shopify Polaris", url:"https://polaris.shopify.com", mono:"P", theme:"#5E7A1E", cat:"设计系统",
+    tagline:"电商后台场景的成熟解法：商家在高压下操作，所以文案与错误处理格外讲究。",
+    points:["每个组件都写了“什么时候不该用”，这比用法更有价值","内容指南单独成章，直接教怎么写界面文案","表单与批量操作的处理值得中后台参考"],
+    tags:["B 端","文案","电商"] },
+  { name:"IBM Carbon", url:"https://carbondesignsystem.com", mono:"C", theme:"#8A6A22", cat:"设计系统",
+    tagline:"为数据密集型企业场景设计，网格、密度、可访问性是三根硬骨头，全都啃过。",
+    points:["2x Grid 与间距刻度可以直接搬来当项目规范","针对表格、图表、数据可视化给了具体尺寸","有面向不同角色的入门路径，适合团队内训"],
+    tags:["企业","网格","数据密集"] },
+  { name:"Microsoft Fluent 2", url:"https://fluent2.microsoft.design", mono:"F", theme:"#96762A", cat:"设计系统",
+    tagline:"微软把跨平台一致性的做法写成了文档：token、层级、材质、无障碍都有对应实现。",
+    points:["颜色与阴影以层级（elevation）组织，逻辑清楚","同一套设计覆盖 Web、移动与桌面，值得借鉴","Figma 资源与代码组件配套齐全"],
+    tags:["跨平台","层级","token"] },
+  { name:"Salesforce Lightning", url:"https://www.lightningdesignsystem.com", mono:"L", theme:"#A8842F", cat:"设计系统",
+    tagline:"面向极端复杂的业务表单与权限视图，密度处理是可查的最优解之一。",
+    points:["表单校验、必填、条件字段的处理非常细致","对“信息太多”这个问题的解法可以照搬","设计 token 与组件示例都能直接在文档里试"],
+    tags:["B 端","表单","密度"] },
+  { name:"Atlassian Design System", url:"https://atlassian.design", mono:"A", theme:"#8C6C26", cat:"设计系统",
+    tagline:"协作类产品的系统化经验，组件与内容规范并重，还有可用的设计 token 工具。",
+    points:["把“写清楚”当成设计的一部分，文案规范成章","动态 token 方案能同时支撑多品牌","适合多人协作产品的团队当作参照"],
+    tags:["协作","文案","token"] },
+  { name:"GitHub Primer", url:"https://primer.style", mono:"G", theme:"#6E5A1E", cat:"设计系统",
+    tagline:"开源设计系统的完整闭环：Figma 库、React 组件、图标、设计 token 全部公开可查。",
+    points:["能直接看到一家大厂如何让设计与代码同源","图标集 Octicons 质量高，可单独取用","设计原则页面本身就是很好的规范写作样例"],
+    tags:["开源","图标","Figma"] },
+  { name:"Ant Design Token 体系", url:"https://ant.design/docs/react/customize-theme", mono:"A", theme:"#B9902F", cat:"设计系统",
+    tagline:"算法生成色板 + 三层 token 的思路，解决“一改主题就到处崩”的老问题。",
+    points:["种子色自动推导整套色板，不用手挑十个灰","全局 token 与组件 token 分层，改一处可控一片","文档把换肤、暗色、品牌定制的路径讲得很具体"],
+    tags:["主题","色板","算法"] },
+  { name:"GOV.UK Design System", url:"https://design-system.service.gov.uk", mono:"G", theme:"#7A6A22", cat:"设计系统",
+    tagline:"极致务实的一套：为了人人可用而放弃视觉炫技，是“约束产生清晰”的最好例子。",
+    points:["先写清楚内容，再谈视觉，先文案后界面","无障碍与可用性测试结论全部公开","所有组件都说明了通过/未通过哪些场景"],
+    tags:["无障碍","公共服务","务实"] },
+
+  /* ---------------- 动效与视觉 ---------------- */
+  { name:"CodePen", url:"https://codepen.io", mono:"C", theme:"#5B3690", cat:"动效与视觉",
+    tagline:"看别人怎么写纯 CSS 与 Canvas 技巧，Picked Pens 是稳定的灵感源。",
+    points:["搜索具体效果名（如 marquee、noise）比乱翻高效","能直接改参数看结果，学习成本极低","注意演示代码偏技巧向，上生产要自己加固"],
+    tags:["CSS","实验","代码"] },
+  { name:"Codrops", url:"https://tympanus.net/codrops/", mono:"C", theme:"#6A44A8", cat:"动效与视觉",
+    tagline:"每篇教程都能产出一个可用组件，WebGL、滚动动效、滤镜这些都有系统讲解。",
+    points:["有完整源码与逐段解释，抄完能懂原理","案例质量高，常用作高级交互的起点","跟随难度高，建议先挑 CSS 类文章入门"],
+    tags:["教程","WebGL","滚动"] },
+  { name:"Motion", url:"https://motion.dev", mono:"M", theme:"#4E2E86", cat:"动效与视觉",
+    tagline:"前 Framer Motion，现在同时覆盖 React、Vue 与原生 JS，是目前最省心的动效方案。",
+    points:["布局动画与手势 API 设计得好，少写状态机","文档示例都能现场改，理解快","性能上支持硬件加速与滚动驱动动画"],
+    tags:["动效库","React","手势"] },
+  { name:"Rive", url:"https://rive.app", mono:"R", theme:"#7A52BE", cat:"动效与视觉",
+    tagline:"把交互动效交给设计师：状态机式编辑，运行时按状态切换，不用工程师写关键帧。",
+    points:["同一份文件在 Web、移动端、游戏引擎都能跑","状态机模型天然适合按钮、加载、悬浮反馈","免费额度足够验证流程"],
+    tags:["状态机","设计交付","运行时"] },
+  { name:"LottieFiles", url:"https://lottiefiles.com", mono:"L", theme:"#6039A0", cat:"动效与视觉",
+    tagline:"After Effects 动画的落地通道，海量现成动画可以直接嵌进页面。",
+    points:["体积比 GIF/序列帧小很多，适合移动端","有在线预览与轻量编辑，改颜色很方便","商用前务必确认每个动画的授权"],
+    tags:["动画","AE","素材"] },
+  { name:"Godly 3D", url:"https://godly.website/tag/3d", mono:"3", theme:"#8A63C8", cat:"动效与视觉",
+    tagline:"集中的 3D 网页案例入口，用来判断“这个效果值不值得做”。",
+    points:["先看别人怎么在低端设备上降级处理","多数作品有性能取舍说明或可感知的代价","适合作为立项前的可行性参考"],
+    tags:["WebGL","3D","性能"] },
+  { name:"Bruno Simon", url:"https://bruno-simon.com", mono:"B", theme:"#53318F", cat:"动效与视觉",
+    tagline:"用 3D 场景当简历的作品，三分钟就能看出“好玩”和“可用”可以共存。",
+    points:["有明确的目标引导，不会让人迷路","加载进度、移动端降级都认真处理了","源码公开，是学 Three.js 组织方式的活教材"],
+    tags:["Three.js","作品集","叙事"] },
+  { name:"Three.js Journey", url:"https://threejs-journey.com", mono:"T", theme:"#6C46AC", cat:"动效与视觉",
+    tagline:"想真正做 3D 网页的入门路径，课程质量与案例完整度都少见地高。",
+    points:["从渲染原理讲到着色器，不是只会调 API","大量可运行案例，练完能独立搭场景","付费课程，建议先用免费章节试水"],
+    tags:["Three.js","课程","着色器"] },
+
+  /* ---------------- 资源与素材 ---------------- */
+  { name:"Figma Community", url:"https://www.figma.com/community", mono:"F", theme:"#3E5A70", cat:"资源与素材",
+    tagline:"设计系统、图标、模板的集散地，找现成起点比从空白画布开始快得多。",
+    points:["搜“design system”能拿到大量可直接改的基础库","插件生态能补上自动布局、内容填充等环节","注意授权与命名混乱，商用前逐个确认"],
+    tags:["Figma","模板","插件"] },
+  { name:"Google Fonts", url:"https://fonts.google.com", mono:"G", theme:"#4A6A84", cat:"资源与素材",
+    tagline:"选字体的第一站，能按语言与字重筛，中文项目建议配合思源系字体使用。",
+    points:["开源可商用，授权清楚，省去法务沟通","可按支持的字符集筛选，中英混排项目尤其实用","注意中文字体体积大，务必做子集化"],
+    tags:["字体","开源","中文"] },
+  { name:"Lucide", url:"https://lucide.dev", mono:"L", theme:"#2F4C61", cat:"资源与素材",
+    tagline:"线条统一的开源图标集，风格中性、密度一致，配 shadcn/ui 几乎是默认搭配。",
+    points:["描边宽度与视觉重量统一，混用不会显得脏","有 React、Vue 等各框架组件包","图标数量多但要留意个别语义不够准确"],
+    tags:["图标","开源","组件包"] },
+  { name:"Phosphor Icons", url:"https://phosphoricons.com", mono:"P", theme:"#54748C", cat:"资源与素材",
+    tagline:"同一套图标提供六种粗细，适合需要靠线条重量表达层级、又不想要两套图标的界面。",
+    points:["六种 weight 让图标与文字粗细可以匹配","在线调色与尺寸预览，选型很快","比 Lucide 更圆润，适合偏亲和的产品"],
+    tags:["图标","多字重","亲和"] },
+  { name:"Coolors", url:"https://coolors.co", mono:"C", theme:"#3A566B", cat:"资源与素材",
+    tagline:"配色生成与对比度检查，用来快速得到一套能通过无障碍要求的色板。",
+    points:["生成后可逐个锁定再微调，避免全盘重来","自带对比度检测，省去自己算 WCAG","导出成 CSS 变量或 token 很省事"],
+    tags:["配色","对比度","导出"] },
+  { name:"Realtime Colors", url:"https://www.realtimecolors.com", mono:"R", theme:"#62809A", cat:"资源与素材",
+    tagline:"把配色和字体直接套在真实页面上预览，避免“色板好看、界面难看”。",
+    points:["所见即所得，改一处立刻看到全局影响","可以试不同字体搭配，比自己脑补靠谱","适合在定 token 之前做快速试错"],
+    tags:["配色","字体","预览"] },
+  { name:"Unsplash", url:"https://unsplash.com", mono:"U", theme:"#41607A", cat:"资源与素材",
+    tagline:"高质量图库，做营销页与占位图时最省心，授权也比多数图库宽松。",
+    points:["统一色调的图集能救一个平庸的页面","注意授权条款与肖像权，商用前逐张确认","大图务必压缩并做响应式尺寸"],
+    tags:["图库","授权","营销页"] }
+];
+
+/* ---------- render ---------- */
+function host(u){ return u.replace(/^https?:\/\//,"").replace(/\/$/,""); }
+
+var state = { cat:"全部", q:"" };
+
+function counts(){
+  var m = { "全部": SOURCES.length };
+  CATS.forEach(function(c){ m[c] = SOURCES.filter(function(s){ return s.cat === c; }).length; });
+  return m;
+}
+
+function buildControls(){
+  var host = document.getElementById("controls");
+  var m = counts();
+  var order = ["全部"].concat(CATS);
+
+  order.forEach(function(c){
+    var b = document.createElement("button");
+    b.className = "chip";
+    b.type = "button";
+    b.setAttribute("aria-pressed", c === state.cat ? "true" : "false");
+    b.dataset.cat = c;
+    b.innerHTML = c + " <i>" + (m[c] || 0) + "</i>";
+    b.addEventListener("click", function(){
+      state.cat = c;
+      var chips = host.querySelectorAll(".chip");
+      for (var i=0;i<chips.length;i++) chips[i].setAttribute("aria-pressed", chips[i].dataset.cat === c ? "true" : "false");
+      render();
+    });
+    host.appendChild(b);
+  });
+
+  var wrap = document.createElement("div");
+  wrap.className = "search";
+  wrap.innerHTML =
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path></svg>' +
+    '<input id="q" type="search" placeholder="搜名称、标签或关键词…" autocomplete="off" />';
+  host.appendChild(wrap);
+
+  wrap.querySelector("input").addEventListener("input", function(e){
+    state.q = e.target.value.trim().toLowerCase();
+    render();
+  });
+}
+
+function match(s){
+  if (state.cat !== "全部" && s.cat !== state.cat) return false;
+  if (!state.q) return true;
+  var hay = [s.name, s.cat, s.tagline, (s.tags||[]).join(" "), (s.points||[]).join(" "), host(s.url)].join(" ").toLowerCase();
+  return hay.indexOf(state.q) !== -1;
+}
+
+var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function render(){
+  var grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  var list = SOURCES.filter(match);
+
+  if (!list.length){
+    var e = document.createElement("div");
+    e.className = "empty";
+    e.innerHTML = "<strong>没有匹配的条目</strong>换个关键词，或者点上面「全部」回到完整清单。";
+    grid.appendChild(e);
+    return;
+  }
+
+  list.forEach(function(s, i){
+    var card = document.createElement("article");
+    card.className = "card";
+    if (!reduceMotion && i < 8) card.style.animationDelay = (i * 45) + "ms";
+
+    var thumb = document.createElement("div");
+    thumb.className = "thumb";
+    thumb.style.background = s.theme || THEMES[s.cat];
+
+    var pill = document.createElement("span");
+    pill.className = "cat-pill";
+    pill.textContent = s.cat;
+    thumb.appendChild(pill);
+
+    var mono = document.createElement("div");
+    mono.className = "mono";
+    mono.textContent = s.mono || s.name.slice(0,1).toUpperCase();
+    thumb.appendChild(mono);
+
+    var body = document.createElement("div");
+    body.className = "body";
+
+    var nm = document.createElement("div");
+    nm.className = "name";
+    var a = document.createElement("a");
+    a.href = s.url; a.target = "_blank"; a.rel = "noreferrer noopener";
+    a.textContent = s.name;
+    var h = document.createElement("span");
+    h.className = "host";
+    h.textContent = host(s.url);
+    nm.appendChild(a); nm.appendChild(h);
+
+    var tg = document.createElement("p");
+    tg.className = "tagline";
+    tg.textContent = s.tagline;
+
+    var ul = document.createElement("ul");
+    ul.className = "highlights";
+    (s.points || []).forEach(function(p){
+      var li = document.createElement("li");
+      li.textContent = p;
+      ul.appendChild(li);
+    });
+
+    var tagbox = document.createElement("div");
+    tagbox.className = "tags";
+    (s.tags || []).forEach(function(t){
+      var sp = document.createElement("span");
+      sp.className = "tag";
+      sp.textContent = t;
+      tagbox.appendChild(sp);
+    });
+
+    body.appendChild(nm); body.appendChild(tg); body.appendChild(ul); body.appendChild(tagbox);
+    card.appendChild(thumb); card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById("total").textContent = SOURCES.length;
+document.getElementById("s-total").textContent = SOURCES.length;
+document.getElementById("s-cats").textContent = CATS.length;
+buildControls();
+render();
+</script>
+</body>
+</html>
