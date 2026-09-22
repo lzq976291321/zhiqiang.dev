@@ -1,5 +1,26 @@
 .pageHeader { padding: 10px 0 32px; border-bottom: 1px solid #e6e7eb; margin-bottom: 35px; }
 .eyebrow { font: 10px var(--font-mono), monospace; letter-spacing: .07em; color: #828a98; }
+.lightEntry { display: flex; align-items: center; gap: 16px; margin-bottom: 35px; padding: 21px 25px; border-radius: 14px; border: 1px solid #f1dfe6; background: linear-gradient(110deg, #fff1f4, #f6eefb 60%, #eafbfa); color: #65505e; transition: border-color .2s, box-shadow .2s; }
+.lightEntry:hover { border-color: #d9bcca; box-shadow: 0 5px 20px #7962730a; }
+.lightEntry:focus-visible { outline: 2px solid #8e677e; outline-offset: 4px; }
+.lightEntryIcon { display: grid; place-items: center; height: 45px; width: 45px; border-radius: 13px; background: #ffffff80; border: 1px solid #fff; }
+.lightEntry strong { display: block; font-size: 14px; font-weight: 550; }
+.lightEntry small { display: block; font-size: 11px; color: #9b8593; margin-top: 5px; }
+.lightEntrySwatches { display: flex; gap: 6px; margin-left: auto; margin-right: 24px; }
+.lightEntrySwatches i { width: 26px; height: 26px; border-radius: 8px; border: 2px solid #ffffffbb; background: #ffb8c4; transform: rotate(-8deg); }
+.lightEntrySwatches i:nth-child(2) { background: #c6a0ef; transform: rotate(4deg); }
+.lightEntrySwatches i:nth-child(3) { background: #acf0ed; transform: rotate(12deg); }
+.lightEntryAction { display: flex; align-items: center; gap: 7px; font-size: 11px; white-space: nowrap; }
+@media (max-width: 600px) { .lightEntry { padding: 18px; gap: 12px; } .lightEntrySwatches { display: none; } .lightEntryAction { margin-left: auto; font-size: 10px; } }
+.ledEntry { display: flex; align-items: center; gap: 16px; margin: -19px 0 35px; padding: 21px 25px; border-radius: 14px; border: 1px solid #26382f; background: #080c12; color: #eff8ec; transition: border-color .2s, box-shadow .2s; }
+.ledEntry:hover { border-color: #80e643; box-shadow: 0 5px 20px #10200c12; }
+.ledEntry:focus-visible { outline: 2px solid #62ba33; outline-offset: 4px; }
+.ledEntryIcon { display: grid; place-items: center; height: 45px; width: 45px; border-radius: 13px; background: #a4ff4710; border: 1px solid #a4ff4720; color: #a4ff47; }
+.ledEntry strong { display: block; font-size: 14px; font-weight: 550; }
+.ledEntry small { display: block; font-size: 11px; color: #96a391; margin-top: 5px; }
+.ledEntryPreview { margin-left: auto; margin-right: 24px; color: #a4ff47; font: 700 22px var(--font-mono), monospace; letter-spacing: .14em; text-shadow: 0 0 14px #a4ff4760; }
+.ledEntryAction { display: flex; align-items: center; gap: 7px; font-size: 11px; white-space: nowrap; color: #c1d2b9; }
+@media (max-width: 600px) { .ledEntry { padding: 18px; gap: 12px; } .ledEntryPreview { display: none; } .ledEntryAction { margin-left: auto; font-size: 10px; } }
 .pageHeader h1 { color: #202124; font-size: clamp(28px, 3vw, 38px); font-weight: 570; letter-spacing: -.06em; line-height: 1.3; margin: 14px 0 12px; }
 .headerBottom { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
 .headerBottom p { font-size: 13px; color: #727b89; line-height: 1.9; }
