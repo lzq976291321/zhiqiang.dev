@@ -3,7 +3,7 @@ title: "我的公开 Profile"
 description: "zhiqiang.chat Chat 使用的公开知识库"
 sourceId: "profile"
 category: "profile"
-updatedAt: "2026-09-20"
+updatedAt: "2026-09-22"
 ---
 
 # 我的开发侧公开 Profile
@@ -342,9 +342,11 @@ OpenClaw 是我自研的本地多 Agent 调度平台：主 Agent 根据任务类
 
 > source id: `profile.rc_boat_arena`
 
-RC Boat Arena 是我的 3D 遥控船作品，公开地址为 `https://rc-boat-arena.vercel.app/`，基于 Three.js、WebGL 2 和 Vite。松岚湖场景提供三圈计时赛、AI 驾驶演示、船艇调校与回放，支持键盘驾驶和触屏控制。
+RC Boat Arena 是我的 3D 遥控船作品，公开地址为 `https://www.rcmyq.cn/`，基于 Three.js、WebGL 2 和 Vite。松岚湖场景提供三圈计时赛、AI 驾驶演示、船艇调校与回放，支持键盘驾驶和触屏控制。
 
 它与 RC 模友圈是不同作品：前者是可驾驶的 3D 交互体验，后者是模型爱好者社区。用户简称“RC 项目”时，结合驾驶、竞速或社区的上下文区分，不默认指向其中一个。
+
+2026-09-22 已完成域名迁移：游戏使用 `https://www.rcmyq.cn/`，论坛使用 `https://forum.rcmyq.cn/`。`https://rcmyq.cn/` 自动跳到游戏，原论坛帖子、搜索等旧链接自动跳到新论坛。
 
 ## UI Lab 与 Design Tokens
 
@@ -367,11 +369,11 @@ Skills 更像“按场景加载的专业工作方式”，MCP 更像“让 Agent
 > source id: `profile.projects`
 
 - `zhiqiang.chat`：书籍阅读、融合 Design Tokens 的 UI Lab、个人知识对话与作品展示。
-- RC Boat Arena：3D 遥控船交互作品，公开地址为 `https://rc-boat-arena.vercel.app/`。
+- RC Boat Arena：3D 遥控船交互作品，公开地址为 `https://www.rcmyq.cn/`。
 - 流量卡办理：流量卡筛选与办理工具，公开地址为 `https://liuliangka.netlify.app/`，关注信息架构、商品筛选、转化路径和 Netlify 静态站点部署。
 - OpenClaw：本地多 Agent 调度平台，服务研发自动化。
 - Falcocut / ov-admin 相关经验：AI 视频营销工具、Landing Page 运营管理、多语言 SEO、自动化内容生产和后台系统。
-- RC模友圈：遥控模型垂直社区，展示内容社区和 SEO 实践；与 RC Boat Arena 分开展示，部署平台未在公开知识库中沉淀。
+- RC模友圈：遥控模型垂直社区，公开地址为 `https://forum.rcmyq.cn/`，展示内容社区和 SEO 实践；与 RC Boat Arena 分开展示，部署平台未在公开知识库中沉淀。
 
 ## 适合的合作方向
 
