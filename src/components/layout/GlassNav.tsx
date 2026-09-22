@@ -7,7 +7,7 @@ import styles from "./SiteNav.module.css"
 
 export function GlassNav() {
   const pathname = usePathname()
-  if (pathname === "/chat" || pathname.startsWith("/admin")) return null
+  if (pathname === "/chat" || pathname === "/lab/fill-light" || pathname === "/lab/led-banner" || pathname.startsWith("/admin")) return null
   return (
     <header className={styles.header}>
       <div className={styles.inner}>

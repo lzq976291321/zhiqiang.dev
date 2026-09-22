@@ -1,0 +1,26 @@
+{
+  "id": "/lab/fill-light",
+  "name": "补光灯",
+  "short_name": "补光灯",
+  "description": "把屏幕变成补光灯。",
+  "lang": "zh-CN",
+  "start_url": "/lab/fill-light",
+  "scope": "/lab/fill-light",
+  "display": "fullscreen",
+  "background_color": "#ffb8c4",
+  "theme_color": "#ffb8c4",
+  "icons": [
+    {
+      "src": "/fill-light/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/fill-light/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -8,6 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/knowledge",
     "/chat",
     "/lab",
+    "/lab/fill-light",
+    "/lab/led-banner",
     "/projects",
     "/projects/archive",
     "/about",
