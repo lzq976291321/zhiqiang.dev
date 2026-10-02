@@ -38,7 +38,7 @@ function inlineContent(text: string, depth = 0, allowLinks = true): ReactNode {
   if (depth > 3) return text
 
   const pattern =
-    /`([^`\n]+)`|\*\*([^*\n]+)\*\*|__([^_\n]+)__|\[([^\]\n]+)\]\((<?[^\s)\n]+>?)(?:\s+"[^"\n]*")?\)/g
+    /`([^`\n]+)`|\*\*([^*\n]+)\*\*|__([^_\n]+)__|\[([^\]\n]+)\]\((<?[^\s)\n]+>?)(?:\s+"[^"\n]*")?\)|(?<![A-Za-z0-9._%+@-])([A-Za-z0-9_%+-]+(?:\.[A-Za-z0-9_%+-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,63})(?![A-Za-z0-9_@-])/g
   const nodes: ReactNode[] = []
   let cursor = 0
   let match: RegExpExecArray | null
@@ -54,6 +54,13 @@ function inlineContent(text: string, depth = 0, allowLinks = true): ReactNode {
         <strong key={key}>
           {inlineContent(match[2] ?? match[3], depth + 1, allowLinks)}
         </strong>,
+      )
+    } else if (match[6] !== undefined) {
+      // 代码已由前面的分支处理；链接标签沿用 allowLinks，避免嵌套链接。
+      const email = match[6]
+      nodes.push(allowLinks
+        ? <a key={key} href={`mailto:${encodeURIComponent(email).replace("%40", "@")}`}>{email}</a>
+        : <Fragment key={key}>{email}</Fragment>,
       )
     } else {
       const href = allowLinks ? safeLink(match[5]) : null

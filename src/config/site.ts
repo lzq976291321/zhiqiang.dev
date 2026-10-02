@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "zhiqiang.chat",
-  title: "志强的开发现场 — 知识、设计与作品",
+  title: "志强的个人空间 — 对话、阅读与作品",
   description:
-    "探索我的工程知识与技术判断，体验 UI Lab 的界面与交互，打开实际落地的作品。",
+    "和 AI 随意聊聊，认真讨论，沿着书籍继续阅读，探索 UI Lab 与独立作品。",
   url: "https://zhiqiang.chat",
   author: {
     name: "Lin Zhiqiang",

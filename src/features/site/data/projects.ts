@@ -18,7 +18,7 @@ export const selectedProjects = [
     domain: "zhiqiang.chat",
     image: "/images/projects/reading-space.png",
     alt: "zhiqiang.chat 以书籍为单位整理的阅读笔记与章节目录",
-    description: "沿着书籍理解原理，在完整界面里推敲设计。阅读笔记、知识对话与 UI Lab 组成这个个人空间。",
+    description: "沿着书籍理解原理，在完整界面里推敲设计。阅读笔记、AI 对话与 UI Lab 组成这个个人空间。",
     href: "/knowledge",
     action: "打开阅读书架",
     secondary: "/lab",

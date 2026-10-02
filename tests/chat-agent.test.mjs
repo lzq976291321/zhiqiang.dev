@@ -174,6 +174,7 @@ test("只读工具可读取摘要之后的正文，不接受路径或不存在�
   const read = executeKnowledgeTool(call, corpus)
   assert.match(read.result.text, /可核对的段落末尾/)
   assert.equal(read.result.recordedAt, "2023-05-01")
+  assert.equal(read.result.path, corpus[0].path)
   assert.equal(read.sources[0].text, undefined)
   call.function.arguments = '{"reference":"../../.env"}'
   assert.ok(executeKnowledgeTool(call, corpus).result.error)
@@ -190,24 +191,36 @@ test("时间上下文保留真实来源日期，明确旧资料不证明当前�
   assert.match(prompt, /历史 assistant 回答都不能自动成为/)
 })
 
-test("原版技能可分页读取，不能越过参考目录或伪装成个人知识来源", () => {
-  const reference = "references/wiki/source-corpus.md"
-  const raw = fs.readFileSync(path.join(root, "src/features/chat/skills/vendor/sun-ge", reference), "utf8")
-  const read = (args) => executeKnowledgeTool({ id: "style", type: "function", function: {
-    name: "read_style_reference", arguments: JSON.stringify(args),
-  } }, corpus)
-  const first = read({ reference })
-  const second = read({ reference, offset: first.result.nextOffset })
-  assert.ok(first.result.nextOffset > 0)
-  assert.equal(first.result.text + second.result.text, raw.slice(0, first.result.text.length + second.result.text.length))
-  assert.deepEqual(first.sources, [])
-  for (const reference of ["../../.env.local", "references/../../../.env.local", "/etc/passwd", "references/missing.md"]) {
-    assert.ok(read({ reference }).result.error)
+test("退役的角色工具和任意文件请求不能读取人物材料或私有文件", () => {
+  for (const reference of ["references/wiki/source-corpus.md", "../../.env.local", "/etc/passwd"]) {
+    const result = executeKnowledgeTool({ id: "style", type: "function", function: {
+      name: "read_style_reference", arguments: JSON.stringify({ reference }),
+    } }, corpus)
+    assert.ok(result.result.error)
+    assert.equal(result.result.text, undefined)
+    assert.deepEqual(result.sources, [])
   }
-  assert.ok(read({ reference, offset: -1 }).result.error)
-  assert.ok(read({ reference, offset: 0.5 }).result.error)
-  assert.ok(read({ reference, offset: raw.length }).result.error)
-  assert.equal(getChatCorpus().some((entry) => entry.text.includes("S147") && entry.text.includes("S148")), false)
+})
+
+test("无资料需求的多轮闲聊保留上下文，回复不附带来源或规划旁白", async () => {
+  const requests = []
+  const events = []
+  const history = [
+    { role: "user", content: "今天累了，不想听建议。" },
+    { role: "assistant", content: "那就先不解决什么，随便说说。" },
+    { role: "user", content: "就是事情一直做不完。" },
+  ]
+  const responses = [answerReply("无需查阅"), answerReply("像刚清完一页，又翻出来一页。")]
+  const result = await runChatAgent({
+    messages: history, corpus, send: (event) => events.push(event), signal: new AbortController().signal,
+    fetcher: async (_url, init) => { requests.push(JSON.parse(init.body)); return responses.shift() },
+  })
+  assert.equal(result.toolCount, 0)
+  assert.deepEqual(requests.at(-1).messages.slice(1), history)
+  assert.deepEqual(requests[0].tools.map((tool) => tool.function.name), ["search_knowledge", "read_knowledge"])
+  assert.ok(events.filter((event) => event.type === "sources").every((event) => event.sources.length === 0))
+  assert.equal(events.filter((event) => event.type === "delta").map((event) => event.content).join(""), "像刚清完一页，又翻出来一页。")
+  assert.equal(events.at(-1).type, "done")
 })
 
 test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", async () => {
@@ -298,6 +311,17 @@ test("上游截断和认证错误明确失败，不发伪造的完成结果", as
     signal: new AbortController().signal, fetcher: async () => new Response("unauthorized", { status: 401 }),
   }), (error) => error instanceof DeepSeekApiError && error.status === 401)
   assert.equal(events.some((event) => event.type === "done"), false)
+})
+
+test("流式清理保留代码围栏，代码内邮箱不会变成普通正文", () => {
+  let output = ""
+  const writer = createPublicAnswerWriter([], (text) => { output += text })
+  writer.push("正文：hello@example.com\n``")
+  writer.push("`text\nhello@example.com\n```\n")
+  writer.push("行内：`hello@example.com`，空标记：``。")
+  writer.finish()
+  assert.match(output, /```text\nhello@example\.com\n```/)
+  assert.match(output, /行内：`hello@example\.com`，空标记：。/)
 })
 
 test("取消上游等待会取消 reader，浏览器取消 SSE 会中止 Agent", async () => {

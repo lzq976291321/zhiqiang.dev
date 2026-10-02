@@ -42,8 +42,8 @@ export function Composer({ pending, started, onSend, onStop, initialValue = "" }
   }
 
   return (
-    <form className={styles.composer} onSubmit={submit} aria-label="和志强聊聊">
-      <label className="sr-only" htmlFor="conversation-input">你的问题</label>
+    <form className={styles.composer} onSubmit={submit} aria-label="和 AI 聊聊">
+      <label className="sr-only" htmlFor="conversation-input">你想说的话</label>
       <textarea
         id="conversation-input"
         ref={textareaRef}
@@ -54,7 +54,7 @@ export function Composer({ pending, started, onSend, onStop, initialValue = "" }
         onCompositionEnd={() => { composingRef.current = false }}
         rows={2}
         maxLength={1600}
-        placeholder={started ? "继续追问这个问题…" : "你想理解哪个问题？"}
+        placeholder={started ? "接着说，或者换个话题…" : "想到什么，就说什么…"}
         enterKeyHint="send"
         autoComplete="off"
         className={styles.input}
@@ -66,7 +66,7 @@ export function Composer({ pending, started, onSend, onStop, initialValue = "" }
             <Square size={14} fill="currentColor" />
           </button>
         ) : (
-          <button type="submit" disabled={!input.trim()} className={styles.send} aria-label="发送问题" title="发送问题">
+          <button type="submit" disabled={!input.trim()} className={styles.send} aria-label="发送消息" title="发送消息">
             <ArrowUp size={21} strokeWidth={2} />
           </button>
         )}
