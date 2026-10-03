@@ -1,5 +1,5 @@
 import { getChatCorpus } from "./corpus"
-import { buildKnowledgeQuery, retrieveChatSources } from "./retrieval"
+import { retrieveChatSources } from "./retrieval"
 import {
   buildSystemPrompt,
   buildFinalSystemPrompt,
@@ -125,7 +125,6 @@ export async function runChatAgent({
   now?: Date
   fetcher?: typeof fetch
 }) {
-  const question = messages.at(-1)!.content
   const selected = new Map<string, ChatSource>()
   const readSources = new Map<string, ChatSource>()
   const evidence: { tool: string; arguments: string; result: unknown }[] = []
@@ -143,7 +142,7 @@ export async function runChatAgent({
     const planning: ModelMessage[] = [
       {
         role: "system",
-        content: `${systemPrompt}\n本轮只决定是否需要查阅站点资料，不写最终回答。闲聊、吐槽、玩笑、创作、语言改写和一般讨论无需检索，不因出现技术词就查资料。问题明确依赖作者事实、站内作品、书籍笔记或文章观点时，先搜索并阅读相关资料；信息足够就停止。承接后的检索主题：${buildKnowledgeQuery(question, messages)}`,
+        content: `${systemPrompt}\n本轮只决定是否需要查阅站点资料，不写最终回答。根据完整对话理解访客此刻想聊什么，判断回答是否依赖站内资料；需要时自己形成具体查询，并阅读相关资料，信息足够就停止。`,
       },
       ...conversation.slice(1),
     ]
@@ -175,7 +174,7 @@ export async function runChatAgent({
   ]
   // 搜索候选不等于回答依据，只有实际读过的文章才作为延伸阅读发送。
   send({ type: "sources", sources: [...readSources.values()].slice(0, 6) })
-  const writer = createPublicAnswerWriter(corpus.map((chunk) => chunk.id), (content) => send({ type: "delta", content }))
+  const writer = createPublicAnswerWriter((content) => send({ type: "delta", content }))
   const response = await createDeepSeekCompletionStream({ messages: finalConversation, signal: deadline, fetcher })
   const completion = await readCompletionStream(response, deadline, writer.push)
   if (completion.toolCalls.length > 0) throw new Error("Upstream called tools during the final answer")

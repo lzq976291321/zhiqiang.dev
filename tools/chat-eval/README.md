@@ -29,7 +29,7 @@ pnpm chat:eval compare .local/chat-eval/baseline.json .local/chat-eval/candidate
 pnpm chat:eval run --label focused --cases no-advice,humor-to-task --repeat 3 --out .local/chat-eval/focused
 ```
 
-运行会产生真实模型调用。默认七个场景、每个三轮、重复一次；`--repeat 3` 为 63 轮，Agent 每轮可能发起多次模型请求。不要仅为凑分反复运行；出现新改动、失败或尚未解决的问题时再复验。
+运行会产生真实模型调用。默认十个场景、每个三轮、重复一次；`--repeat 3` 为 90 轮，Agent 每轮可能发起多次模型请求。不要仅为凑分反复运行；出现新改动、失败或尚未解决的问题时再复验。
 
 ## 场景与判断
 
@@ -42,6 +42,9 @@ pnpm chat:eval run --label focused --cases no-advice,humor-to-task --repeat 3 --
 | `identity-and-contact` | AI 身份、作者事实与联系请求的边界 |
 | `knowledge-source` | 实际查阅资料、区分笔记与解释、不捏造引文 |
 | `knowledge-boundaries` | 不臆测其他工具、不把机制说成保证、要求展开时讲清楚 |
+| `contextual-meaning` | 同一句话在不同事件中由无奈转为感谢 |
+| `implicit-intent` | 没有显式禁止建议时理解处境，转入求助后能帮助 |
+| `repair-and-share` | 修复具体误会，随对话放轻并接住新的分享 |
 
 修改问题、顺序或判断依据时同步递增 `cases.mjs` 的 `CASES_VERSION`。两份报告的问题、判断依据、场景版本或重复次数不匹配时拒绝比较。
 
@@ -52,5 +55,7 @@ pnpm chat:eval run --label focused --cases no-advice,humor-to-task --repeat 3 --
 `compare` 输出 `.html` 与 `.mapping.json`。每个场景独立随机分配 A/B，连续各轮保持一致。对比页面隐藏版本名、模型和提交信息，可按自然、承接、分寸、事实四个维度评价，并下载评审 JSON。评审选择只在当前页面保留，关闭前下载记录。映射文件用于评审之后核对版本。
 
 完成率、延迟、单测和模型自评不能证明更有人味。保留候选需要比较实际对话，同时确认事实和上下文承接没有退步。该工具不自动修改提示词、提交代码或部署。
+
+判断以整段对话是否贴合语境为准，不按指定词句命中、字数阈值或句式打分；同一句话在不同上下文里可以有不同的合适回应。检索中的普通文本匹配只负责找资料，不用于决定访客意图、话题切换或回答方式。
 
 报告默认放在被 Git 和 Vercel 忽略的 `.local/chat-eval/`。它们包含测试问答，不要提交或发布。优先使用合成场景；将真实反馈改写为不含个人信息的代表问题后，再加入公开场景文件。
