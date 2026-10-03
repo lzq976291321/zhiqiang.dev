@@ -24,8 +24,8 @@ async function makeReport(label = "current-secret-label", overrides = {}) {
   })
 }
 
-test("六个固定场景可选择，非法和重复选择明确报错", () => {
-  assert.equal(cases.length, 6)
+test("固定场景可选择，非法和重复选择明确报错", () => {
+  assert.equal(cases.length, 7)
   assert.ok(cases.every((entry) => entry.turns.length === 3))
   assert.deepEqual(selectCases("humor-to-task,no-advice").map((entry) => entry.id), ["humor-to-task", "no-advice"])
   assert.throws(() => selectCases("no-advice,no-advice"), /重复/)

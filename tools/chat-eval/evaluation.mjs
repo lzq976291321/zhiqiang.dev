@@ -1,6 +1,6 @@
 import { CASES_VERSION } from "./cases.mjs"
 
-export const SCRIPT_VERSION = "1"
+export const SCRIPT_VERSION = "2"
 export const SCHEMA_VERSION = 1
 
 // 错误只保留故障类别和 HTTP 状态，不把上游正文、请求头或密钥写入产物。

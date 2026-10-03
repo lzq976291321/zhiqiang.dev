@@ -217,6 +217,7 @@ test("无资料需求的多轮闲聊保留上下文，回复不附带来源或�
   })
   assert.equal(result.toolCount, 0)
   assert.deepEqual(requests.at(-1).messages.slice(1), history)
+  assert.equal(requests.at(-1).tools, undefined)
   assert.deepEqual(requests[0].tools.map((tool) => tool.function.name), ["search_knowledge", "read_knowledge"])
   assert.ok(events.filter((event) => event.type === "sources").every((event) => event.sources.length === 0))
   assert.equal(events.filter((event) => event.type === "delta").map((event) => event.content).join(""), "像刚清完一页，又翻出来一页。")
@@ -224,10 +225,11 @@ test("无资料需求的多轮闲聊保留上下文，回复不附带来源或�
 })
 
 test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", async () => {
+  const now = new Date("2026-10-04T00:00:00Z")
   const requests = []
   const responses = [
     toolReply("search_knowledge", { query: "RC模友圈" }, "call_search"),
-    toolReply("read_knowledge", { reference: "knowledge.rc_project" }, "call_read"),
+    toolReply("read_knowledge", { reference: "knowledge.rc_project", offset: 300 }, "call_read"),
     answerReply("资料已足够"),
     answerReply("我公开记录的是 RC模友圈。\n[knowledge.rc_project]\n公开资料未记录部署平台。"),
   ]
@@ -238,7 +240,7 @@ test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", 
     { role: "user", content: "它部署在哪里？" },
   ]
   const result = await runChatAgent({
-    messages: history, corpus, send: (event) => events.push(event), signal: new AbortController().signal,
+    messages: history, corpus, now, send: (event) => events.push(event), signal: new AbortController().signal,
     fetcher: async (_url, init) => { requests.push(JSON.parse(init.body)); return responses.shift() },
   })
   assert.equal(result.toolCount, 2)
@@ -247,7 +249,16 @@ test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", 
   assert.equal(requests[1].messages.at(-1).role, "tool")
   assert.equal(requests[1].messages.at(-1).tool_call_id, "call_search")
   assert.match(requests[2].messages.at(-1).content, /可核对的段落末尾/)
-  assert.equal(requests.at(-1).tool_choice, "none")
+  assert.equal(requests.at(-1).tools, undefined)
+  assert.equal(requests.at(-1).tool_choice, undefined)
+  const finalMessages = requests.at(-1).messages
+  assert.deepEqual(finalMessages.slice(1), history)
+  assert.ok(finalMessages[0].content.includes(buildSystemPrompt([], now)))
+  assert.match(finalMessages[0].content, /可核对的段落末尾/)
+  assert.match(finalMessages[0].content, /未公开部署平台/)
+  assert.ok(finalMessages[0].content.includes(corpus[0].path))
+  assert.ok(finalMessages[0].content.includes(JSON.stringify(JSON.stringify({ query: "RC模友圈" }))))
+  assert.ok(finalMessages[0].content.includes(JSON.stringify(JSON.stringify({ reference: "knowledge.rc_project", offset: 300 }))))
   const output = events.filter((event) => event.type === "delta").map((event) => event.content).join("")
   assert.match(output, /未记录部署平台/)
   assert.doesNotMatch(output, /knowledge\.rc_project|资料已足够|search_knowledge/)
@@ -264,7 +275,7 @@ test("重复工具调用被限制到 3 轮后强制结束查阅", async () => {
     fetcher: async (_url, init) => {
       count += 1
       const body = JSON.parse(init.body)
-      return body.tool_choice === "none" ? answerReply("公开资料只覆盖了部分信息。") : toolReply("search_knowledge", { query: "RC" }, `call_${count}`)
+      return !body.tools ? answerReply("公开资料只覆盖了部分信息。") : toolReply("search_knowledge", { query: "RC" }, `call_${count}`)
     },
   })
   assert.equal(count, 4)
@@ -280,7 +291,7 @@ test("一轮并发工具请求越过预算时仅执行剩余名额并逐个返�
     fetcher: async (_url, init) => {
       count += 1
       const body = JSON.parse(init.body)
-      if (body.tool_choice === "none") { finalMessages = body.messages; return answerReply("公开资料只覆盖了部分信息。") }
+      if (!body.tools) { finalMessages = body.messages; return answerReply("公开资料只覆盖了部分信息。") }
       const calls = Array.from({ length: count === 1 ? 3 : 4 }, (_, index) => ({
         index, id: `call_${count}_${index}`, function: { name: "search_knowledge", arguments: '{"query":"RC"}' },
       }))
@@ -288,8 +299,9 @@ test("一轮并发工具请求越过预算时仅执行剩余名额并逐个返�
     },
   })
   assert.equal(result.toolCount, 8)
-  assert.equal(finalMessages.filter((message) => message.role === "tool").length, 11)
-  assert.equal(finalMessages.filter((message) => message.role === "tool" && message.content.includes("查阅次数已用完")).length, 3)
+  assert.equal(finalMessages.some((message) => message.role === "tool" || message.tool_calls), false)
+  assert.equal(finalMessages[0].content.match(/"tool":"search_knowledge"/g).length, 11)
+  assert.equal(finalMessages[0].content.match(/查阅次数已用完/g).length, 3)
 })
 
 test("跨增量的内部编号和字段不会进入正文", () => {
@@ -301,6 +313,30 @@ test("跨增量的内部编号和字段不会进入正文", () => {
   writer.finish()
   assert.match(output, /公开经历/)
   assert.doesNotMatch(output, /sourceId|knowledge\.rc_project/)
+})
+
+test("内部工具协议跨流式分片也会中断，不能泄露为正文", () => {
+  for (const marker of ["<｜｜DSML｜｜ calls>", "<｜DSML｜function_calls>", "<|DSML|function_calls>"]) {
+    for (let split = 1; split < marker.length; split += 1) {
+      let output = ""
+      const writer = createPublicAnswerWriter([], (text) => { output += text })
+      writer.push(marker.slice(0, split))
+      writer.push(marker.slice(split))
+      assert.throws(() => writer.finish(), /tool protocol/)
+      assert.equal(output, "")
+    }
+  }
+})
+
+test("最终回答混入工具协议时 Agent 不发送 delta 或 done", async () => {
+  const events = []
+  const responses = [answerReply("无需查阅"), answerReply('<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name="read_knowledge">')]
+  await assert.rejects(() => runChatAgent({
+    messages: [{ role: "user", content: "说说你知道的工具设计" }], corpus,
+    send: (event) => events.push(event), signal: new AbortController().signal,
+    fetcher: async () => responses.shift(),
+  }), /tool protocol/)
+  assert.equal(events.some((event) => event.type === "delta" || event.type === "done"), false)
 })
 
 test("上游截断和认证错误明确失败，不发伪造的完成结果", async () => {

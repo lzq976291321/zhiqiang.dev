@@ -2,6 +2,7 @@ import { getChatCorpus } from "./corpus"
 import { buildKnowledgeQuery, retrieveChatSources } from "./retrieval"
 import {
   buildSystemPrompt,
+  buildFinalSystemPrompt,
   createDeepSeekCompletionStream,
   createPublicAnswerWriter,
   readCompletionStream,
@@ -127,6 +128,7 @@ export async function runChatAgent({
   const question = messages.at(-1)!.content
   const selected = new Map<string, ChatSource>()
   const readSources = new Map<string, ChatSource>()
+  const evidence: { tool: string; arguments: string; result: unknown }[] = []
   // 先理解问题，再由工具取资料，避免相似关键词把一般讨论带回个人项目介绍。
   const systemPrompt = buildSystemPrompt([], now)
   const conversation: ModelMessage[] = [{ role: "system", content: systemPrompt }, ...messages]
@@ -160,18 +162,21 @@ export async function runChatAgent({
         selected.set(source.id, source)
         if (call.function.name === "read_knowledge") readSources.set(source.id, source)
       }
+      // 保留实际查询与读取起点，避免最终作答把局部内容误当成全部。
+      evidence.push({ tool: call.function.name, arguments: call.function.arguments, result: execution.result })
       conversation.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(execution.result) })
     }
   }
 
-  conversation[0] = {
-    role: "system",
-    content: `${systemPrompt}\n现在直接回应访客这句话，不再调用工具或讲查阅过程。先顾及当前语境和对方明确表达的偏好，按需要决定长短；聊天无需固定格式、结尾提问或总结。作者事实只能来自已核对的公开资料，不冒称真人。`,
-  }
+  // 最终回答只接收原对话与实际资料，不继续工具调用记录；最后一句仍是访客的问题。
+  const finalConversation: ModelMessage[] = [
+    { role: "system", content: buildFinalSystemPrompt(systemPrompt, evidence) },
+    ...messages,
+  ]
   // 搜索候选不等于回答依据，只有实际读过的文章才作为延伸阅读发送。
   send({ type: "sources", sources: [...readSources.values()].slice(0, 6) })
   const writer = createPublicAnswerWriter(corpus.map((chunk) => chunk.id), (content) => send({ type: "delta", content }))
-  const response = await createDeepSeekCompletionStream({ messages: conversation, tools: knowledgeTools, toolChoice: "none", signal: deadline, fetcher })
+  const response = await createDeepSeekCompletionStream({ messages: finalConversation, signal: deadline, fetcher })
   const completion = await readCompletionStream(response, deadline, writer.push)
   if (completion.toolCalls.length > 0) throw new Error("Upstream called tools during the final answer")
   const responseLength = writer.finish()

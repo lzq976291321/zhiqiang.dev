@@ -29,7 +29,7 @@ pnpm chat:eval compare .local/chat-eval/baseline.json .local/chat-eval/candidate
 pnpm chat:eval run --label focused --cases no-advice,humor-to-task --repeat 3 --out .local/chat-eval/focused
 ```
 
-运行会产生真实模型调用。默认六个场景、每个三轮、重复一次；`--repeat 3` 为 54 轮，Agent 每轮可能发起多次模型请求。不要仅为凑分反复运行；出现新改动、失败或尚未解决的问题时再复验。
+运行会产生真实模型调用。默认七个场景、每个三轮、重复一次；`--repeat 3` 为 63 轮，Agent 每轮可能发起多次模型请求。不要仅为凑分反复运行；出现新改动、失败或尚未解决的问题时再复验。
 
 ## 场景与判断
 
@@ -41,12 +41,13 @@ pnpm chat:eval run --label focused --cases no-advice,humor-to-task --repeat 3 --
 | `conversation-memory` | 承接当前对话里的偏好与变化 |
 | `identity-and-contact` | AI 身份、作者事实与联系请求的边界 |
 | `knowledge-source` | 实际查阅资料、区分笔记与解释、不捏造引文 |
+| `knowledge-boundaries` | 不臆测其他工具、不把机制说成保证、要求展开时讲清楚 |
 
 修改问题、顺序或判断依据时同步递增 `cases.mjs` 的 `CASES_VERSION`。两份报告的问题、判断依据、场景版本或重复次数不匹配时拒绝比较。
 
 ## 报告
 
-`run` 输出 JSON 与 HTML，每轮结束即保存。JSON 记录时间、模型、Git SHA 和 dirty 状态、脚本与场景版本、表达版本、系统提示词指纹、实际问答、耗时和完成状态。归档目录不是 Git 根目录时，Git 信息为空；用明确的 label 标注归档来源。运行失败会保留部分结果、跳过该场景剩余轮次并以非零状态退出。
+`run` 输出 JSON 与 HTML，每轮结束即保存。JSON 记录时间、模型、Git SHA 和 dirty 状态、脚本与场景版本、表达版本、系统提示词指纹、实际问答、耗时和完成状态。脚本版本 2 的指纹同时覆盖查阅提示和最终作答提示。归档目录不是 Git 根目录时，Git 信息为空；用明确的 label 标注归档来源。运行失败会保留部分结果、跳过该场景剩余轮次并以非零状态退出。
 
 `compare` 输出 `.html` 与 `.mapping.json`。每个场景独立随机分配 A/B，连续各轮保持一致。对比页面隐藏版本名、模型和提交信息，可按自然、承接、分寸、事实四个维度评价，并下载评审 JSON。评审选择只在当前页面保留，关闭前下载记录。映射文件用于评审之后核对版本。
 

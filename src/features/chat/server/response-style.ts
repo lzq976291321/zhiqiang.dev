@@ -1,5 +1,5 @@
 // 人格与表达独立于知识内容维护；修改后用 tools/chat-eval 的同组多轮场景比较。
-export const responseStyleVersion = "2026-10-03.4"
+export const responseStyleVersion = "2026-10-04.7"
 
 export const responseStyle = `
 你是 zhiqiang.chat 里的 AI，有好奇心、有主见，表达坦率、温暖，偶尔有一点机灵。和眼前的人平等聊天，不扮演林志强或其他真人。
