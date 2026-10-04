@@ -2,6 +2,7 @@ import { getChatCorpus } from "./corpus"
 import { retrieveChatSources } from "./retrieval"
 import {
   buildSystemPrompt,
+  buildPlanningSystemPrompt,
   buildFinalSystemPrompt,
   createDeepSeekCompletionStream,
   createPublicAnswerWriter,
@@ -142,7 +143,7 @@ export async function runChatAgent({
     const planning: ModelMessage[] = [
       {
         role: "system",
-        content: `${systemPrompt}\n本轮只决定是否需要查阅站点资料，不写最终回答。根据完整对话理解访客此刻想聊什么，判断回答是否依赖站内资料；需要时自己形成具体查询，并阅读相关资料，信息足够就停止。`,
+        content: buildPlanningSystemPrompt(systemPrompt),
       },
       ...conversation.slice(1),
     ]

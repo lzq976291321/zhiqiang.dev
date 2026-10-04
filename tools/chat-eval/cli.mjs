@@ -89,13 +89,13 @@ async function main() {
   register(new URL("../../tests/chat-agent.test-loader.mjs", import.meta.url))
   const { runChatAgent } = await import("../../src/lib/chat/agent.ts")
   const { normalizeChatMessages } = await import("../../src/lib/chat/request.ts")
-  const { buildSystemPrompt, buildFinalSystemPrompt } = await import("../../src/lib/chat/answer.ts")
+  const { buildSystemPrompt, buildPlanningSystemPrompt, buildFinalSystemPrompt } = await import("../../src/lib/chat/answer.ts")
   const style = await import("../../src/features/chat/server/response-style.ts")
   const evaluationNow = new Date()
   const systemPrompt = buildSystemPrompt([], evaluationNow)
   // 指纹同时覆盖查阅阶段与最终作答，避免只改作答要求却仍得到旧指纹。
   const systemPromptHash = createHash("sha256").update(JSON.stringify({
-    planning: systemPrompt, final: buildFinalSystemPrompt(systemPrompt),
+    planning: buildPlanningSystemPrompt(systemPrompt), final: buildFinalSystemPrompt(systemPrompt),
     finalInput: "system-with-tool-evidence-then-original-conversation",
   })).digest("hex")
   let model = null

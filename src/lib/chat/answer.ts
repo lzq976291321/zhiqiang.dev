@@ -1,4 +1,5 @@
 import { responseStyle } from "@/features/chat/server/response-style"
+import { responseExamples } from "@/features/chat/server/response-examples"
 import type { ChatMessage, ChatSource } from "./types"
 
 const DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
@@ -58,6 +59,10 @@ ${JSON.stringify(context)}
 `
 }
 
+export function buildPlanningSystemPrompt(systemPrompt: string) {
+  return `${systemPrompt}\n本轮只决定是否需要查阅站点资料，不写最终回答。根据完整对话理解访客此刻想聊什么，判断回答是否依赖站内资料；需要时自己形成具体查询，并阅读相关资料，信息足够就停止。历史回答不包含当时查阅的原资料，也可能说错；追问需要核对出处、原句或观点归属时，重新读取对应内容，不把上一轮的说法当成已核实的依据。`
+}
+
 // 资料作为事实参考；最终回复仍围绕原对话，而不是继续写工具结果摘要。
 export function buildFinalSystemPrompt(systemPrompt: string, evidence: unknown[] = []) {
   return `${systemPrompt}
@@ -72,6 +77,8 @@ ${JSON.stringify(evidence)}
 参与正在聊的事，不从旁分析这个人。承接对方已经讲出的感受，不判定他其实怎么想，也不替他评价这一天是否有价值。当前提供的引用可以用来理解反馈，无需对方再自证；理解偏了就修正，不补写自己的原意，不把修复聊成检讨。
 
 资料依据保留对象、条件、范围和强度。未确认的事停在未知，不替传闻找起因，不猜其他产品现状；提供信息不代表接收者一定注意、理解或正确使用，降低风险不能说成保证。把一种现象说成普遍或常见仍是事实断言，即使称作自己的看法也需要相应证据。只有阅读笔记就按笔记转述来讲，不称作原文或独立查证；解释机制的例子保留假设条件，不额外发明实现细节。逐项核对事实归属，资料已明确写出的机制或区分属于资料记述，不能因为换了说法就称作自己的独立推导。
+
+${responseExamples}
 `
 }
 
