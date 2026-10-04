@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 register(new URL("./chat-agent.test-loader.mjs", import.meta.url))
 
 const { normalizeChatMessages, parseChatRequest } = await import("../src/lib/chat/request.ts")
-const { buildKnowledgeQuery, getChatKnowledgeSources, retrieveChatSources } = await import("../src/lib/chat/retrieval.ts")
+const { retrieveChatSources } = await import("../src/lib/chat/retrieval.ts")
 const { isPublicKnowledge, getChatCorpus } = await import("../src/lib/chat/corpus.ts")
 const { getMdxBySlug, getMdxFiles } = await import("../src/lib/mdx.ts")
 const { getPublicKnowledgeEntries, getKnowledgeLibrary } = await import("../src/features/knowledge/lib/library.ts")
@@ -88,35 +88,50 @@ test("无 Content-Length 的请求也执行实际字节上限", async () => {
   await assert.rejects(() => parseChatRequest(request), { status: 413 })
 })
 
-test("代词追问继承 RC 主题，明确换题不混入旧项目", () => {
-  const history = [{ role: "user", content: "介绍 RC模友圈" }, { role: "assistant", content: "它是遥控模型社区。" }]
-  assert.match(buildKnowledgeQuery("它部署在哪里？", history), /RC模友圈/)
-  const sources = getChatKnowledgeSources("它部署在哪里？", 2, history, corpus)
-  assert.equal(sources[0].id, "knowledge.rc_project")
-  assert.equal(buildKnowledgeQuery("视频编辑器如何实现撤销？", history), "视频编辑器如何实现撤销？")
+test("承接和换题均将完整对话交给规划器，不在服务端按词语改写主题", async () => {
+  const prefix = [
+    { role: "user", content: "聊聊 RC模友圈，随后换个话题。" },
+    { role: "assistant", content: "好，你来选。" },
+  ]
+  for (const question of ["它部署在哪里？", "那介绍一下你自己", "最近我想聊视频编辑器如何实现撤销"]) {
+    const history = [...prefix, { role: "user", content: question }]
+    const requests = []
+    const replies = [answerReply("无需查阅"), answerReply("继续聊。")]
+    const result = await runChatAgent({
+      messages: history, corpus, send() {}, signal: new AbortController().signal,
+      fetcher: async (_url, init) => { requests.push(JSON.parse(init.body)); return replies.shift() },
+    })
+    assert.deepEqual(requests[0].messages.slice(1), history)
+    assert.deepEqual(requests.at(-1).messages.slice(1), history)
+    assert.equal(requests[0].messages[0].content.includes(question), false)
+    assert.equal(result.toolCount, 0)
+  }
 })
 
-test("普通技术推荐不挤入无关履历，明确自我介绍仍可补充个人资料", () => {
+test("检索只返回词项相关资料，介绍和代词不触发履历补入", () => {
   const candidates = [
-    { ...corpus[1], id: "profile.intro", title: "个人介绍", category: "profile", text: "某段工作履历", keywords: ["个人介绍"] },
+    { ...corpus[1], id: "profile.intro", title: "职业履历", category: "profile", text: "某段工作履历", keywords: ["履历"] },
     { ...corpus[0], id: "knowledge.design", title: "design token 配色", text: "design token 用于统一颜色和间距。", keywords: ["design token"] },
   ]
-  const recommendation = getChatKnowledgeSources("你都知道哪些比较漂亮的 design token", 2, [], candidates)
+  const recommendation = retrieveChatSources("你都知道哪些比较漂亮的 design token", 2, candidates)
   assert.deepEqual(recommendation.map((source) => source.id), ["knowledge.design"])
-  const introduction = getChatKnowledgeSources("先介绍一下你自己", 2, [], candidates)
-  assert.ok(introduction.some((source) => source.id === "profile.intro"))
+  for (const query of ["先介绍一下你自己", "那它呢", "志强", "最近在研究什么"]) {
+    assert.deepEqual(retrieveChatSources(query, 2, candidates), [])
+  }
+  assert.deepEqual(retrieveChatSources("职业履历", 2, candidates).map((source) => source.id), ["profile.intro"])
 })
 
-test("当前问题的同等匹配优先较新记录，未来日期不能抢占结果", () => {
+test("日期元数据统一过滤未来记录，同等相关性按日期排序，不依赖时效词", () => {
   const versions = [
     { ...corpus[0], id: "project.old", updatedAt: "2023-05-01" },
     { ...corpus[0], id: "project.future", updatedAt: "2027-01-01" },
     { ...corpus[0], id: "project.recent", updatedAt: "2026-09-01" },
+    { ...corpus[0], id: "project.undated", updatedAt: undefined },
   ]
   const now = new Date("2026-09-14T00:00:00Z")
-  assert.deepEqual(retrieveChatSources("RC模友圈当前的情况", 3, versions, now).map((source) => source.id), ["project.recent", "project.old"])
-  assert.equal(getChatKnowledgeSources("你最近的 RC模友圈项目", 6, [], versions, now).some((source) => source.id === "project.future"), false)
-  assert.equal(retrieveChatSources("RC模友圈项目", 3, versions, now)[0].id, "project.old")
+  for (const query of ["RC模友圈", "RC模友圈当前的情况", "你最近的 RC模友圈项目", "RC模友圈当年的情况"]) {
+    assert.deepEqual(retrieveChatSources(query, 4, versions, now).map((source) => source.id), ["project.recent", "project.old", "project.undated"])
+  }
 })
 
 test("公开知识边界排除草稿、未确认和低置信度，兼容既有正式内容", () => {
@@ -174,6 +189,7 @@ test("只读工具可读取摘要之后的正文，不接受路径或不存在�
   const read = executeKnowledgeTool(call, corpus)
   assert.match(read.result.text, /可核对的段落末尾/)
   assert.equal(read.result.recordedAt, "2023-05-01")
+  assert.equal(read.result.path, corpus[0].path)
   assert.equal(read.sources[0].text, undefined)
   call.function.arguments = '{"reference":"../../.env"}'
   assert.ok(executeKnowledgeTool(call, corpus).result.error)
@@ -187,36 +203,49 @@ test("时间上下文保留真实来源日期，明确旧资料不证明当前�
   assert.match(prompt, /2023-05-01/)
   assert.match(prompt, /未标注日期/)
   assert.match(prompt, /不代表事实在今天仍成立/)
-  assert.match(prompt, /历史 assistant 回答都不能自动成为/)
 })
 
-test("原版技能可分页读取，不能越过参考目录或伪装成个人知识来源", () => {
-  const reference = "references/wiki/source-corpus.md"
-  const raw = fs.readFileSync(path.join(root, "src/features/chat/skills/vendor/sun-ge", reference), "utf8")
-  const read = (args) => executeKnowledgeTool({ id: "style", type: "function", function: {
-    name: "read_style_reference", arguments: JSON.stringify(args),
-  } }, corpus)
-  const first = read({ reference })
-  const second = read({ reference, offset: first.result.nextOffset })
-  assert.ok(first.result.nextOffset > 0)
-  assert.equal(first.result.text + second.result.text, raw.slice(0, first.result.text.length + second.result.text.length))
-  assert.deepEqual(first.sources, [])
-  for (const reference of ["../../.env.local", "references/../../../.env.local", "/etc/passwd", "references/missing.md"]) {
-    assert.ok(read({ reference }).result.error)
+test("退役的角色工具和任意文件请求不能读取人物材料或私有文件", () => {
+  for (const reference of ["references/wiki/source-corpus.md", "../../.env.local", "/etc/passwd"]) {
+    const result = executeKnowledgeTool({ id: "style", type: "function", function: {
+      name: "read_style_reference", arguments: JSON.stringify({ reference }),
+    } }, corpus)
+    assert.ok(result.result.error)
+    assert.equal(result.result.text, undefined)
+    assert.deepEqual(result.sources, [])
   }
-  assert.ok(read({ reference, offset: -1 }).result.error)
-  assert.ok(read({ reference, offset: 0.5 }).result.error)
-  assert.ok(read({ reference, offset: raw.length }).result.error)
-  assert.equal(getChatCorpus().some((entry) => entry.text.includes("S147") && entry.text.includes("S148")), false)
+})
+
+test("无资料需求的多轮闲聊保留上下文，回复不附带来源或规划旁白", async () => {
+  const requests = []
+  const events = []
+  const history = [
+    { role: "user", content: "今天累了，不想听建议。" },
+    { role: "assistant", content: "那就先不解决什么，随便说说。" },
+    { role: "user", content: "就是事情一直做不完。" },
+  ]
+  const responses = [answerReply("无需查阅"), answerReply("像刚清完一页，又翻出来一页。")]
+  const result = await runChatAgent({
+    messages: history, corpus, send: (event) => events.push(event), signal: new AbortController().signal,
+    fetcher: async (_url, init) => { requests.push(JSON.parse(init.body)); return responses.shift() },
+  })
+  assert.equal(result.toolCount, 0)
+  assert.deepEqual(requests.at(-1).messages.slice(1), history)
+  assert.equal(requests.at(-1).tools, undefined)
+  assert.deepEqual(requests[0].tools.map((tool) => tool.function.name), ["search_knowledge", "read_knowledge"])
+  assert.ok(events.filter((event) => event.type === "sources").every((event) => event.sources.length === 0))
+  assert.equal(events.filter((event) => event.type === "delta").map((event) => event.content).join(""), "像刚清完一页，又翻出来一页。")
+  assert.equal(events.at(-1).type, "done")
 })
 
 test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", async () => {
+  const now = new Date("2026-10-04T00:00:00Z")
   const requests = []
   const responses = [
     toolReply("search_knowledge", { query: "RC模友圈" }, "call_search"),
-    toolReply("read_knowledge", { reference: "knowledge.rc_project" }, "call_read"),
+    toolReply("read_knowledge", { reference: "knowledge.rc_project", offset: 300 }, "call_read"),
     answerReply("资料已足够"),
-    answerReply("我公开记录的是 RC模友圈。\n[knowledge.rc_project]\n公开资料未记录部署平台。"),
+    answerReply("RC模友圈是遥控模型社区。\n公开资料未记录部署平台。"),
   ]
   const events = []
   const history = [
@@ -225,7 +254,7 @@ test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", 
     { role: "user", content: "它部署在哪里？" },
   ]
   const result = await runChatAgent({
-    messages: history, corpus, send: (event) => events.push(event), signal: new AbortController().signal,
+    messages: history, corpus, now, send: (event) => events.push(event), signal: new AbortController().signal,
     fetcher: async (_url, init) => { requests.push(JSON.parse(init.body)); return responses.shift() },
   })
   assert.equal(result.toolCount, 2)
@@ -234,7 +263,16 @@ test("mock Chat Completions 完成搜索、阅读、原生多轮与最终 SSE", 
   assert.equal(requests[1].messages.at(-1).role, "tool")
   assert.equal(requests[1].messages.at(-1).tool_call_id, "call_search")
   assert.match(requests[2].messages.at(-1).content, /可核对的段落末尾/)
-  assert.equal(requests.at(-1).tool_choice, "none")
+  assert.equal(requests.at(-1).tools, undefined)
+  assert.equal(requests.at(-1).tool_choice, undefined)
+  const finalMessages = requests.at(-1).messages
+  assert.deepEqual(finalMessages.slice(1), history)
+  assert.ok(finalMessages[0].content.includes(buildSystemPrompt([], now)))
+  assert.match(finalMessages[0].content, /可核对的段落末尾/)
+  assert.match(finalMessages[0].content, /未公开部署平台/)
+  assert.ok(finalMessages[0].content.includes(corpus[0].path))
+  assert.ok(finalMessages[0].content.includes(JSON.stringify(JSON.stringify({ query: "RC模友圈" }))))
+  assert.ok(finalMessages[0].content.includes(JSON.stringify(JSON.stringify({ reference: "knowledge.rc_project", offset: 300 }))))
   const output = events.filter((event) => event.type === "delta").map((event) => event.content).join("")
   assert.match(output, /未记录部署平台/)
   assert.doesNotMatch(output, /knowledge\.rc_project|资料已足够|search_knowledge/)
@@ -251,7 +289,7 @@ test("重复工具调用被限制到 3 轮后强制结束查阅", async () => {
     fetcher: async (_url, init) => {
       count += 1
       const body = JSON.parse(init.body)
-      return body.tool_choice === "none" ? answerReply("公开资料只覆盖了部分信息。") : toolReply("search_knowledge", { query: "RC" }, `call_${count}`)
+      return !body.tools ? answerReply("公开资料只覆盖了部分信息。") : toolReply("search_knowledge", { query: "RC" }, `call_${count}`)
     },
   })
   assert.equal(count, 4)
@@ -267,7 +305,7 @@ test("一轮并发工具请求越过预算时仅执行剩余名额并逐个返�
     fetcher: async (_url, init) => {
       count += 1
       const body = JSON.parse(init.body)
-      if (body.tool_choice === "none") { finalMessages = body.messages; return answerReply("公开资料只覆盖了部分信息。") }
+      if (!body.tools) { finalMessages = body.messages; return answerReply("公开资料只覆盖了部分信息。") }
       const calls = Array.from({ length: count === 1 ? 3 : 4 }, (_, index) => ({
         index, id: `call_${count}_${index}`, function: { name: "search_knowledge", arguments: '{"query":"RC"}' },
       }))
@@ -275,19 +313,42 @@ test("一轮并发工具请求越过预算时仅执行剩余名额并逐个返�
     },
   })
   assert.equal(result.toolCount, 8)
-  assert.equal(finalMessages.filter((message) => message.role === "tool").length, 11)
-  assert.equal(finalMessages.filter((message) => message.role === "tool" && message.content.includes("查阅次数已用完")).length, 3)
+  assert.equal(finalMessages.some((message) => message.role === "tool" || message.tool_calls), false)
+  assert.equal(finalMessages[0].content.match(/"tool":"search_knowledge"/g).length, 11)
+  assert.equal(finalMessages[0].content.match(/查阅次数已用完/g).length, 3)
 })
 
-test("跨增量的内部编号和字段不会进入正文", () => {
+test("正常讨论字段、工具名、路径和编号时，跨增量正文也原样保留", () => {
   let output = ""
-  const writer = createPublicAnswerWriter(["knowledge.rc_project"], (text) => { output += text })
-  writer.push("公开经历 [knowledge.")
-  writer.push("rc_project]\nsource")
-  writer.push("Id: knowledge.rc_project\n后续可以继续聊。")
-  writer.finish()
-  assert.match(output, /公开经历/)
-  assert.doesNotMatch(output, /sourceId|knowledge\.rc_project/)
+  const input = "字段示例：\nstatus: ready\nreference: [knowledge.rc_project]\n\nsearch_knowledge 和 read_knowledge 可以读取 `src/content/example.md`。\n空数组：[]。"
+  const writer = createPublicAnswerWriter((text) => { output += text })
+  for (let index = 0; index < input.length; index += 7) writer.push(input.slice(index, index + 7))
+  assert.equal(writer.finish(), input.length)
+  assert.equal(output, input)
+})
+
+test("内部工具协议跨流式分片也会中断，不能泄露为正文", () => {
+  for (const marker of ["<｜｜DSML｜｜ calls>", "<｜DSML｜function_calls>", "<|DSML|function_calls>"]) {
+    for (let split = 1; split < marker.length; split += 1) {
+      let output = ""
+      const writer = createPublicAnswerWriter((text) => { output += text })
+      writer.push(marker.slice(0, split))
+      writer.push(marker.slice(split))
+      assert.throws(() => writer.finish(), /tool protocol/)
+      assert.equal(output, "")
+    }
+  }
+})
+
+test("最终回答混入工具协议时 Agent 不发送 delta 或 done", async () => {
+  const events = []
+  const responses = [answerReply("无需查阅"), answerReply('<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name="read_knowledge">')]
+  await assert.rejects(() => runChatAgent({
+    messages: [{ role: "user", content: "说说你知道的工具设计" }], corpus,
+    send: (event) => events.push(event), signal: new AbortController().signal,
+    fetcher: async () => responses.shift(),
+  }), /tool protocol/)
+  assert.equal(events.some((event) => event.type === "delta" || event.type === "done"), false)
 })
 
 test("上游截断和认证错误明确失败，不发伪造的完成结果", async () => {
@@ -298,6 +359,17 @@ test("上游截断和认证错误明确失败，不发伪造的完成结果", as
     signal: new AbortController().signal, fetcher: async () => new Response("unauthorized", { status: 401 }),
   }), (error) => error instanceof DeepSeekApiError && error.status === 401)
   assert.equal(events.some((event) => event.type === "done"), false)
+})
+
+test("流式传递保留代码围栏和行内标记，代码内邮箱不会变成普通正文", () => {
+  let output = ""
+  const writer = createPublicAnswerWriter((text) => { output += text })
+  writer.push("正文：hello@example.com\n``")
+  writer.push("`text\nhello@example.com\n```\n")
+  writer.push("行内：`hello@example.com`，空标记：``。")
+  writer.finish()
+  assert.match(output, /```text\nhello@example\.com\n```/)
+  assert.match(output, /行内：`hello@example\.com`，空标记：``。/)
 })
 
 test("取消上游等待会取消 reader，浏览器取消 SSE 会中止 Agent", async () => {

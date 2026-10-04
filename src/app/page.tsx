@@ -51,7 +51,7 @@ export default function HomePage() {
                 <Image src={arena.image} alt={arena.alt} width={1440} height={960} sizes="(max-width: 680px) 90vw, 480px" />
                 <div><div><h3>{arena.name}</h3><p>3D 遥控船 · 驾驶、调校与回放</p></div><span className={home.playLink}>开始体验 <ArrowUpRight size={14} /></span></div>
               </a>
-              <Link className={home.work} href="/projects#knowledge"><div className={home.workIcon}><Code2 size={21} strokeWidth={1.5} /></div><div><h3>zhiqiang.chat</h3><p>书籍阅读、主题实验与知识对话</p></div><ArrowUpRight size={14} /></Link>
+              <Link className={home.work} href="/projects#knowledge"><div className={home.workIcon}><Code2 size={21} strokeWidth={1.5} /></div><div><h3>zhiqiang.chat</h3><p>阅读、设计，也和 AI 聊聊</p></div><ArrowUpRight size={14} /></Link>
               <Link className={home.work} href="/projects#community"><div className={home.workIcon}><Sailboat size={21} strokeWidth={1.5} /></div><div><h3>RC 模友圈</h3><p>属于模型爱好者的交流社区</p></div><ArrowUpRight size={14} /></Link>
             </div>
           </section>

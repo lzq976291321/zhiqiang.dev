@@ -1,8 +1,9 @@
-import { readStyleReference } from "@/features/chat/server/response-style"
 import { getChatCorpus } from "./corpus"
-import { buildKnowledgeQuery, retrieveChatSources } from "./retrieval"
+import { retrieveChatSources } from "./retrieval"
 import {
   buildSystemPrompt,
+  buildPlanningSystemPrompt,
+  buildFinalSystemPrompt,
   createDeepSeekCompletionStream,
   createPublicAnswerWriter,
   readCompletionStream,
@@ -18,22 +19,6 @@ const MAX_TOOL_CALLS = 8
 const READ_PAGE_LENGTH = 4000
 
 const knowledgeTools: KnowledgeTool[] = [
-  {
-    type: "function",
-    function: {
-      name: "read_style_reference",
-      description: "按需读取已安装孙割.skill 的原版参考文档，补充判断方法、语言习惯或人物研究材料。只能使用系统提示中列出的 references/ 路径；这些材料不是站点主人的个人经历。",
-      parameters: {
-        type: "object",
-        properties: {
-          reference: { type: "string", description: "已安装技能的参考文档路径" },
-          offset: { type: "integer", minimum: 0, description: "续读位置，首次省略" },
-        },
-        required: ["reference"],
-        additionalProperties: false,
-      },
-    },
-  },
   {
     type: "function",
     function: {
@@ -81,10 +66,6 @@ export function executeKnowledgeTool(call: ToolCall, corpus: ChatChunk[], now = 
     return { result: { error: "工具参数必须是对象。" }, sources: [] }
   }
 
-  if (call.function.name === "read_style_reference") {
-    return { result: readStyleReference(args.reference, args.offset), sources: [] }
-  }
-
   if (call.function.name === "search_knowledge") {
     if (typeof args.query !== "string" || !args.query.trim() || args.query.length > 800) {
       return { result: { error: "请提供不超过 800 字的检索主题。" }, sources: [] }
@@ -95,6 +76,7 @@ export function executeKnowledgeTool(call: ToolCall, corpus: ChatChunk[], now = 
         matches: sources.map((source) => ({
           reference: source.id,
           title: source.title,
+          path: source.path,
           recordedAt: source.updatedAt ?? "未标注日期",
           summary: source.excerpt,
         })),
@@ -117,6 +99,7 @@ export function executeKnowledgeTool(call: ToolCall, corpus: ChatChunk[], now = 
       result: {
         reference: chunk.id,
         title: chunk.title,
+        path: chunk.path,
         recordedAt: chunk.updatedAt ?? "未标注日期",
         text: chunk.text.slice(start, end),
         ...(end < chunk.text.length ? { nextOffset: end } : {}),
@@ -125,7 +108,7 @@ export function executeKnowledgeTool(call: ToolCall, corpus: ChatChunk[], now = 
     }
   }
 
-  return { result: { error: "这里只能阅读已公开知识和已安装的风格参考。" }, sources: [] }
+  return { result: { error: "这里只能搜索和阅读已公开知识。" }, sources: [] }
 }
 
 export async function runChatAgent({
@@ -143,9 +126,9 @@ export async function runChatAgent({
   now?: Date
   fetcher?: typeof fetch
 }) {
-  const question = messages.at(-1)!.content
   const selected = new Map<string, ChatSource>()
   const readSources = new Map<string, ChatSource>()
+  const evidence: { tool: string; arguments: string; result: unknown }[] = []
   // 先理解问题，再由工具取资料，避免相似关键词把一般讨论带回个人项目介绍。
   const systemPrompt = buildSystemPrompt([], now)
   const conversation: ModelMessage[] = [{ role: "system", content: systemPrompt }, ...messages]
@@ -160,7 +143,7 @@ export async function runChatAgent({
     const planning: ModelMessage[] = [
       {
         role: "system",
-        content: `${systemPrompt}\n本轮只决定是否需要继续查阅资料，不写最终回答。询问个人事实、知识笔记，以及 Agent、上下文、开发实践、设计或技术选型时，优先搜索并阅读相关知识；需要原版技能的专题方法时调用 read_style_reference，不把其中的人物经历混入站点知识。寒暄和纯语言改写不必检索，信息足够时停止查阅。承接后的检索主题：${buildKnowledgeQuery(question, messages)}`,
+        content: buildPlanningSystemPrompt(systemPrompt),
       },
       ...conversation.slice(1),
     ]
@@ -179,18 +162,21 @@ export async function runChatAgent({
         selected.set(source.id, source)
         if (call.function.name === "read_knowledge") readSources.set(source.id, source)
       }
+      // 保留实际查询与读取起点，避免最终作答把局部内容误当成全部。
+      evidence.push({ tool: call.function.name, arguments: call.function.arguments, result: execution.result })
       conversation.push({ role: "tool", tool_call_id: call.id, content: JSON.stringify(execution.result) })
     }
   }
 
-  conversation[0] = {
-    role: "system",
-    content: `${systemPrompt}\n现在直接接住访客这句话，不再调用工具或讲查阅过程。采用原版孙割.skill 的中文访谈口吻和判断方式，按站点接入约定回答，通常三句话以内；用户要求详细时再展开。个人事实只能来自林志强的公开资料，技能人物经历不能冒充自己的经历。不要列小标题、复述规则或加一段总结。`,
-  }
+  // 最终回答只接收原对话与实际资料，不继续工具调用记录；最后一句仍是访客的问题。
+  const finalConversation: ModelMessage[] = [
+    { role: "system", content: buildFinalSystemPrompt(systemPrompt, evidence) },
+    ...messages,
+  ]
   // 搜索候选不等于回答依据，只有实际读过的文章才作为延伸阅读发送。
   send({ type: "sources", sources: [...readSources.values()].slice(0, 6) })
-  const writer = createPublicAnswerWriter(corpus.map((chunk) => chunk.id), (content) => send({ type: "delta", content }))
-  const response = await createDeepSeekCompletionStream({ messages: conversation, tools: knowledgeTools, toolChoice: "none", signal: deadline, fetcher })
+  const writer = createPublicAnswerWriter((content) => send({ type: "delta", content }))
+  const response = await createDeepSeekCompletionStream({ messages: finalConversation, signal: deadline, fetcher })
   const completion = await readCompletionStream(response, deadline, writer.push)
   if (completion.toolCalls.length > 0) throw new Error("Upstream called tools during the final answer")
   const responseLength = writer.finish()

@@ -6,7 +6,7 @@ const MAX_BODY_BYTES = 64_000
 
 export async function parseChatRequest(request: Request) {
   const contentLength = Number(request.headers.get("content-length"))
-  if (contentLength > MAX_BODY_BYTES) throw new ChatRequestError("对话内容太长，请开启新的访谈。", 413)
+  if (contentLength > MAX_BODY_BYTES) throw new ChatRequestError("对话内容太长，请开启新对话。", 413)
   if (!request.body) throw new ChatRequestError("请发送一个有效的问题。")
 
   const reader = request.body.getReader()
@@ -20,7 +20,7 @@ export async function parseChatRequest(request: Request) {
       bytes += value.byteLength
       if (bytes > MAX_BODY_BYTES) {
         await reader.cancel()
-        throw new ChatRequestError("对话内容太长，请开启新的访谈。", 413)
+        throw new ChatRequestError("对话内容太长，请开启新对话。", 413)
       }
       text += decoder.decode(value, { stream: true })
     }

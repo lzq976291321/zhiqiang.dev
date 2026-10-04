@@ -9,10 +9,10 @@ import { Composer } from "./Composer"
 import styles from "./ChatRoom.module.css"
 
 const questions = [
-  { category: "AI Agent", question: "Agent 的工具循环应该怎么设计？" },
-  { category: "上下文工程", question: "怎样组织上下文才能减少理解偏差？" },
-  { category: "工程实践", question: "视频编辑器的撤销重做怎么实现？" },
-  { category: "技术判断", question: "什么时候值得接入 MCP？" },
+  { category: "吐槽两句", question: "今天有点烦，先别给建议，陪我吐槽两句。" },
+  { category: "开个脑洞", question: "如果星期一是一种动物，它会是什么？" },
+  { category: "不同看法", question: "我觉得人就该一直追求进步，你认同吗？" },
+  { category: "认真聊聊", question: "怎么分清自己真的想要，还是怕落后？" },
 ]
 
 function AnswerActions({ message }: { message: ConversationMessage }) {
@@ -121,7 +121,7 @@ export function ChatRoom({ topic, question }: { topic?: string; question?: strin
         </div>
         <button type="button" onClick={startNew} disabled={!started || pending} className={styles.newChat}><Plus size={16} aria-hidden="true" />新对话</button>
         <nav className={styles.projectNav} aria-label="作品导航">
-          <Link href="/chat" className={styles.activeNav} aria-current="page" onClick={(event) => { event.preventDefault(); setMenuOpen(false) }}><MessageSquare size={16} aria-hidden="true" />知识对话</Link>
+          <Link href="/chat" className={styles.activeNav} aria-current="page" onClick={(event) => { event.preventDefault(); setMenuOpen(false) }}><MessageSquare size={16} aria-hidden="true" />聊聊</Link>
           <Link href="/knowledge"><BookOpen size={16} aria-hidden="true" />知识库<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
           <Link href="/lab"><FlaskConical size={16} aria-hidden="true" />UI Lab<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
           <Link href="/projects"><FolderKanban size={16} aria-hidden="true" />作品<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
@@ -129,19 +129,19 @@ export function ChatRoom({ topic, question }: { topic?: string; question?: strin
         <div className={styles.conversationIndex}>
           <p className={styles.sidebarLabel}>本次对话{started ? <span>{userMessages.length}</span> : null}</p>
           {started ? (
-            <nav aria-label="本次对话的问题" className={styles.history}>
+            <nav aria-label="本次对话的话题" className={styles.history}>
               {userMessages.map((message, index) => <button key={message.id} type="button" onClick={() => jumpToMessage(message.id)} title={message.content}><span>{String(index + 1).padStart(2, "0")}</span><span>{message.content}</span></button>)}
             </nav>
-          ) : <p className={styles.historyEmpty}>从右侧开始提问，<br />在这里回看讨论过的问题。</p>}
+          ) : <p className={styles.historyEmpty}>说点什么开始聊天，<br />聊过的话题会出现在这里。</p>}
         </div>
-        <div className={styles.sidebarFooter}><span className={styles.profileAvatar}>Z</span><div><strong>志强</strong><span>独立开发者</span></div><Link href="/projects" aria-label="查看志强的作品"><ArrowUpRight size={16} /></Link></div>
+        <div className={styles.sidebarFooter}><span className={styles.profileAvatar}>Z</span><div><strong>志强</strong><span>网站作者</span></div><Link href="/projects" aria-label="查看志强的作品"><ArrowUpRight size={16} /></Link></div>
       </aside>
 
       <div className={styles.workspace}>
         <header className={styles.header}>
           <div className={styles.headerTitle}>
             <button ref={menuButtonRef} type="button" className={styles.menuToggle} onClick={() => setMenuOpen(!menuOpen)} aria-label="展开导航" aria-expanded={menuOpen} aria-controls="chat-sidebar"><PanelLeftOpen size={18} /></button>
-            <h1>知识对话</h1><span className={styles.headerDivider}>/</span><span className={styles.headerSubtitle}>{started ? "继续讨论" : "新对话"}</span>
+            <h1>聊聊</h1><span className={styles.headerDivider}>/</span><span className={styles.headerSubtitle}>AI 对话</span>
           </div>
           <Link href="/knowledge" className={styles.headerLink}><BookOpen size={14} aria-hidden="true" /><span>阅读知识库</span><ArrowUpRight size={12} aria-hidden="true" /></Link>
         </header>
@@ -151,34 +151,34 @@ export function ChatRoom({ topic, question }: { topic?: string; question?: strin
             <div className={styles.welcome}>
               <div className={styles.intro}>
                 <div className={styles.welcomeMark} aria-hidden="true"><span /><span /><span /><span /></div>
-                <p className={styles.eyebrow}>一起拆解一个具体问题</p>
-                <h2>你想从哪里开始？</h2>
-                <p className={styles.invitation}>{initialTopic ? `正在讨论：${initialTopic}` : "关于 Agent、产品设计和工程实现，把思路和细节聊清楚。"}</p>
+                <p className={styles.eyebrow}>不用先想好话题</p>
+                <h2>今天想聊点什么？</h2>
+                <p className={styles.invitation}>{initialTopic ? `接着聊：${initialTopic}` : "吐槽两句，开个脑洞，或者认真聊一个问题。"}</p>
               </div>
               <Composer key={initialQuestion ?? initialTopic ?? "empty"} initialValue={initialQuestion ?? (initialTopic ? `关于「${initialTopic}」，` : "")} pending={pending} started={false} onSend={ask} onStop={stop} />
               <div className={styles.starterHeader}><span>也可以聊聊这些</span><span>01 — 04</span></div>
-              <div className={styles.starters} aria-label="从一个问题开始">
+              <div className={styles.starters} aria-label="从一个话题开始">
                 {questions.map(({ category, question }) => (
                   <button key={question} type="button" onClick={() => ask(question)} className={styles.starter}><span className={styles.starterCategory}>{category}</span><span className={styles.starterQuestion}>{question}</span><ArrowRight size={14} aria-hidden="true" /></button>
                 ))}
               </div>
-              <p className={styles.welcomeFootnote}><BookOpen size={12} aria-hidden="true" />从公开知识出发，也欢迎继续追问实现细节。</p>
+              <p className={styles.welcomeFootnote}><BookOpen size={12} aria-hidden="true" />读到哪里有疑问，也可以接着聊。</p>
             </div>
           </div>
         ) : (
           <>
             <div className={styles.viewport} ref={viewportRef} onScroll={onScroll}>
-              <div className={styles.transcript} role="log" aria-label="访谈记录" aria-live="polite" aria-relevant="additions text">
+              <div className={styles.transcript} role="log" aria-label="聊天记录" aria-live="polite" aria-relevant="additions text">
                 {messages.map((message) => (
                   message.role === "user" ? (
                     <div id={`message-${message.id}`} key={message.id} className={styles.userMessage}><span className="sr-only">你：</span><p>{message.content}</p></div>
                   ) : (
-                    <article key={message.id} className={styles.answer} aria-label="志强的回答" aria-busy={message.status === "streaming"}>
-                      <span className={styles.answerMark} aria-hidden="true">z.</span>
+                    <article key={message.id} className={styles.answer} aria-label="AI 的回复" aria-busy={message.status === "streaming"}>
+                      <span className={styles.answerMark} aria-hidden="true"><MessageSquare size={14} /></span>
                       <div className={styles.answerBody}>
-                        <div className={styles.answerByline}>志强<span>{message.status === "streaming" ? "正在回答" : "知识对话"}</span></div>
+                        <div className={styles.answerByline}>AI{message.status === "streaming" ? <span>正在回复</span> : null}</div>
                         {message.content ? <MessageContent content={message.content} /> : null}
-                        {message.status === "streaming" && !message.content ? <div className={styles.thinking} role="status"><span className={styles.pixelLoader} aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <i key={index} />)}</span><span>正在整理回答</span></div> : null}
+                        {message.status === "streaming" && !message.content ? <div className={styles.thinking} role="status"><span className={styles.pixelLoader} aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <i key={index} />)}</span><span>稍等一下</span></div> : null}
                         {message.status === "stopped" ? <p className={styles.messageNote}>已停止回答</p> : null}
                         {message.status === "error" ? <p className={styles.messageNote}>{message.content ? "回答中断，以上内容可能不完整。" : "这次没能完成回答。"}</p> : null}
                         {message.content && message.status !== "streaming" ? <AnswerActions message={message} /> : null}

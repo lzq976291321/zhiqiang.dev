@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { ChatRoom } from "@/features/chat/components/ChatRoom"
 
 export const metadata: Metadata = {
-  title: "知识对话",
-  description: "围绕公开知识、工程实践与技术判断继续提问。",
+  title: "聊聊",
+  description: "和 AI 聊聊日常、开个脑洞、交换不同看法，也可以沿着正在读的文章继续讨论。",
   alternates: { canonical: "/chat" },
 }
 

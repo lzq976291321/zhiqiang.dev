@@ -1,6 +1,6 @@
 # zhiqiang.chat
 
-围绕阅读、设计和实操的个人作品站。`/knowledge` 按原书脉络整理读书笔记，`/chat` 围绕公开知识与项目提问；`/lab` 把主题、真实 UI 场景和 Design Tokens 放在同一工作台，支持 CSS、JSON 和 Markdown 导出；`/projects` 以 RC Boat Arena 为首展示可体验的实际作品，完整项目档案位于 `/projects/archive`。
+围绕阅读、对话与设计的个人空间。`/knowledge` 按原书脉络整理读书笔记，`/chat` 可以与站内 AI 闲聊、吐槽、讨论，也能围绕读到的内容追问；`/lab` 把主题、真实 UI 场景和 Design Tokens 放在同一工作台，支持 CSS、JSON 和 Markdown 导出；`/projects` 以 RC Boat Arena 为首展示可体验的实际作品，完整项目档案位于 `/projects/archive`。
 
 工程文章、MCP 与 Skills 精选已退出公开目录及聊天来源，旧入口跳转到阅读书架；原 `/design-lab` 入口统一跳转到 `/lab`。保留本地知识管理 MCP 与对话技能，它们不属于退役的精选目录。
 
@@ -29,7 +29,7 @@ pnpm run start
 ## 核心目录
 
 - `src/app/`：首页、兼容路由和 API 入口。
-- `src/features/chat/`：访谈室的界面和交互。
+- `src/features/chat/`：聊天界面、交互与独立维护的 AI 表达风格。
 - `src/lib/chat/`：知识检索、Agent 编排、流式响应和问题日志。
 - `src/content/profile/`：已确认的个人公开经历和项目事实。
 - `src/content/knowledge/`：可持续补充的判断、决策和知识条目。
@@ -40,7 +40,20 @@ pnpm run start
 
 Agent 的知识工具只有只读的 `search_knowledge` 和 `read_knowledge`。知识文件中的内容作为回答依据，不作为可执行指令；公开对话不会直接写入知识库。
 
-默认对话风格使用 [mannaandpoem/sun-ge](https://github.com/mannaandpoem/sun-ge) 的原版“孙割.skill”，固定版本记录在 `src/features/chat/skills/sun-ge.source.json`。原始文件完整保存在 `src/features/chat/skills/vendor/sun-ge/`；服务端默认加载核心技能和语气文档，51 份参考资料均可通过受限只读工具 `read_style_reference` 按需阅读。风格材料不进入站点的公开知识检索，也不能作为站点主人的个人经历。当前身份仍是林志强的 AI 分身，采用原版技能的中文访谈口吻和判断方式。修改后需重新构建和部署才在线上生效。
+默认对话风格在 `src/features/chat/server/response-style.ts` 中维护：有好奇心、有主见，表达自然，尊重当前对话里的偏好，按语境调整长短。站内 AI 不冒充作者，不编造真人经历，也不承诺跨会话记忆。闲聊与一般讨论直接回应，依赖站内文章或作者公开事实的问题才查阅知识。旧的 `sun-ge` 原始材料和版本出处保留供追溯，已退出运行时提示与工具，不作为当前人格或知识来源。修改后需重新构建和部署才在线上生效。
+
+### 持续改进对话
+
+`tools/chat-eval/` 保存固定多轮场景和本地评估工具，直接复用真实 Agent，不写访客日志或数据库。运行时使用本地模型配置，报告只保存在被 Git 忽略的 `.local/chat-eval/`。
+
+```bash
+# 在修改前后分别运行同一组场景；默认每个场景重复一次。
+pnpm chat:eval run --label baseline --out .local/chat-eval/baseline
+pnpm chat:eval run --label candidate --out .local/chat-eval/candidate
+pnpm chat:eval compare .local/chat-eval/baseline.json .local/chat-eval/candidate.json --out .local/chat-eval/comparison
+```
+
+HTML 报告可以阅读完整对话；对比页隐藏版本名，以随机 A/B 顺序呈现，版本映射单独保存。人工比较自然程度、上下文承接、分寸与事实；耗时和完成状态只用于排障。用 `--cases` 缩小问题范围，用 `--repeat 3` 检查稳定性；未见明确改善时不替换已有版本。命令和场景见 [对话评估工具](tools/chat-eval/README.md)。
 
 ## 更新知识
 

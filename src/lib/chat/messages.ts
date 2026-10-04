@@ -12,7 +12,7 @@ export class ChatRequestError extends Error {
   }
 }
 
-// 用户输入单独校验；较长的历史回答只缩减上下文，不能阻断下一轮访谈。
+// 用户输入单独校验；较长的历史回答只缩减上下文，不能阻断下一轮对话。
 export function normalizeChatMessages(value: unknown): ChatMessage[] {
   if (!Array.isArray(value) || value.length === 0) {
     throw new ChatRequestError("请发送一个有效的问题。")
