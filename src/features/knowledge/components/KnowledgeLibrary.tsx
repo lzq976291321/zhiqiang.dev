@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, ChevronRight, Library, Search, X } from "lucide-react"
+import { ArrowRight, ArrowUpRight, BookOpen, ChevronRight, Library, List, Search, X } from "lucide-react"
 import type { LibraryItem } from "../lib/library"
 import { piBookSections, piChapterNumber, piReadingOrder, shortBookTitle } from "../lib/catalog"
+import { useLastReading } from "../lib/use-reading-progress"
 import styles from "./KnowledgeLibrary.module.css"
 
 function ReadingRow({ entry }: { entry: LibraryItem }) {
@@ -12,63 +13,116 @@ function ReadingRow({ entry }: { entry: LibraryItem }) {
   const section = piBookSections.find((item) => chapter !== undefined && chapter >= item.from && chapter <= item.to)
   return (
     <Link href={entry.href} className={styles.articleRow}>
-      <span className={styles.articleIcon}>{chapter ? String(chapter).padStart(2, "0") : <BookOpen size={17} strokeWidth={1.6} />}</span>
+      <span className={styles.articleIcon} aria-hidden="true">{chapter ? String(chapter).padStart(2, "0") : <BookOpen size={20} strokeWidth={1.6} />}</span>
       <div className={styles.articleBody}>
         <span className={styles.articleMeta}>{section?.title ?? "阅读导览"}</span>
         <h3>{shortBookTitle(entry.title)}</h3>
         <p>{entry.description}</p>
-        <span className={styles.articleFoot}>pi 的设计艺术{chapter ? ` · 第 ${chapter} 章` : ""}</span>
       </div>
-      <ArrowRight size={16} className={styles.rowArrow} />
+      <ChevronRight size={19} className={styles.rowArrow} aria-hidden="true" />
     </Link>
   )
 }
 
 function BookSeries({ entries }: { entries: LibraryItem[] }) {
-  const [expanded, setExpanded] = useState(false)
+  const directoryRef = useRef<HTMLDialogElement>(null)
+  const directoryTriggerRef = useRef<HTMLButtonElement>(null)
+  const previousOverflow = useRef<string | null>(null)
+  const lastReading = useLastReading()
   const ordered = [...entries].sort((a, b) => piReadingOrder(a.slug) - piReadingOrder(b.slug))
   const chapters = ordered.filter((entry) => piChapterNumber(entry.slug) !== undefined)
-  const index = ordered.find((entry) => entry.slug === "pi-book-index") ?? ordered[0]
-  if (!index) return null
+  const first = ordered.find((entry) => entry.slug === "pi-book-preface")
+    ?? ordered.find((entry) => piChapterNumber(entry.slug) === 1)
+    ?? ordered.find((entry) => entry.slug === "pi-book-index")
+    ?? ordered[0]
+  const lastEntry = lastReading ? ordered.find((entry) => entry.href === lastReading.href) : undefined
+  const reading = lastEntry && lastReading ? lastReading : null
+  const percent = reading ? Math.min(100, Math.max(0, Math.round(reading.percent))) : 0
+
+  const restorePageScroll = () => {
+    if (previousOverflow.current !== null) {
+      document.body.style.overflow = previousOverflow.current
+      previousOverflow.current = null
+    }
+    directoryTriggerRef.current?.focus({ preventScroll: true })
+  }
+  const openDirectory = () => {
+    const directory = directoryRef.current
+    if (!directory || directory.open) return
+    previousOverflow.current = document.body.style.overflow
+    directory.showModal()
+    document.body.style.overflow = "hidden"
+  }
+  const closeDirectory = () => directoryRef.current?.close()
+
+  useEffect(() => () => {
+    if (previousOverflow.current !== null) document.body.style.overflow = previousOverflow.current
+  }, [])
+
+  if (!first) return null
 
   return (
     <section className={styles.series} aria-label="pi 的设计艺术读书系列">
-      <div className={styles.seriesMain}>
-        <div className={styles.bookVisual} aria-hidden="true">
-          <div className={styles.bookCover}><span>READING NOTES</span><strong>pi</strong><span>THE ART OF<br />AGENT DESIGN</span></div>
-        </div>
-        <div className={styles.seriesBody}>
-          <span className={styles.seriesLabel}><BookOpen size={13} /> 读书系列 · {chapters.length} 章</span>
-          <h2>pi 的设计艺术</h2>
-          <p>从核心循环到工具执行，拆解一个 Coding Agent 的架构与取舍。</p>
-          <span className={styles.sourceNote}>原著：张汉东 · 本站整理阅读笔记，保留原文与版本说明。</span>
-          <div className={styles.seriesActions}>
-            <Link href={index.href}>阅读导览 <ArrowRight size={14} /></Link>
-            <button type="button" aria-expanded={expanded} aria-controls="pi-series-directory" onClick={() => setExpanded(!expanded)}>{expanded ? "收起目录" : "展开目录"}<ArrowDown size={14} className={expanded ? styles.rotated : undefined} /></button>
+      <div className={styles.bookContent}>
+        <div className={styles.seriesMain}>
+          <div className={styles.bookVisual} aria-hidden="true">
+            <div className={styles.bookCover}><span>设计艺术</span><strong>pi</strong><span>张汉东 著<br />阅读笔记</span></div>
+          </div>
+          <div className={styles.seriesBody}>
+            <span className={styles.seriesLabel}>读书笔记 · {chapters.length} 章</span>
+            <h2>pi 的设计艺术</h2>
+            <p>从核心循环到工具执行，理解一个 Coding Agent 的架构与取舍。</p>
+            <span className={styles.sourceNote}>原著：张汉东</span>
           </div>
         </div>
+        {reading && lastEntry && (
+          <div className={styles.readingState}>
+            <div><span>上次读到</span><span>本篇 {percent}%</span></div>
+            <p>{shortBookTitle(lastEntry.title)}</p>
+            <div className={styles.progressTrack} role="progressbar" aria-label="上次阅读的篇章进度" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${percent}%` }} /></div>
+          </div>
+        )}
+        <div className={styles.seriesActions}>
+          <Link className={styles.readButton} href={reading?.href ?? first.href}><BookOpen size={19} aria-hidden="true" />{reading ? "继续阅读" : "开始阅读"}<ArrowRight size={18} aria-hidden="true" /></Link>
+          <button ref={directoryTriggerRef} className={styles.directoryButton} type="button" aria-haspopup="dialog" aria-controls="pi-series-directory" onClick={openDirectory}><List size={19} aria-hidden="true" />目录</button>
+        </div>
       </div>
-      {expanded && (
-        <div id="pi-series-directory" className={styles.directory}>
+      <div className={styles.bookSource}>
+        <span>本站整理的阅读笔记，每篇保留来源与版本说明。</span>
+        <a href="https://zhanghandong.github.io/pi-book/preface.html" target="_blank" rel="noopener noreferrer">阅读原书 <ArrowUpRight size={15} aria-hidden="true" /></a>
+      </div>
+      <dialog
+        ref={directoryRef}
+        id="pi-series-directory"
+        className={styles.directory}
+        aria-labelledby="pi-directory-title"
+        onClose={restorePageScroll}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) return
+          const bounds = event.currentTarget.getBoundingClientRect()
+          if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDirectory()
+        }}
+      >
+        <div className={styles.directoryHeader}>
+          <div><span>pi 的设计艺术</span><h2 id="pi-directory-title">目录</h2></div>
+          <button type="button" aria-label="关闭目录" onClick={closeDirectory}><X size={22} /></button>
+        </div>
+        <div className={styles.directoryContent}>
           <div className={styles.bookExtras}>
-            {ordered.filter((entry) => piChapterNumber(entry.slug) === undefined).map((entry) => <Link key={entry.href} href={entry.href}>{entry.slug.endsWith("index") ? "全书索引" : entry.slug.endsWith("preface") ? "前言与版本基线" : "附录与类型索引"}<ChevronRight size={12} /></Link>)}
+            {ordered.filter((entry) => piChapterNumber(entry.slug) === undefined).map((entry) => <Link key={entry.href} href={entry.href} onNavigate={closeDirectory}>{entry.slug.endsWith("index") ? "全书导览" : entry.slug.endsWith("preface") ? "前言与版本基线" : "附录与类型索引"}<ChevronRight size={17} aria-hidden="true" /></Link>)}
           </div>
           <div className={styles.chapterGroups}>
             {piBookSections.map((section) => (
               <section key={section.title}>
                 <h3>{section.title}<span>{String(section.from).padStart(2, "0")}—{String(section.to).padStart(2, "0")}</span></h3>
                 {chapters.filter((entry) => { const number = piChapterNumber(entry.slug)!; return number >= section.from && number <= section.to }).map((entry) => (
-                  <Link href={entry.href} key={entry.href}><span>{String(piChapterNumber(entry.slug)).padStart(2, "0")}</span>{shortBookTitle(entry.title)}</Link>
+                  <Link href={entry.href} key={entry.href} onNavigate={closeDirectory}><span>{String(piChapterNumber(entry.slug)).padStart(2, "0")}</span><span>{shortBookTitle(entry.title)}</span><ChevronRight size={16} aria-hidden="true" /></Link>
                 ))}
               </section>
             ))}
           </div>
         </div>
-      )}
-      <div className={styles.bookSource}>
-        <span>原书的完整论证与代码，可随笔记对照阅读。</span>
-        <a href="https://zhanghandong.github.io/pi-book/preface.html" target="_blank" rel="noopener noreferrer">阅读原书 <ArrowUpRight size={12} /></a>
-      </div>
+      </dialog>
     </section>
   )
 }
@@ -76,12 +130,13 @@ function BookSeries({ entries }: { entries: LibraryItem[] }) {
 export function KnowledgeLibrary({ entries }: { entries: LibraryItem[] }) {
   const [query, setQuery] = useState("")
   const [topic, setTopic] = useState<string | null>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
   const terms = query.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean)
   const searching = terms.length > 0
   const ordered = [...entries].sort((a, b) => piReadingOrder(a.slug) - piReadingOrder(b.slug))
   const selectedSection = piBookSections.find((section) => section.title === topic)
   const visible = ordered.filter((entry) => {
-    // 搜索始终覆盖全书，阅读主题仅用于无关键词时的章节导航。
+    // 搜索覆盖全部公开笔记，主题筛选用于无关键词时的章节导航。
     if (searching) return terms.every((term) => [entry.title, entry.description, ...entry.tags].join(" ").toLocaleLowerCase().includes(term))
     if (!selectedSection) return true
     const number = piChapterNumber(entry.slug)
@@ -94,36 +149,36 @@ export function KnowledgeLibrary({ entries }: { entries: LibraryItem[] }) {
   return (
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
-        <span className={styles.navLabel}>阅读空间</span>
         <nav className={styles.kindNav} aria-label="书架导航">
-          <button type="button" aria-pressed={!topic && !searching} onClick={reset}><Library size={16} /><span>我的书架</span><span className={styles.count}>{entries.length ? 1 : 0}</span></button>
+          <button type="button" aria-pressed={!topic && !searching} onClick={reset}><Library size={20} /><span>书架</span><span className={styles.count}>{entries.length ? 1 : 0}</span></button>
         </nav>
-        <label className={styles.mobileTopics}>章节主题<select aria-label="章节主题" value={topic ?? ""} onChange={(event) => selectTopic(event.target.value || null)}><option value="">整本阅读</option>{piBookSections.map((section) => <option value={section.title} key={section.title}>{section.title}</option>)}</select></label>
         <nav className={styles.topicNav} aria-label="阅读主题">
           <span className={styles.navLabel}>按主题阅读</span>
-          {piBookSections.map((section) => <button type="button" key={section.title} aria-pressed={topic === section.title && !searching} onClick={() => selectTopic(section.title)}><span className={styles.topicDot} /><span>{section.title}</span><span className={styles.count}>{String(section.from).padStart(2, "0")}–{String(section.to).padStart(2, "0")}</span></button>)}
+          {piBookSections.map((section) => <button type="button" key={section.title} aria-pressed={topic === section.title && !searching} onClick={() => selectTopic(section.title)}><span>{section.title}</span><ChevronRight size={15} aria-hidden="true" /></button>)}
         </nav>
-        <div className={styles.sidebarNote}><BookOpen size={15} /><p>用章节串起知识，<br />把来源留在每一篇笔记里。</p></div>
       </aside>
       <div className={styles.content}>
         <div className={styles.searchBox}>
-          <Search size={17} aria-hidden="true" />
-          <label className="sr-only" htmlFor="knowledge-search">搜索全书笔记的标题、摘要和标签</label>
-          <input id="knowledge-search" type="search" placeholder="搜索书中的问题、章节或关键词…" value={query} onChange={(event) => setQuery(event.target.value)} />
-          {query && <button type="button" aria-label="清除搜索" onClick={() => setQuery("")}><X size={15} /></button>}
+          <Search size={20} aria-hidden="true" />
+          <label className="sr-only" htmlFor="knowledge-search">搜索笔记的标题、摘要和标签</label>
+          <input ref={searchRef} id="knowledge-search" type="search" placeholder="搜索章节或关键词" value={query} onChange={(event) => setQuery(event.target.value)} />
+          {query && <button type="button" aria-label="清除搜索" onClick={() => { setQuery(""); searchRef.current?.focus() }}><X size={19} /></button>}
+        </div>
+        <div className={styles.mobileTopics}>
+          <button type="button" aria-pressed={!topic && !searching} onClick={reset}><Library size={18} aria-hidden="true" />书架</button>
+          <label><span className="sr-only">按主题阅读</span><select aria-label="按主题阅读" value={searching ? "" : topic ?? ""} onChange={(event) => selectTopic(event.target.value || null)}><option value="">按主题阅读</option>{piBookSections.map((section) => <option value={section.title} key={section.title}>{section.title}</option>)}</select></label>
         </div>
         <div className={styles.resultsHeader}>
-          <h2>{searching ? "全书搜索" : selectedSection?.title ?? "我的知识书架"}</h2>
-          <span role="status">{searching ? `${visible.length} 篇匹配` : selectedSection ? `${visible.length} 章` : `${entries.length ? 1 : 0} 本书 · ${entries.length} 篇笔记`}</span>
+          <h2>{searching ? "搜索结果" : selectedSection?.title ?? "书架"}</h2>
+          <span role="status">{searching ? `${visible.length} 篇笔记` : selectedSection ? `${visible.length} 章` : `${entries.length ? 1 : 0} 本`}</span>
         </div>
         {showBook && <BookSeries entries={entries} />}
         {!showBook && visible.length > 0 && (
           <section className={styles.articleList} aria-label={searching ? "搜索结果列表" : "章节列表"}>
-            {selectedSection && !searching && <div className={styles.listLabel}>pi 的设计艺术<span>第 {selectedSection.from}–{selectedSection.to} 章</span></div>}
             {visible.map((entry) => <ReadingRow key={entry.href} entry={entry} />)}
           </section>
         )}
-        {!visible.length && <div className={styles.empty}><Search size={28} strokeWidth={1.3} /><h3>没有找到相关笔记</h3><p>试试更短的关键词，或回到书架继续阅读。</p><button type="button" onClick={reset}>清除筛选 <ArrowRight size={14} /></button></div>}
+        {!visible.length && <div className={styles.empty}><Search size={30} strokeWidth={1.5} /><h3>{entries.length ? "没有找到相关笔记" : "书架还没有书"}</h3>{entries.length > 0 && <><p>换一个关键词，或回到书架继续阅读。</p><button type="button" onClick={reset}>返回书架 <ArrowRight size={17} /></button></>}</div>}
       </div>
     </div>
   )

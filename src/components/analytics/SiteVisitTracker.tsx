@@ -16,12 +16,17 @@ function createSessionId() {
 }
 
 function getSessionId() {
-  const existing = window.localStorage.getItem(sessionStorageKey)
-  if (existing) return existing
+  try {
+    const existing = window.localStorage.getItem(sessionStorageKey)
+    if (existing) return existing
 
-  const sessionId = createSessionId()
-  window.localStorage.setItem(sessionStorageKey, sessionId)
-  return sessionId
+    const sessionId = createSessionId()
+    window.localStorage.setItem(sessionStorageKey, sessionId)
+    return sessionId
+  } catch {
+    // 浏览器禁用存储时跳过统计，不能影响阅读等页面的正常使用。
+    return null
+  }
 }
 
 export function SiteVisitTracker() {
@@ -30,6 +35,8 @@ export function SiteVisitTracker() {
   useEffect(() => {
     const path = `${window.location.pathname}${window.location.search}`
     if (!pathname || lastTrackedPath === path) return
+    const sessionId = getSessionId()
+    if (!sessionId) return
 
     lastTrackedPath = path
 
@@ -40,7 +47,7 @@ export function SiteVisitTracker() {
       },
       body: JSON.stringify({
         path,
-        sessionId: getSessionId(),
+        sessionId,
         referrer: document.referrer || null,
       }),
       keepalive: true,
