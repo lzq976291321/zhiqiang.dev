@@ -123,7 +123,7 @@ export function ChatRoom({ topic, question }: { topic?: string; question?: strin
         <nav className={styles.projectNav} aria-label="作品导航">
           <Link href="/chat" className={styles.activeNav} aria-current="page" onClick={(event) => { event.preventDefault(); setMenuOpen(false) }}><MessageSquare size={16} aria-hidden="true" />聊聊</Link>
           <Link href="/knowledge"><BookOpen size={16} aria-hidden="true" />知识库<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
-          <Link href="/lab"><FlaskConical size={16} aria-hidden="true" />UI Lab<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
+          <Link href="/lab"><FlaskConical size={16} aria-hidden="true" />工具<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
           <Link href="/projects"><FolderKanban size={16} aria-hidden="true" />作品<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
         </nav>
         <div className={styles.conversationIndex}>

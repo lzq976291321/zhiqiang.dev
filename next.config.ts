@@ -1,6 +1,8 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  // 真机局域网调试按启动参数放行指定主机，不写死个人网络地址。
+  allowedDevOrigins: process.env.LOCAL_PREVIEW_HOST ? [process.env.LOCAL_PREVIEW_HOST] : [],
   async headers() {
     return [
       {

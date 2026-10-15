@@ -1,6 +1,6 @@
 .page {
- --reader-bg:#fcfcfd; --reader-surface:#fff; --reader-ink:#25272c; --reader-muted:#6e7480;
- --reader-line:#e5e7ec; --reader-soft:#f1f3f7; --reader-accent:#4964d6; --reader-tint:#edf1ff;
+ --reader-bg:#f7f6f2; --reader-surface:#fffef9; --reader-ink:#252a26; --reader-muted:#73776e;
+ --reader-line:#d9ddd3; --reader-soft:#e9ede3; --reader-accent:#345c43; --reader-tint:#e5ecdf;
  color-scheme:light; min-height:100dvh; background:var(--reader-bg); color:var(--reader-ink); padding:0 32px 130px;
 }
 .page[data-reader-theme=warm] { --reader-bg:#f7f0e3; --reader-surface:#fff8eb; --reader-ink:#3c332a; --reader-muted:#776956; --reader-line:#e3d8c4; --reader-soft:#eee4d2; --reader-accent:#80623e; --reader-tint:#eee0c8; }
@@ -131,3 +131,5 @@
 }
 @media(max-width:360px) { .page { padding-inline:18px; } .readerBar { margin-inline:-18px; } .bookName { font-size:12px; } .header h1 { font-size:26px; } }
 @media(prefers-reduced-motion:reduce) { .page * { transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
+
+.header h1 { font-family:"Songti SC", "STSong", serif; font-weight:500; line-height:1.55; }

@@ -172,6 +172,7 @@ export function useCamera() {
       facingRef.current = activeFacing
       setFacing(activeFacing)
       updateStatus("ready")
+      return true
     } catch (cause) {
       if (!isCurrent()) return
       releaseStream()

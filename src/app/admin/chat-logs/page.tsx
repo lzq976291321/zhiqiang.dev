@@ -1,5 +1,6 @@
 "use client"
 
+import styles from "./Review.module.css"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Database,
@@ -246,7 +247,7 @@ export default function ChatLogsPage() {
   }, [loadLogs])
 
   return (
-    <main className="min-h-screen px-4 pb-10 pt-28 sm:px-6 lg:pt-32">
+    <main className={`${styles.page} min-h-screen px-4 pb-10 pt-28 sm:px-6 lg:pt-32`}>
       <section className="mx-auto max-w-6xl space-y-5">
         <div className="glass-card p-5 sm:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">

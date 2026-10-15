@@ -1,0 +1,119 @@
+.page { --bg:#f7f6f2; --ink:#252a26; --muted:#73776e; --line:#d9ddd3; --green:#345c43; --panel:#e9ede3; --card:#fffef9; background:var(--bg); color:var(--ink); min-height:100vh; padding:80px 32px 32px; color-scheme:light; }
+.wrap { max-width:1120px; margin:auto; }
+.page a { text-decoration:none; }
+.page :is(a, button, input):focus-visible { outline:2px solid var(--green); outline-offset:4px; }
+.page .hero { position:relative;padding:66px 0 48px;border-bottom:1px solid var(--line);overflow:hidden }
+.page .eyebrow { font-size:10px;letter-spacing:1.6px;color:var(--muted) }
+.page .dot { display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;margin-right:9px }
+.page h1, .page h2, .page h3, .page p { margin:0 }
+.page h1 { font-family:"Songti SC", "STSong", serif;font-size:clamp(40px,5vw,66px);font-weight:500;letter-spacing:-2px;line-height:1.5;margin:27px 0 30px }
+.page .accent { color:var(--green) }
+.page .hero-bottom { display:flex;align-items:end;justify-content:space-between;max-width:600px }
+.page .hero p { font-size:13px;line-height:1.9;color:var(--muted) }
+.page .round-link { font-size:12px;display:flex;align-items:center;gap:18px }
+.page .round-link span { width:35px;height:35px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center }
+.page .orbit { width:300px;height:300px;position:absolute;right:18px;top:65px;border:1px solid #acb5a4;border-radius:50%;transform:rotate(-15deg);background:radial-gradient(ellipse at center,#dbe1d055,transparent 70%) }
+.page .orbit i { position:absolute;inset:15px 60px;border:1px solid #acb5a4;border-radius:50%;transform:rotate(35deg) }
+.page .orbit i:nth-child(2) { transform:rotate(95deg) }
+.page .orbit i:nth-child(3) { transform:rotate(155deg) }
+.page .orbit b { position:absolute;inset:0;display:grid;place-content:center;font-family:"Songti SC", "STSong", serif;font-size:25px;line-height:1.7;font-weight:400;transform:rotate(15deg);text-align:center }
+.page .orbit small { position:absolute;bottom:-27px;left:64px;font-size:9px;letter-spacing:3px;transform:rotate(15deg) }
+.page section:not(.hero) { padding-top:52px }
+.page .section-head { display:flex;align-items:end;justify-content:space-between;margin-bottom:26px }
+.page h2 { font-family:"Songti SC", "STSong", serif;font-size:29px;font-weight:500 }
+.page h2 small { display:block;font:9px sans-serif;letter-spacing:2px;color:var(--muted);margin-bottom:14px }
+.page .section-head>a { font-size:11px;color:var(--muted) }
+.page .reading-grid { display:grid;grid-template-columns:1fr 1fr;gap:42px }
+.page .book-panel { display:flex;align-items:center;gap:26px;background:var(--panel);padding:32px 25px;min-height:310px }
+.page .book { position:relative;flex-shrink:0;width:169px;height:234px;color:#e5e9d9;background:#35503c;box-shadow:7px 10px 14px #1c30252a;border-left:7px solid #233d2e;padding:18px 15px;transform:rotate(-5deg);overflow:hidden }
+.page .book>span { font:6px/1.5 sans-serif;letter-spacing:1.5px }
+.page .book strong { display:block;font:76px/1.15 Georgia,serif;margin-top:10px }
+.page .book strong span { display:block;font:14px "Songti SC", "STSong", serif;letter-spacing:2px }
+.page .book em { font-size:7px;display:block;margin-top:12px;font-style:normal }
+.page .book small { position:absolute;bottom:15px;font-size:7px }
+.page .book-lines { position:absolute;width:130px;height:130px;border:1px solid #9da993;right:-60px;bottom:-20px;border-radius:50%;box-shadow:0 0 0 10px #35503c,0 0 0 11px #9da993,0 0 0 21px #35503c,0 0 0 22px #9da993 }
+.page .book-caption>span { font-size:9px;color:var(--muted) }
+.page .book-caption h3 { font:19px/1.6 "Songti SC", "STSong", serif;margin:15px 0 8px }
+.page .book-caption p { font-size:11px;line-height:1.9;color:var(--muted) }
+.page .book-caption b { display:block;font-size:10px;font-weight:400;margin-top:24px }
+.page .chapters>a { display:flex;align-items:center;border-bottom:1px solid var(--line);gap:18px;padding:20px 0 }
+.page .chapters>a>span { font:20px Georgia;color:#949f8d }
+.page .chapters small { font-size:8px;letter-spacing:1.4px;color:var(--muted) }
+.page .chapters h3 { font-size:15px;font-weight:500;margin:6px 0 }
+.page .chapters p { font-size:10px;color:var(--muted) }
+.page .chapters b { margin-left:auto;font-weight:400 }
+.page .project { display:grid;grid-template-columns:1.8fr 1fr;background:var(--panel) }
+.page .project-img { position:relative;min-height:310px;overflow:hidden }
+.page .project img { width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s }
+.page .project:hover img { transform:scale(1.025) }
+.page .project-chip { position:absolute;left:20px;top:20px;background:#fffdf1dc;color:#35483c;font-size:8px;letter-spacing:1px;padding:8px 10px;border-radius:20px }
+.page .project-info { padding:34px }
+.page .project-info h3 { font:31px/1.5 "Songti SC", "STSong", serif;margin:22px 0 18px }
+.page .project-info p { font-size:11px;color:var(--muted);line-height:1.9 }
+.page .project-info b { font-size:11px;font-weight:500;display:flex;justify-content:space-between;margin-top:30px }
+.page .mini-projects { display:grid;grid-template-columns:repeat(3,1fr);margin-top:18px;gap:18px }
+.page .mini-projects a { display:flex;align-items:center;gap:15px;padding:23px 14px;border:1px solid var(--line) }
+.page .mini-projects a>span { font-size:30px;color:var(--green) }
+.page .mini-projects small { font-size:8px;color:var(--muted) }
+.page .mini-projects h3 { font-size:14px;font-weight:500;margin:6px 0 }
+.page .mini-projects p { font-size:9px;color:var(--muted) }
+.page .mini-projects b { margin-left:auto;font-weight:400 }
+.page .conversation { display:grid;grid-template-columns:1fr 1fr;gap:55px;margin-top:55px;padding:45px 0 55px!important;border-top:1px solid var(--line) }
+.page .conversation h2 { font-size:32px;line-height:1.7;margin:17px 0 }
+.page .conversation p { color:var(--muted);font-size:11px;line-height:1.9 }
+.page form { background:var(--card);border:1px solid var(--line);padding:20px }
+.page form>div { display:flex;align-items:center;justify-content:space-between }
+.page form span { font-size:9px;color:var(--muted) }
+.page form button { border:0;background:#345c43;color:#fff;border-radius:50%;width:33px;height:33px;font-size:20px }
+.page a:hover { color:var(--green) }
+@media(max-width:1000px){.page .orbit { width:230px;height:230px;right:0;top:100px }
+.page .hero-bottom { max-width:500px }
+.page .book-panel { flex-direction:column }
+.page .reading-grid { gap:25px }
+.page .project-info { padding:25px }
+.page .mini-projects { gap:8px }
+.page .mini-projects a { gap:8px }
+.page .mini-projects p { line-height:1.7 }
+}@media(max-width:680px){.page .hero { padding-top:38px }
+.page .hero h1 { font-size:39px;letter-spacing:-1px;position:relative;z-index:1 }
+.page .orbit { width:150px;height:150px;right:-40px;top:65px;opacity:.3 }
+.page .orbit b, .page .orbit small { display:none }
+.page .orbit i { inset:8px 25px }
+.page .hero-bottom { gap:15px }
+.page .hero p { font-size:11px }
+.page .round-link { font-size:10px;gap:9px }
+.page .section-head h2 { font-size:25px }
+.page .section-head>a { font-size:10px }
+.page .reading-grid, .page .project, .page .conversation { grid-template-columns:1fr }
+.page .book-panel { flex-direction:row;padding:28px 20px;gap:23px;min-height:280px }
+.page .book { width:145px;height:218px }
+.page .book-caption h3 { font-size:17px }
+.page .reading-grid { gap:23px }
+.page .chapters p { line-height:1.6 }
+.page .project-img { min-height:220px }
+.page .project-info h3 br { display:none }
+.page .project-info h3 { font-size:26px;margin:15px 0 }
+.page .project-info { padding:25px }
+.page .mini-projects { grid-template-columns:1fr;gap:10px }
+.page .mini-projects a { padding:16px;gap:18px }
+.page .mini-projects p { font-size:11px }
+.page .conversation { gap:25px;margin-top:38px }
+.page .conversation h2 { font-size:29px }
+.page .conversation p { font-size:12px }
+.page section:not(.hero) { padding-top:40px }
+}@media(prefers-reduced-motion:reduce){.page html { scroll-behavior:auto }
+.page * { transition:none!important }
+}.page .conversation { display:block; }
+.page .conversation > div { max-width:680px;margin:auto; }
+.page .conversation h2 { font-family:"Songti SC",serif; }
+.page .conversation form { border-radius:4px; }
+.page .conversation button { color:#345c43; }
+.page .conversation form button:not(:disabled) { background:#345c43;color:white; }
+.page .conversation input { font-size:16px; }
+.page .conversation p { line-height:1.9; }
+.page .footer { display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding:28px 0 0;font-size:11px;color:var(--muted); }
+ @media(max-width:680px){.page { padding:72px 20px 28px; }
+.page .book-panel { gap:18px;padding:25px 18px; }
+.page .book-caption { min-width:0; }
+.page .footer { flex-wrap:wrap; }
+}

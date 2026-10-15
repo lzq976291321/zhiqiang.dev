@@ -14,9 +14,9 @@ const PROJECTS = [
     href: project.href,
   })),
   {
-    title: "UI Lab",
-    desc: "在阅读空间、AI 任务台和项目工作台中体验主题，查看并导出同一套 Design Tokens。",
-    tags: ["Design Tokens", "React", "CSS Variables"],
+    title: "工具",
+    desc: "可以直接使用的屏幕补光灯与 LED 灯牌。",
+    tags: ["屏幕补光", "LED 灯牌", "React"],
     href: "/lab",
   },
 ]
