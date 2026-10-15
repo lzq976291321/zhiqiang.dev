@@ -1,0 +1,11 @@
+.page {background:#f7f6f2;color:#252a26;color-scheme:light;}
+.page [class*="text-white"],.page [class*="text-cyan"] {color:#626b60;}
+.page h1,.page h2,.page strong {color:#252a26;}
+.page h1 {font-family:"Songti SC","STSong",serif;font-weight:500;}
+.page :global(.glass-card) {background:#fffef9;border:1px solid #d9ddd3;box-shadow:none;}
+.page input,.page select {color:#252a26;background:#fffef9;border-color:#d9ddd3;}
+.page button {min-height:44px;}
+.page :is(button,a,input,select):focus-visible {outline:2px solid #345c43;outline-offset:3px;}
+.page [class*="border-white"] {border-color:#d9ddd3;}
+
+.page input::placeholder {color:#73776e;opacity:1;}

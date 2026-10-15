@@ -98,9 +98,9 @@ export function FillLight() {
     fullscreenHelpRef.current?.showModal()
   }
 
-  function toggleCamera() {
-    if (cameraActive) camera.close()
-    else { setControlsVisible(false); void camera.open() }
+  async function toggleCamera() {
+    if (cameraActive) { camera.close(); setControlsVisible(true) }
+    else if (await camera.open()) { setControlsVisible(false) }
   }
 
   function startDisco() {
@@ -124,7 +124,7 @@ export function FillLight() {
 
       <header className={styles.header} data-hidden={!controlsVisible} inert={!controlsVisible} aria-hidden={!controlsVisible}>
         <div className={styles.brandGroup}>
-          <Link href="/lab" className={styles.iconButton} aria-label="返回 UI Lab" title="返回 UI Lab"><ArrowLeft size={19} /></Link>
+          <Link href="/lab" className={styles.iconButton} aria-label="返回工具" title="返回工具"><ArrowLeft size={19} /></Link>
           <div className={styles.brand}><h1><Cat size={21} strokeWidth={1.6} />补光灯</h1><span>让光，刚刚好。</span></div>
         </div>
         <div className={styles.headerActions}>
@@ -172,7 +172,7 @@ export function FillLight() {
           <input id="disco-brightness" className={`${styles.range} ${styles.brightness}`} type="range" min="10" max="100" value={settings.brightness} onChange={(event) => setSettings((value) => ({ ...value, brightness: Number(event.target.value) }))} />
         </div> : <>
         <div className={styles.sideSelectorReveal} data-visible={settings.split} inert={!settings.split} aria-hidden={!settings.split}>
-        <div className={styles.sideSelector} aria-label="选择要调整的分屏">
+        <p className={styles.sideHint} role="status">正在调整{settings.axis === "horizontal" ? selectedSide === 0 ? "上半屏" : "下半屏" : selectedSide === 0 ? "左半屏" : "右半屏"}</p><div className={styles.sideSelector} aria-label="选择要调整的分屏">
           {([0, 1] as const).map((side) => <button type="button" key={side} aria-pressed={selectedSide === side} onClick={() => setActiveSide(side)}><i style={{ background: colorCSS(settings.colors[side]) }} />{settings.axis === "horizontal" ? side === 0 ? "上半屏" : "下半屏" : side === 0 ? "左半屏" : "右半屏"}</button>)}
           <button type="button" className={styles.axisButton} onClick={() => setSettings((value) => ({ ...value, axis: value.axis === "horizontal" ? "vertical" : "horizontal" }))} aria-label="切换分屏方向" title="切换分屏方向"><ArrowLeftRight size={16} /></button>
         </div>
@@ -184,14 +184,16 @@ export function FillLight() {
           {favorites.map((item, index) => <button type="button" className={`${styles.swatch} animate-in fade-in zoom-in-90 duration-300 ease-out`} key={`${colorHex(item)}-${index}`} aria-pressed={sameColor(item, color)} onClick={() => updateColor(item)}><span style={{ background: colorCSS(item) }}>{sameColor(item, color) && <Check className="animate-in fade-in zoom-in-50 duration-300 ease-out" size={18} />}</span><small>收藏 {index + 1}</small></button>)}
         </div>
 
-        <div className={styles.sliders}>
+        <div className={styles.quickBrightness}>            <div><label className={styles.sliderLabel} htmlFor="light-brightness"><span><Sun size={13} />页面亮度</span><span>{settings.brightness}%</span></label><input id="light-brightness" className={`${styles.range} ${styles.brightness}`} type="range" min="10" max="100" value={settings.brightness} onChange={(event) => setSettings((value) => ({ ...value, brightness: Number(event.target.value) }))} /></div></div>
+        <details className={styles.advanced}><summary>精细调色与更多</summary>        <div className={styles.sliders}>
           <label className={styles.sliderLabel} htmlFor="light-hue"><span>色相</span><span>{Math.round(color.hue)}°</span></label>
           <input id="light-hue" className={`${styles.range} ${styles.hue}`} type="range" min="0" max="360" value={color.hue} onChange={(event) => updateColor({ ...color, hue: Number(event.target.value), saturation: color.saturation || 65, lightness: color.lightness >= 98 || color.lightness <= 2 ? 80 : color.lightness })} />
           <div className={styles.sliderGrid}>
             <div><label className={styles.sliderLabel} htmlFor="light-saturation"><span>饱和度</span><span>{Math.round(color.saturation)}%</span></label><input id="light-saturation" className={`${styles.range} ${styles.saturation}`} type="range" min="0" max="100" value={color.saturation} onChange={(event) => updateColor({ ...color, saturation: Number(event.target.value), lightness: color.lightness >= 98 || color.lightness <= 2 ? 80 : color.lightness })} /></div>
-            <div><label className={styles.sliderLabel} htmlFor="light-brightness"><span><Sun size={13} />页面亮度</span><span>{settings.brightness}%</span></label><input id="light-brightness" className={`${styles.range} ${styles.brightness}`} type="range" min="10" max="100" value={settings.brightness} onChange={(event) => setSettings((value) => ({ ...value, brightness: Number(event.target.value) }))} /></div>
+
           </div>
         </div>
+            <label className={styles.customColor} title="选择自定义颜色"><span style={{ background: colorCSS(color) }} />自定义<input type="color" aria-label="自定义颜色" value={colorHex(color)} onChange={(event) => updateColor(colorFromHex(event.target.value))} /></label><button type="button" className={styles.extraMode} onClick={startDisco}><Disc3 size={16} />蹦迪模式</button></details>
         </>}
 
         <footer className={styles.panelFooter}>
@@ -199,19 +201,20 @@ export function FillLight() {
             <span className={styles.modeIndicator} aria-hidden="true" />
             <button type="button" aria-pressed={!discoMode && !settings.split} onClick={() => { setDiscoMode(false); setSettings((value) => ({ ...value, split: false })) }}><PanelBottom size={15} />单色</button>
             <button type="button" aria-pressed={!discoMode && settings.split} onClick={() => { setDiscoMode(false); setSettings((value) => ({ ...value, split: true })) }}><SplitSquareVertical size={15} />双色</button>
-            <button type="button" aria-pressed={discoMode} onClick={startDisco}><Disc3 size={15} />蹦迪</button>
+
           </div>
           {discoMode ? <button type="button" className={styles.endDisco} onClick={stopDisco}>结束蹦迪</button> : <div className={styles.footerActions}>
-            <label className={styles.customColor} title="选择自定义颜色"><span style={{ background: colorCSS(color) }} />自定义<input type="color" aria-label="自定义颜色" value={colorHex(color)} onChange={(event) => updateColor(colorFromHex(event.target.value))} /></label>
+
             <button type="button" className={styles.smallButton} aria-label="恢复默认补光" title="恢复默认补光" onClick={() => { setSettings(defaultSettings); setActiveSide(0); setMessage("已恢复默认补光") }}><RotateCcw size={16} /></button>
           </div>}
         </footer>
+        {!discoMode && <button type="button" className={styles.startLight} onClick={() => setControlsVisible(false)}><EyeOff size={17} />开始补光 · 收起面板</button>}
         <p className={styles.brightnessHint}>补光更亮，请调高设备屏幕亮度</p>
       </section>
 
       <div className={styles.cleanActions} data-visible={!controlsVisible} inert={controlsVisible} aria-hidden={controlsVisible}>
         {discoMode && <button type="button" className={styles.cleanButton} onClick={disco.togglePlaying} aria-label={disco.playing ? "暂停蹦迪" : "继续蹦迪"}>{disco.playing ? <Pause size={16} /> : <Play size={16} />}{disco.playing ? "暂停" : "播放"}</button>}
-        <button type="button" className={styles.cleanButton} onClick={() => setControlsVisible(true)}><SlidersHorizontal size={17} />{discoMode ? `${disco.bpm} BPM` : "调节"}</button>
+        <button type="button" className={styles.cleanButton} onClick={() => setControlsVisible(true)}><SlidersHorizontal size={17} />{discoMode ? `${disco.bpm} BPM` : "调整补光"}</button>
         {discoMode && <button type="button" className={styles.cleanButton} onClick={stopDisco} aria-label="结束蹦迪"><X size={16} />结束</button>}
         {fullscreen && <button type="button" className={styles.cleanButton} onClick={toggleFullscreen}><Minimize size={16} />退出全屏</button>}
       </div>
@@ -224,7 +227,7 @@ export function FillLight() {
         <p>双色模式下可以分别调整两边的颜色。网页调节的是页面亮度，设备屏幕亮度请在系统控制中心调整。</p>
         <p>iPhone 请通过 Safari 分享菜单添加到主屏幕，再从桌面打开，即可去掉浏览器地址栏和工具栏。</p>
         <p>相机需要你的授权，照片不会上传。支持的浏览器会在页面打开时保持屏幕常亮。</p>
-        <div className={styles.credit}>参考 <a href="https://apps.apple.com/us/app/id6737742513" target="_blank" rel="noreferrer">小猫补光灯 ↗</a> 的独立网页练习，由 UI Lab 制作。</div>
+        <div className={styles.credit}>参考 <a href="https://apps.apple.com/us/app/id6737742513" target="_blank" rel="noreferrer">小猫补光灯 ↗</a> 的独立网页练习，由 工具 制作。</div>
       </dialog>
 
       {photoFile && <MediaSaveDialog file={photoFile} onClose={camera.clearPhoto} title="保存照片" />}

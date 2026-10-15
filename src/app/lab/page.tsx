@@ -1,38 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowUpRight, Cat, PanelsTopLeft } from "lucide-react"
-import { LabGallery } from "@/features/lab/components/LabGallery"
 import styles from "@/features/site/components/Studio.module.css"
-import labStyles from "@/features/lab/components/LabGallery.module.css"
+import tools from "./Tools.module.css"
 
-export const metadata: Metadata = {
-  title: "UI Lab",
-  description: "体验 LED 灯牌、屏幕补光灯与三种设计语言，在完整场景中探索设计与交互。",
-  alternates: { canonical: "/lab" },
-}
-
-export default function LabPage() {
-  return <main className={styles.page}>
-    <div className={styles.wrap}>
-      <header className={labStyles.pageHeader}>
-        <span className={labStyles.eyebrow}>DESIGN, IN CONTEXT</span>
-        <h1>UI Lab</h1>
-        <div className={labStyles.headerBottom}><p>把设计放进完整场景。亲手体验，也把它带走。</p><span>03 THEMES / 03 SCENES</span></div>
-      </header>
-      <Link href="/lab/fill-light" className={labStyles.lightEntry}>
-        <span className={labStyles.lightEntryIcon}><Cat size={25} strokeWidth={1.5} /></span>
-        <span><strong>补光灯</strong><small>选一束光，照亮此刻。</small></span>
-        <span className={labStyles.lightEntrySwatches} aria-hidden="true"><i /><i /><i /></span>
-        <span className={labStyles.lightEntryAction}>打开体验 <ArrowUpRight size={16} /></span>
-      </Link>
-      <Link href="/lab/led-banner" className={labStyles.ledEntry}>
-        <span className={labStyles.ledEntryIcon}><PanelsTopLeft size={25} strokeWidth={1.5} /></span>
-        <span><strong>LED 灯牌</strong><small>写下文字，让屏幕发光。</small></span>
-        <span className={labStyles.ledEntryPreview} aria-hidden="true">HELLO!</span>
-        <span className={labStyles.ledEntryAction}>打开体验 <ArrowUpRight size={16} /></span>
-      </Link>
-      <LabGallery />
-      <footer className={styles.footer}><span>设计语言，在真实的阅读与操作中成立。</span><a href="/ui-gallery/index.html">界面灵感收藏 ↗</a></footer>
-    </div>
-  </main>
+export const metadata: Metadata = { title: "工具", description: "打开就能用的屏幕补光灯与 LED 灯牌。", alternates: { canonical: "/lab" } }
+export default function ToolsPage() {
+  return <main className={styles.page}><div className={styles.wrap}>
+    <header className={styles.hero}><span className={styles.eyebrow}>TOOLS / 随手用的小工具</span><h1>让屏幕，多做一点。</h1><p>选一束光，或者写一句想让人看见的话。</p></header>
+    <div className={tools.grid}>
+      <Link href="/lab/fill-light" className={tools.card}><div className={tools.light} aria-hidden="true"><span>一束好光</span><i /><i /><i /></div><div className={tools.body}><h2>屏幕补光灯 <span>↗</span></h2><p>选颜色、调亮度，收起面板就能补光。</p><span>打开补光灯</span></div></Link>
+      <Link href="/lab/led-banner" className={tools.card}><div className={tools.led} aria-hidden="true">HELLO!</div><div className={tools.body}><h2>LED 灯牌 <span>↗</span></h2><p>写下文字，调整样式，全屏展示。</p><span>制作灯牌</span></div></Link>
+    </div><footer className={styles.footer}><span>用手边的屏幕，解决眼前的小事。</span><Link href="/">返回首页 ↗</Link></footer>
+  </div></main>
 }

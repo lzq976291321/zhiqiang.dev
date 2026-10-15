@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from "next"
 import { LedBanner } from "@/features/led-banner/components/LedBanner"
 
 export const metadata: Metadata = {
-  title: "LED 灯牌 · UI Lab",
+  title: "LED 灯牌 · 工具",
   description: "把屏幕变成 LED 灯牌。输入文字，调整颜色与滚动速度，全屏展示你的消息。",
   alternates: { canonical: "/lab/led-banner" },
   openGraph: {
-    title: "LED 灯牌 · UI Lab",
+    title: "LED 灯牌 · 工具",
     description: "写下文字，让屏幕发光。",
     url: "/lab/led-banner",
   },

@@ -10,7 +10,7 @@ updatedAt: "2026-09-22"
 
 > source id: `profile`
 
-这是 `zhiqiang.chat` 的公开知识库入口，重点覆盖我的开发能力、项目经验、Agent 设计、MCP、Skills、UI Lab、工程偏好和合作方向。
+这是 `zhiqiang.chat` 的公开知识库入口，重点覆盖我的开发能力、项目经验、Agent 设计、MCP、Skills、实用工具、工程偏好和合作方向。
 
 Chat 可以进行开放式对话；当问题涉及我的经历、项目、技术判断或合作方向时，优先结合这里的资料回答。没有公开资料支撑的个人事实不编造，可以转为通用建议或说明资料未覆盖。
 
@@ -348,13 +348,9 @@ RC Boat Arena 是我的 3D 遥控船作品，公开地址为 `https://www.rcmyq.
 
 2026-09-22 已完成域名迁移：游戏使用 `https://www.rcmyq.cn/`，论坛使用 `https://forum.rcmyq.cn/`。`https://rcmyq.cn/` 自动跳到游戏，原论坛帖子、搜索等旧链接自动跳到新论坛。
 
-## UI Lab 与 Design Tokens
+## 工具
 
-> source id: `profile.design_lab`
-
-UI Lab 位于 `zhiqiang.chat/lab`，将主题预览和 Design Tokens 放在同一工作台。先通过完整的阅读空间、AI 任务台和项目工作台比较排版、层次和信息密度，再查看和导出实际驱动预览的 CSS、JSON 或 `design-tokens.md`。
-
-主题样例是站内交互演示，不属于额外独立交付的产品。Design Token Lab 不再作为单独入口。
+`zhiqiang.chat/lab` 提供屏幕补光灯与 LED 灯牌。旧的主题演示和设计变量导出已经移除。
 
 ## Skills 与 MCP 判断
 
@@ -368,7 +364,7 @@ Skills 更像“按场景加载的专业工作方式”，MCP 更像“让 Agent
 
 > source id: `profile.projects`
 
-- `zhiqiang.chat`：书籍阅读、融合 Design Tokens 的 UI Lab、个人知识对话与作品展示。
+- `zhiqiang.chat`：书籍阅读、屏幕补光灯与 LED 灯牌、个人知识对话与作品展示。
 - RC Boat Arena：3D 遥控船交互作品，公开地址为 `https://www.rcmyq.cn/`。
 - 流量卡办理：流量卡筛选与办理工具，公开地址为 `https://liuliangka.netlify.app/`，关注信息架构、商品筛选、转化路径和 Netlify 静态站点部署。
 - OpenClaw：本地多 Agent 调度平台，服务研发自动化。

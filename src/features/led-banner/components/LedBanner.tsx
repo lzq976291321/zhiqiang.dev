@@ -211,10 +211,10 @@ export function LedBanner() {
 
   return <main className={styles.app}>
     <header className={styles.header} inert={presenting}>
-      <Link href="/lab" className={styles.back} aria-label="返回 UI Lab"><ArrowLeft size={17} /></Link>
+      <Link href="/lab" className={styles.back} aria-label="返回工具"><ArrowLeft size={17} /></Link>
       <Link href="/lab/led-banner" className={styles.brand}><span><Grid2X2 size={19} /></span>LED <b>Banner</b></Link>
       <span className={styles.headerDivider} />
-      <span className={styles.labLabel}>UI LAB / 02</span>
+      <span className={styles.labLabel}>TOOLS / 02</span>
       <a href="#templates" className={styles.templateLink}>灵感模板 <ArrowUpRight size={14} /></a>
     </header>
 
@@ -234,7 +234,7 @@ export function LedBanner() {
           <div className={styles.panelTitle}><span><i /> 灯牌工作台</span><div><button type="button" title="撤销" aria-label="撤销" disabled={!canUndo} onClick={() => travel("undo")}><Undo2 size={15} /></button><button type="button" title="重做" aria-label="重做" disabled={!canRedo} onClick={() => travel("redo")}><Redo2 size={15} /></button><button type="button" title="重置灯牌" aria-label="重置灯牌" onClick={() => apply(DEFAULT_SETTINGS)}><RotateCcw size={14} /></button></div></div>
           <div className={styles.controlBody}>
             <div key={settings.mode} className="animate-in fade-in slide-in-from-bottom-2 duration-300 ease-[cubic-bezier(.22,1,.36,1)] fill-mode-none">
-            <label className={styles.field}><span>{settings.mode === "teleprompter" ? "提词内容" : settings.mode === "countdown" ? "倒计时标题" : settings.mode === "scoreboard" ? "赛事名称" : "显示内容"}<small>{settings.text.length} / 4000</small></span><textarea rows={settings.mode === "teleprompter" ? 7 : 3} maxLength={4000} value={settings.text} onChange={(event) => update({ text: event.target.value })} placeholder="写下想说的话…" /></label>
+
             {(settings.mode === "airport" || settings.mode === "wedding") && <label className={styles.field}><span>欢迎语 / 补充信息</span><input maxLength={160} value={settings.subtext} onChange={(event) => update({ subtext: event.target.value })} /></label>}
             {isTimed && <div className={styles.timerControl}><label className={styles.field}><span>{settings.mode === "scoreboard" ? "比赛时长（秒）" : "倒计时时长（秒）"}</span><input type="number" min={1} max={359999} value={settings.duration} onChange={(event) => { update({ duration: Number(event.target.value) }); setTimer({ remaining: null, deadline: null }) }} /></label><div><strong>{formatTime(remaining)}</strong><button type="button" aria-label="重置计时" onClick={() => setTimer({ remaining: null, deadline: null })}><RotateCcw size={15} /></button></div></div>}
             {settings.mode === "scoreboard" && <div className={styles.scoreControls}>
@@ -244,12 +244,12 @@ export function LedBanner() {
             </div>}
             </div>
 
-            <fieldset className={styles.fieldset}><legend>显示风格</legend><div className={styles.effects}>{EFFECTS.map((effect) => <button key={effect.id} aria-pressed={settings.effect === effect.id} onClick={() => update({ effect: effect.id })}>{effect.label}</button>)}</div></fieldset>
+
             <fieldset className={styles.fieldset}><legend>文字颜色</legend><div className={styles.swatches}>{COLORS.map((color) => <button key={color} style={{ background: color }} aria-label={`文字颜色 ${color}`} aria-pressed={settings.color === color} onClick={() => update({ color })}>{settings.color === color && <Check size={15} className="animate-in zoom-in-75 fade-in duration-200 ease-out fill-mode-none" />}</button>)}<label className={styles.customColor} title="自定义文字颜色"><span>＋</span><input type="color" aria-label="自定义文字颜色" value={settings.color} onChange={(event) => update({ color: event.target.value })} /></label></div></fieldset>
-            <div className={styles.colorRow}><span>背景颜色</span><label><input type="color" aria-label="背景颜色" value={settings.background} onChange={(event) => update({ background: event.target.value })} /><code>{settings.background.toUpperCase()}</code></label></div>
-            <fieldset className={styles.fieldset}><legend>移动方式</legend><div className={styles.motions}>{MOTIONS.map((motion) => <button key={motion.id} aria-pressed={settings.motion === motion.id} onClick={() => update({ motion: motion.id })}>{motion.label}</button>)}</div></fieldset>
             <div className={styles.sliders}><Range label="移动速度" value={settings.speed} min={1} max={10} onChange={(speed) => update({ speed })} /><Range label="文字大小" value={settings.fontSize} min={32} max={240} onChange={(fontSize) => update({ fontSize })} /></div>
-            <Detail title="字体与灯光">
+            <Detail title="样式、移动与灯光">            <fieldset className={styles.fieldset}><legend>显示风格</legend><div className={styles.effects}>{EFFECTS.map((effect) => <button key={effect.id} aria-pressed={settings.effect === effect.id} onClick={() => update({ effect: effect.id })}>{effect.label}</button>)}</div></fieldset>            <div className={styles.colorRow}><span>背景颜色</span><label><input type="color" aria-label="背景颜色" value={settings.background} onChange={(event) => update({ background: event.target.value })} /><code>{settings.background.toUpperCase()}</code></label></div>
+            <fieldset className={styles.fieldset}><legend>移动方式</legend><div className={styles.motions}>{MOTIONS.map((motion) => <button key={motion.id} aria-pressed={settings.motion === motion.id} onClick={() => update({ motion: motion.id })}>{motion.label}</button>)}</div></fieldset>
+
               <label className={styles.field}><span>字体</span><select value={settings.font} onChange={(event) => update({ font: event.target.value as BannerSettings["font"] })}><option value="sans">现代黑体</option><option value="serif">经典衬线</option><option value="mono">等宽数码</option></select></label>
               <Range label="发光强度" value={settings.glow} min={0} max={100} onChange={(glow) => update({ glow })} /><Range label="文字间距" value={settings.letterSpacing} min={0} max={20} onChange={(letterSpacing) => update({ letterSpacing })} /><Range label="灯珠间距" value={settings.dotSize} min={4} max={16} onChange={(dotSize) => update({ dotSize })} />
               <label className={styles.field}><span>灯珠形状</span><select value={settings.dotShape} onChange={(event) => update({ dotShape: event.target.value as BannerSettings["dotShape"] })}><option value="round">圆形</option><option value="square">方形</option><option value="diamond">菱形</option></select></label>
@@ -263,6 +263,7 @@ export function LedBanner() {
 
         <section className={styles.output} aria-label="灯牌预览与模板">
           <div className={styles.previewCard}>
+            <div className={styles.quickEditor} inert={presenting}>            <label className={styles.field}><span>{settings.mode === "teleprompter" ? "提词内容" : settings.mode === "countdown" ? "倒计时标题" : settings.mode === "scoreboard" ? "赛事名称" : "显示内容"}<small>{settings.text.length} / 4000</small></span><textarea rows={settings.mode === "teleprompter" ? 5 : 2} maxLength={4000} value={settings.text} onChange={(event) => update({ text: event.target.value })} placeholder="写下想说的话…" /></label></div>
             <div className={styles.previewHeading} inert={presenting}><span><i className={active ? styles.live : ""} /> 实时预览</span><span>{EFFECTS.find((effect) => effect.id === settings.effect)?.label}<span className={styles.headingSeparator}>/</span>{MODES.find((mode) => mode.id === settings.mode)?.label}</span></div>
             <div ref={displayRef} tabIndex={-1} className={`${styles.display} ${presenting ? styles.presenting : ""}`} data-presenting={presenting}>
               <div className={styles.displaySurface}>
@@ -276,17 +277,20 @@ export function LedBanner() {
             <div className={styles.actions} inert={presenting}>
               <button className={styles.playButton} onClick={togglePlayback} aria-label={active ? "暂停" : "播放"}><span key={String(active)} className={`${styles.actionIcon} animate-in fade-in zoom-in-75 duration-200 ease-out fill-mode-none`}>{active ? <Pause size={17} /> : <Play size={17} />}</span><span>{active ? "暂停" : isTimed ? "开始计时" : "播放"}</span></button>
               <button className={styles.fullscreenButton} onClick={() => void open()}><Maximize2 size={17} /> 全屏展示</button>
-              <span className={styles.actionSpacer} />
+
+            </div>
+            <details className={styles.saveActions} inert={presenting}><summary>保存与分享 <ChevronDown size={15} /></summary><div>
               <button onClick={(event) => void exportImage(event.currentTarget)} disabled={exportingImage || recording} title="保存当前画面为图片"><Download size={16} /><span>{exportingImage ? "生成中" : "保存图片"}</span></button>
               {videoSupported && <button onClick={(event) => exportVideo(event.currentTarget)} disabled={recording || exportingImage} title="录制并保存 6 秒视频"><Video size={16} /><span>{recording ? "录制中…" : "保存视频"}</span></button>}
               <button onClick={() => void copyLink()} title="复制分享链接"><Link2 size={16} /><span>分享</span></button>
-              <button onClick={() => { setSaveOpen((value) => !value); setDesignName(settings.text.split("\n")[0].slice(0, 24)) }} aria-expanded={saveOpen} title="收藏当前灯牌设置"><Save size={16} /><span>收藏</span></button>
+              <button onClick={() => { setSaveOpen((value) => !value); setDesignName(settings.text.split("\n")[0].slice(0, 24)) }} aria-expanded={saveOpen} title="收藏当前灯牌设置"><Save size={16} /><span>收藏</span></button></div></details>
+            <div inert={presenting}>
+            <SlidingPanel open={Boolean(shareFallback)}><div><h2>复制分享链接</h2><button aria-label="关闭分享链接" onClick={() => setShareFallback("")}><X size={16} /></button></div><input aria-label="分享链接" readOnly value={shareFallback} onFocus={(event) => event.target.select()} /><p>链接包含当前文字与样式。</p></SlidingPanel>
+            <SlidingPanel open={saveOpen}><div><h2>保存这块灯牌</h2><button aria-label="关闭保存" onClick={() => setSaveOpen(false)}><X size={16} /></button></div><form onSubmit={(event) => { event.preventDefault(); if (saveDesign(designName)) { report("灯牌已保存到此浏览器。 "); setSaveOpen(false) } else report("保存失败，可导出 JSON 留存。") }}><input aria-label="灯牌名称" maxLength={40} value={designName} onChange={(event) => setDesignName(event.target.value)} placeholder="给灯牌起个名字" required /><button type="submit">保存</button></form><p>最多保留 20 块灯牌，保存在当前浏览器。</p></SlidingPanel>
             </div>
           </div>
 
           <div inert={presenting}>
-            <SlidingPanel open={Boolean(shareFallback)}><div><h2>复制分享链接</h2><button aria-label="关闭分享链接" onClick={() => setShareFallback("")}><X size={16} /></button></div><input aria-label="分享链接" readOnly value={shareFallback} onFocus={(event) => event.target.select()} /><p>链接包含当前文字与样式。</p></SlidingPanel>
-            <SlidingPanel open={saveOpen}><div><h2>保存这块灯牌</h2><button aria-label="关闭保存" onClick={() => setSaveOpen(false)}><X size={16} /></button></div><form onSubmit={(event) => { event.preventDefault(); if (saveDesign(designName)) { report("灯牌已保存到此浏览器。 "); setSaveOpen(false) } else report("保存失败，可导出 JSON 留存。") }}><input aria-label="灯牌名称" maxLength={40} value={designName} onChange={(event) => setDesignName(event.target.value)} placeholder="给灯牌起个名字" required /><button type="submit">保存</button></form><p>最多保留 20 块灯牌，保存在当前浏览器。</p></SlidingPanel>
             <section id="templates" className={styles.templates}><div className={styles.sectionHeading}><div><span className={styles.eyebrow}>A LITTLE INSPIRATION</span><h2>从一个灵感开始</h2></div><span>选一个，换成你的话 <ArrowUpRight size={14} /></span></div><div className={styles.templateGrid}>{TEMPLATES.map((template) => <button key={template.id} className={styles.template} onClick={() => apply(template.settings)}><span className={styles.templateArt} data-effect={template.settings.effect} style={{ color: template.settings.color, backgroundColor: template.settings.background }}><b>{template.caption}</b></span><span className={styles.templateCaption}>{template.name}<ArrowUpRight size={14} /></span></button>)}</div></section>
             {designs.length > 0 && <section className={styles.saved}><div className={styles.sectionHeading}><h2>我的灯牌 <small>{designs.length}</small></h2></div><div className={styles.savedList}>{designs.map((design) => <div key={design.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300 ease-[cubic-bezier(.22,1,.36,1)] fill-mode-none"><button onClick={() => apply(design.settings)}><i style={{ background: design.settings.color }} /><span>{design.name}</span><ArrowUpRight size={13} /></button><button aria-label={`删除 ${design.name}`} onClick={() => { if (!deleteDesign(design.id)) report("未能删除，请检查浏览器存储权限。") }}><Trash2 size={13} /></button></div>)}</div></section>}
             <footer className={styles.footer}><span>一块屏幕，无限表达。</span><a href="https://led-bursa.com/" target="_blank" rel="noreferrer">灵感来自 LED Banner <ArrowUpRight size={12} /></a></footer>

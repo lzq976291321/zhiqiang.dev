@@ -276,3 +276,9 @@
   .app button:not(:disabled):active, .swatches > button[aria-pressed="true"] { scale: 1; }
   .modes > button[aria-pressed="true"] > span, .template:active .templateArt > b, .template:hover .templateArt > b, .template:hover .templateCaption > svg { transform: none; }
 }
+
+/* 控件与主站共享阅读节奏，显示画布保留独立的深色环境。 */
+.intro h1 {font-family:"Songti SC","STSong",serif;font-weight:500;}
+.back {width:44px;height:44px;}
+
+.quickEditor {margin-bottom:16px;}.quickEditor textarea {font-size:16px;min-height:76px;}.saveActions{border-top:1px solid var(--line);margin-top:14px;padding-top:6px;}.saveActions summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer;color:#aeb8c5;font-size:13px;}.saveActions>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding-top:8px;}.saveActions button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:1px solid var(--line);border-radius:9px;color:#c2c8d2;background:#ffffff05;}.saveActions button:disabled{opacity:.4;}@media(max-width:680px){.intro{margin-bottom:15px}.intro h1{font-size:24px;margin-top:0}.intro .eyebrow,.intro p{display:none}.workspace{padding-top:18px}.header{height:64px}.modes{margin-bottom:14px}.quickEditor{margin-bottom:12px}.display{height:170px}.previewHeading{margin-bottom:8px}.previewFooter{display:none}.actions{margin-top:12px;grid-template-columns:1fr 1.5fr}.actions>button{min-height:48px}.actions>button span{font-size:13px}.controls .panelTitle{padding:14px 18px}.controlBody{padding-top:12px}.range input{min-height:36px}.detail summary{min-height:44px}}
