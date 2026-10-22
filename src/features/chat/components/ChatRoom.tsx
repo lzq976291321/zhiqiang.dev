@@ -120,6 +120,9 @@ export function ChatRoom({ question, signedIn, authEnabled }: { question?: strin
   function startNew() {
     if (pending || !ready) return
     reset()
+    // 新对话同时清掉登录卡的关闭记录，下一次服务端拒绝才能重新弹出。
+    setLoginOpen(false)
+    setDismissedLoginSignal(0)
     toLatest()
     closeMenu()
   }
