@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, Check, Copy, FlaskConical, FolderKanban, MessageSquare, PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react"
+import { ArrowDown, ArrowRight, ArrowUpRight, BookOpen, Check, Copy, FlaskConical, FolderKanban, MessageSquare, Menu, Plus, SquarePen, X } from "lucide-react"
 import { useConversation, type ConversationMessage } from "../lib/use-conversation"
+import { useChatScroll } from "../lib/use-chat-scroll"
+import { useChatViewport } from "../lib/use-chat-viewport"
 import { MessageContent } from "./MessageContent"
 import { Composer } from "./Composer"
 import styles from "./ChatRoom.module.css"
@@ -54,149 +56,161 @@ function AnswerActions({ message }: { message: ConversationMessage }) {
 }
 
 export function ChatRoom({ topic, question }: { topic?: string; question?: string }) {
-  const { messages, pending, error, send, retry, reset, stop } = useConversation()
-  const viewportRef = useRef<HTMLDivElement>(null)
+  const { messages, pending, error, send, retry, reset, stop, draft, setDraft, ready } = useConversation({
+    initialDraft: question ?? (topic ? `关于「${topic}」，` : undefined),
+  })
+  const roomRef = useChatViewport()
+  const { viewportRef, contentRef, away, toLatest, jumpToMessage: scrollToMessage, onScroll, markUserScroll } = useChatScroll(ready, messages[0]?.id)
+  const menuRef = useRef<HTMLDialogElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
-  const followRef = useRef(true)
-  const [showScrollDown, setShowScrollDown] = useState(false)
+  const returnFocusRef = useRef(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [prefillDismissed, setPrefillDismissed] = useState(false)
-  const initialTopic = prefillDismissed ? undefined : topic
-  const initialQuestion = prefillDismissed ? undefined : question
+  const retryError = error || (messages.at(-1)?.status === "error" ? "上次回答未完成，可以重试。" : "")
   const started = messages.length > 0
   const userMessages = messages.filter((message) => message.role === "user")
 
   useEffect(() => {
-    if (followRef.current) viewportRef.current?.scrollTo({ top: viewportRef.current.scrollHeight })
-  }, [messages, pending])
+    const desktop = window.matchMedia("(min-width: 761px)")
+    const closeOnDesktop = () => { if (desktop.matches) menuRef.current?.close() }
+    desktop.addEventListener("change", closeOnDesktop)
+    return () => desktop.removeEventListener("change", closeOnDesktop)
+  }, [])
 
   useEffect(() => {
-    if (!menuOpen) return
-    function onEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setMenuOpen(false)
-        menuButtonRef.current?.focus()
-      }
-    }
-    window.addEventListener("keydown", onEscape)
-    return () => window.removeEventListener("keydown", onEscape)
-  }, [menuOpen])
+    if (!ready || (!question && !topic)) return
+    // 预填用过即从地址移除；刷新或从阅读页返回时，恢复用户实际留下的草稿。
+    window.history.replaceState(null, "", "/chat")
+  }, [ready, question, topic])
 
-  function onScroll() {
-    const viewport = viewportRef.current
-    if (!viewport) return
-    const atBottom = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 96
-    followRef.current = atBottom
-    setShowScrollDown(!atBottom)
+  function openMenu() {
+    // 先收起输入键盘，避免导航出现时只剩很小的可用区域。
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+    returnFocusRef.current = true
+    menuRef.current?.showModal()
+    setMenuOpen(true)
   }
 
-  function ask(question: string) {
-    followRef.current = true
-    setShowScrollDown(false)
-    setMenuOpen(false)
-    void send(question)
+  function closeMenu(returnFocus = true) {
+    returnFocusRef.current = returnFocus
+    menuRef.current?.close()
+  }
+
+  function ask(text: string) {
+    if (!ready || pending || !text.trim()) return
+    toLatest()
+    setDraft("")
+    setPrefillDismissed(true)
+    void send(text)
   }
 
   function startNew() {
+    if (pending || !ready) return
     reset()
     setPrefillDismissed(true)
-    followRef.current = true
-    setShowScrollDown(false)
-    setMenuOpen(false)
+    toLatest()
+    closeMenu()
   }
 
   function jumpToMessage(id: string) {
-    followRef.current = false
-    document.getElementById(`message-${id}`)?.scrollIntoView({ block: "start" })
-    setMenuOpen(false)
+    closeMenu(false)
+    // 等原生弹层归还焦点后，再定位到所选消息。
+    requestAnimationFrame(() => scrollToMessage(id))
   }
 
-  return (
-    <main className={styles.room}>
-      {menuOpen ? <button type="button" className={styles.backdrop} onClick={() => setMenuOpen(false)} aria-label="关闭导航" /> : null}
-      <aside id="chat-sidebar" className={`${styles.sidebar} ${menuOpen ? styles.sidebarOpen : ""}`} aria-label="对话导航">
-        <div className={styles.sidebarTop}>
-          <Link href="/" className={styles.brand} aria-label="zhiqiang 首页"><span className={styles.brandMark}>z.</span><span>zhiqiang<span className={styles.brandDot}>.</span></span></Link>
-          <button type="button" className={styles.closeMenu} onClick={() => { setMenuOpen(false); menuButtonRef.current?.focus() }} aria-label="收起导航"><PanelLeftClose size={18} /></button>
-        </div>
-        <button type="button" onClick={startNew} disabled={!started || pending} className={styles.newChat}><Plus size={16} aria-hidden="true" />新对话</button>
-        <nav className={styles.projectNav} aria-label="作品导航">
-          <Link href="/chat" className={styles.activeNav} aria-current="page" onClick={(event) => { event.preventDefault(); setMenuOpen(false) }}><MessageSquare size={16} aria-hidden="true" />聊聊</Link>
-          <Link href="/knowledge"><BookOpen size={16} aria-hidden="true" />知识库<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
-          <Link href="/lab"><FlaskConical size={16} aria-hidden="true" />工具<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
-          <Link href="/projects"><FolderKanban size={16} aria-hidden="true" />作品<ArrowUpRight size={12} className={styles.navArrow} aria-hidden="true" /></Link>
+  const conversationIndex = (
+    <div className={styles.conversationIndex}>
+      <p className={styles.sidebarLabel}>本次对话{started ? <span>{userMessages.length}</span> : null}</p>
+      {started ? (
+        <nav aria-label="本次对话的话题" className={styles.history}>
+          {userMessages.map((message, index) => <button key={message.id} type="button" onClick={() => jumpToMessage(message.id)} title={message.content}><span>{String(index + 1).padStart(2, "0")}</span><span>{message.content}</span></button>)}
         </nav>
-        <div className={styles.conversationIndex}>
-          <p className={styles.sidebarLabel}>本次对话{started ? <span>{userMessages.length}</span> : null}</p>
-          {started ? (
-            <nav aria-label="本次对话的话题" className={styles.history}>
-              {userMessages.map((message, index) => <button key={message.id} type="button" onClick={() => jumpToMessage(message.id)} title={message.content}><span>{String(index + 1).padStart(2, "0")}</span><span>{message.content}</span></button>)}
-            </nav>
-          ) : <p className={styles.historyEmpty}>说点什么开始聊天，<br />聊过的话题会出现在这里。</p>}
-        </div>
-        <div className={styles.sidebarFooter}><span className={styles.profileAvatar}>Z</span><div><strong>志强</strong><span>网站作者</span></div><Link href="/projects" aria-label="查看志强的作品"><ArrowUpRight size={16} /></Link></div>
+      ) : <p className={styles.historyEmpty}>聊过的话题会出现在这里，<br />点一下就能回到那条消息。</p>}
+    </div>
+  )
+
+  const projectNav = (
+    <nav className={styles.projectNav} aria-label="网站导航">
+      <Link href="/knowledge" onClick={() => closeMenu(false)}><BookOpen size={18} aria-hidden="true" /><span>阅读空间</span><ArrowUpRight size={14} aria-hidden="true" /></Link>
+      <Link href="/lab" onClick={() => closeMenu(false)}><FlaskConical size={18} aria-hidden="true" /><span>工具</span><ArrowUpRight size={14} aria-hidden="true" /></Link>
+      <Link href="/projects" onClick={() => closeMenu(false)}><FolderKanban size={18} aria-hidden="true" /><span>作品</span><ArrowUpRight size={14} aria-hidden="true" /></Link>
+    </nav>
+  )
+
+  return (
+    <main className={styles.room} ref={roomRef}>
+      <aside className={styles.sidebar} aria-label="对话导航">
+        <Link href="/" className={styles.brand} aria-label="zhiqiang 首页"><span className={styles.brandMark}>z.</span><span>zhiqiang<span className={styles.brandDot}>.</span></span></Link>
+        <button type="button" onClick={startNew} disabled={!started || pending || !ready} className={styles.newChat}><Plus size={18} aria-hidden="true" />新对话</button>
+        {conversationIndex}
+        {projectNav}
+        <p className={styles.sessionHint}>当前标签页内保留本次对话</p>
       </aside>
 
       <div className={styles.workspace}>
         <header className={styles.header}>
-          <div className={styles.headerTitle}>
-            <button ref={menuButtonRef} type="button" className={styles.menuToggle} onClick={() => setMenuOpen(!menuOpen)} aria-label="展开导航" aria-expanded={menuOpen} aria-controls="chat-sidebar"><PanelLeftOpen size={18} /></button>
-            <h1>聊聊</h1><span className={styles.headerDivider}>/</span><span className={styles.headerSubtitle}>AI 对话</span>
-          </div>
-          <Link href="/knowledge" className={styles.headerLink}><BookOpen size={14} aria-hidden="true" /><span>阅读知识库</span><ArrowUpRight size={12} aria-hidden="true" /></Link>
+          <button ref={menuButtonRef} type="button" className={styles.menuToggle} onClick={openMenu} aria-label="打开对话导航" aria-expanded={menuOpen} aria-controls="chat-navigation"><Menu size={21} /></button>
+          <div className={styles.headerTitle}><h1>聊聊</h1><span>AI 对话</span></div>
+          <Link href="/knowledge" className={styles.headerLink}><BookOpen size={16} aria-hidden="true" />阅读空间<ArrowUpRight size={13} aria-hidden="true" /></Link>
+          <button type="button" className={styles.mobileNewChat} onClick={startNew} disabled={!started || pending || !ready} aria-label="新对话" title="新对话"><SquarePen size={21} /></button>
         </header>
 
-        {!started ? (
-          <div className={styles.empty}>
-            <div className={styles.welcome}>
-              <div className={styles.intro}>
+        <div className={styles.viewport} ref={viewportRef} onScroll={onScroll} onWheel={markUserScroll} onTouchMove={markUserScroll} onPointerDown={markUserScroll} onKeyDown={markUserScroll} tabIndex={0} role="region" aria-label="消息列表">
+          <div ref={contentRef} className={!started ? styles.empty : undefined}>
+            {!started ? (
+              <div className={styles.welcome}>
                 <div className={styles.welcomeMark} aria-hidden="true"><span /><span /><span /><span /></div>
-                <p className={styles.eyebrow}>不用先想好话题</p>
                 <h2>今天想聊点什么？</h2>
-                <p className={styles.invitation}>{initialTopic ? `接着聊：${initialTopic}` : "吐槽两句，开个脑洞，或者认真聊一个问题。"}</p>
+                <p className={styles.invitation}>{topic && !prefillDismissed ? `接着聊：${topic}` : "吐槽两句，开个脑洞，或者认真聊一个问题。"}</p>
+                <div className={styles.starters} aria-label="从一个话题开始">
+                  {questions.map(({ category, question: starter }) => (
+                    <button key={starter} type="button" disabled={!ready} onClick={() => ask(starter)} className={styles.starter}><span className={styles.starterCategory}>{category}</span><span className={styles.starterQuestion}>{starter}</span><ArrowRight size={16} aria-hidden="true" /></button>
+                  ))}
+                </div>
               </div>
-              <Composer key={initialQuestion ?? initialTopic ?? "empty"} initialValue={initialQuestion ?? (initialTopic ? `关于「${initialTopic}」，` : "")} pending={pending} started={false} onSend={ask} onStop={stop} />
-              <div className={styles.starterHeader}><span>也可以聊聊这些</span><span>01 — 04</span></div>
-              <div className={styles.starters} aria-label="从一个话题开始">
-                {questions.map(({ category, question }) => (
-                  <button key={question} type="button" onClick={() => ask(question)} className={styles.starter}><span className={styles.starterCategory}>{category}</span><span className={styles.starterQuestion}>{question}</span><ArrowRight size={14} aria-hidden="true" /></button>
-                ))}
-              </div>
-              <p className={styles.welcomeFootnote}><BookOpen size={12} aria-hidden="true" />读到哪里有疑问，也可以接着聊。</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className={styles.viewport} ref={viewportRef} onScroll={onScroll}>
+            ) : (
               <div className={styles.transcript} role="log" aria-label="聊天记录" aria-live="polite" aria-relevant="additions text">
                 {messages.map((message) => (
                   message.role === "user" ? (
-                    <div id={`message-${message.id}`} key={message.id} className={styles.userMessage}><span className="sr-only">你：</span><p>{message.content}</p></div>
+                    <div id={`message-${message.id}`} tabIndex={-1} key={message.id} className={styles.userMessage}><span className="sr-only">你：</span><p>{message.content}</p></div>
                   ) : (
                     <article key={message.id} className={styles.answer} aria-label="AI 的回复" aria-busy={message.status === "streaming"}>
-                      <span className={styles.answerMark} aria-hidden="true"><MessageSquare size={14} /></span>
-                      <div className={styles.answerBody}>
-                        <div className={styles.answerByline}>AI{message.status === "streaming" ? <span>正在回复</span> : null}</div>
-                        {message.content ? <MessageContent content={message.content} /> : null}
-                        {message.status === "streaming" && !message.content ? <div className={styles.thinking} role="status"><span className={styles.pixelLoader} aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <i key={index} />)}</span><span>稍等一下</span></div> : null}
-                        {message.status === "stopped" ? <p className={styles.messageNote}>已停止回答</p> : null}
-                        {message.status === "error" ? <p className={styles.messageNote}>{message.content ? "回答中断，以上内容可能不完整。" : "这次没能完成回答。"}</p> : null}
-                        {message.content && message.status !== "streaming" ? <AnswerActions message={message} /> : null}
-                      </div>
+                      <div className={styles.answerByline}><MessageSquare size={15} aria-hidden="true" />AI{message.status === "streaming" ? <span>正在回复</span> : null}</div>
+                      {message.content ? <MessageContent content={message.content} /> : null}
+                      {message.status === "streaming" && !message.content ? <div className={styles.thinking} role="status"><span className={styles.pixelLoader} aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <i key={index} />)}</span><span>稍等一下</span></div> : null}
+                      {message.status === "stopped" ? <p className={styles.messageNote}>已停止回答</p> : null}
+                      {message.status === "error" ? <p className={styles.messageNote}>{message.content ? "回答中断，以上内容可能不完整。" : "这次没能完成回答。"}</p> : null}
+                      {message.content && message.status !== "streaming" ? <AnswerActions message={message} /> : null}
                     </article>
                   )
                 ))}
               </div>
-            </div>
-            <div className={styles.composerDock}>
-              {showScrollDown ? <button type="button" className={styles.scrollDown} aria-label="查看最新回答" onClick={() => { followRef.current = true; viewportRef.current?.scrollTo({ top: viewportRef.current.scrollHeight }); setShowScrollDown(false) }}><ArrowDown size={16} /></button> : null}
-              {error ? <div className={styles.error} role="alert"><span>{error}</span><button type="button" onClick={retry} disabled={pending}>重试</button></div> : null}
-              <Composer pending={pending} started onSend={ask} onStop={stop} />
-              <p className={styles.dockHint}>回答中的知识来源可以打开，接着读。</p>
-            </div>
-          </>
-        )}
+            )}
+          </div>
+        </div>
+
+        <div className={styles.composerDock}>
+          {away ? <button type="button" className={styles.scrollDown} onPointerDown={(event) => event.preventDefault()} onClick={toLatest}><ArrowDown size={16} aria-hidden="true" /><span>{pending ? "查看新回复" : "回到最新"}</span></button> : null}
+          {retryError ? <div className={styles.error} role="alert"><span>{retryError}</span><button type="button" onPointerDown={(event) => event.preventDefault()} onClick={() => { toLatest(); retry() }} disabled={pending}>重试</button></div> : null}
+          <Composer value={draft} onChange={setDraft} pending={pending} started={started} onSend={ask} onStop={stop} disabled={!ready} />
+        </div>
       </div>
+
+      <dialog id="chat-navigation" ref={menuRef} className={styles.sheet} aria-labelledby="chat-navigation-title" onClick={(event) => { if (event.target === event.currentTarget) closeMenu() }} onClose={() => {
+        setMenuOpen(false)
+        if (returnFocusRef.current && window.matchMedia("(max-width: 760px)").matches) menuButtonRef.current?.focus({ preventScroll: true })
+      }}>
+        <div className={styles.sheetContent}>
+          <div className={styles.sheetHandle} aria-hidden="true" />
+          <div className={styles.sheetHeader}><h2 id="chat-navigation-title">对话导航</h2><button type="button" onClick={() => closeMenu()} aria-label="收起导航"><X size={20} /></button></div>
+          {conversationIndex}
+          <div className={styles.sheetFooter}>
+            <button type="button" onClick={startNew} disabled={!started || pending || !ready} className={styles.newChat}><Plus size={18} aria-hidden="true" />新对话</button>
+            {projectNav}
+            <p className={styles.sessionHint}>当前标签页内保留本次对话</p>
+          </div>
+        </div>
+      </dialog>
     </main>
   )
 }

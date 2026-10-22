@@ -1,14 +1,14 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import type { ChatMessage, ChatSource, ChatStreamEvent } from "@/lib/chat/types"
+import { useCallback, useEffect, useRef, useState, type SetStateAction } from "react"
+import type { ChatStreamEvent } from "@/lib/chat/types"
 import { normalizeChatMessages } from "@/lib/chat/messages"
+import {
+  clearConversationState, readConversationState, writeConversationState,
+  type ConversationMessage, type ConversationState,
+} from "./conversation-state"
 
-export interface ConversationMessage extends ChatMessage {
-  id: string
-  sources?: ChatSource[]
-  status?: "streaming" | "complete" | "stopped" | "error"
-}
+export type { ConversationMessage } from "./conversation-state"
 
 function createId() {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -27,14 +27,50 @@ function getSessionId() {
   }
 }
 
-export function useConversation() {
-  const [messages, setMessages] = useState<ConversationMessage[]>([])
+export function useConversation({ initialDraft }: { initialDraft?: string } = {}) {
+  const [state, setState] = useState<ConversationState>({ messages: [], draft: initialDraft?.slice(0, 1600) ?? "" })
+  const [ready, setReady] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
+  const stateRef = useRef(state)
+  const initialDraftRef = useRef(initialDraft)
+  const readyRef = useRef(false)
+  const mountedRef = useRef(false)
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
   const sessionRef = useRef<string | null>(null)
   const frameRef = useRef<number | null>(null)
   const bufferRef = useRef("")
+
+  const persist = useCallback(() => {
+    if (saveTimerRef.current !== null) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = null
+    if (readyRef.current) writeConversationState(stateRef.current)
+  }, [])
+
+  const updateState = useCallback((update: (current: ConversationState) => ConversationState) => {
+    if (!mountedRef.current) return
+    const next = update(stateRef.current)
+    stateRef.current = next
+    setState(next)
+    if (readyRef.current && saveTimerRef.current === null) {
+      saveTimerRef.current = setTimeout(persist, 400)
+    }
+  }, [persist])
+
+  const setMessages = useCallback((update: SetStateAction<ConversationMessage[]>) => {
+    updateState((current) => ({
+      ...current,
+      messages: typeof update === "function" ? update(current.messages) : update,
+    }))
+  }, [updateState])
+
+  const setDraft = useCallback((update: SetStateAction<string>) => {
+    updateState((current) => ({
+      ...current,
+      draft: (typeof update === "function" ? update(current.draft) : update).slice(0, 1600),
+    }))
+  }, [updateState])
 
   const flush = useCallback((id: string) => {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
@@ -45,18 +81,43 @@ export function useConversation() {
     setMessages((current) => current.map((message) =>
       message.id === id ? { ...message, content: message.content + delta } : message
     ))
-  }, [])
+  }, [setMessages])
 
-  useEffect(() => () => {
-    controllerRef.current?.abort()
-    if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
-  }, [])
+  useEffect(() => {
+    mountedRef.current = true
+    const restoreFrame = requestAnimationFrame(() => {
+      const restored = readConversationState()
+      if (initialDraftRef.current !== undefined) restored.draft = initialDraftRef.current.slice(0, 1600)
+      stateRef.current = restored
+      setState(restored)
+      readyRef.current = true
+      setReady(true)
+    })
+    const leavePage = () => {
+      persist()
+      controllerRef.current?.abort()
+    }
+    window.addEventListener("pagehide", leavePage)
+    return () => {
+      cancelAnimationFrame(restoreFrame)
+      persist()
+      mountedRef.current = false
+      readyRef.current = false
+      controllerRef.current?.abort()
+      controllerRef.current = null
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
+      frameRef.current = null
+      bufferRef.current = ""
+      window.removeEventListener("pagehide", leavePage)
+    }
+  }, [persist])
 
-  async function send(question: string, history = messages) {
+  async function send(question: string, history = stateRef.current.messages) {
     const content = question.trim()
-    if (!content || controllerRef.current) return
+    if (!content || !readyRef.current || !mountedRef.current || controllerRef.current) return
     const controller = new AbortController()
     controllerRef.current = controller
+    const isCurrent = () => mountedRef.current && controllerRef.current === controller
     sessionRef.current ??= getSessionId()
     const assistantId = createId()
     const user: ConversationMessage = { id: createId(), role: "user", content }
@@ -79,6 +140,10 @@ export function useConversation() {
           ),
         }),
       })
+      if (!isCurrent()) {
+        await response.body?.cancel().catch(() => undefined)
+        return
+      }
       if (!response.ok) {
         const payload = await response.json().catch(() => null)
         throw new Error(payload?.error ?? "暂时没能回答，请稍后重试。")
@@ -89,6 +154,7 @@ export function useConversation() {
       const decoder = new TextDecoder()
       let streamBuffer = ""
       const consume = (event: string) => {
+        if (!isCurrent()) return
         const data = event.split("\n").filter((line) => line.startsWith("data:"))
           .map((line) => line.slice(5).trim()).join("\n")
         if (!data) return
@@ -109,6 +175,7 @@ export function useConversation() {
       try {
         while (!completed) {
           const { done, value } = await reader.read()
+          if (!isCurrent()) return
           streamBuffer += done ? decoder.decode() : decoder.decode(value, { stream: true })
           streamBuffer = streamBuffer.replace(/\r\n/g, "\n")
           let boundary: number
@@ -126,11 +193,13 @@ export function useConversation() {
         await reader.cancel().catch(() => undefined)
         reader.releaseLock()
       }
+      if (!isCurrent()) return
       flush(assistantId)
       setMessages((current) => current.map((message) =>
         message.id === assistantId ? { ...message, status: "complete" } : message
       ))
     } catch (cause) {
+      if (!isCurrent()) return
       flush(assistantId)
       const stopped = controller.signal.aborted
       if (!stopped) setError(cause instanceof Error ? cause.message : "连接中断了，请重试。")
@@ -138,21 +207,31 @@ export function useConversation() {
         message.id === assistantId ? { ...message, status: stopped ? "stopped" : "error" } : message
       ))
     } finally {
-      controllerRef.current = null
-      setPending(false)
+      if (isCurrent()) {
+        controllerRef.current = null
+        setPending(false)
+        persist()
+      }
     }
   }
 
   function retry() {
+    const messages = stateRef.current.messages
     const index = messages.findLastIndex((message) => message.role === "user")
     if (index >= 0) void send(messages[index].content, messages.slice(0, index))
   }
 
   function reset() {
-    if (controllerRef.current) return
-    setMessages([])
+    if (!readyRef.current || controllerRef.current) return
+    updateState(() => ({ messages: [], draft: "" }))
     setError("")
+    if (saveTimerRef.current !== null) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = null
+    clearConversationState()
   }
 
-  return { messages, pending, error, send, retry, reset, stop: () => controllerRef.current?.abort() }
+  return {
+    messages: state.messages, draft: state.draft, setDraft, ready,
+    pending, error, send, retry, reset, stop: () => controllerRef.current?.abort(),
+  }
 }

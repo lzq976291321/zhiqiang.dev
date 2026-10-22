@@ -1,7 +1,7 @@
 .content {
   min-width: 0;
   color: #424751;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.85;
   overflow-wrap: anywhere;
 }
@@ -128,6 +128,6 @@
 
 @media (min-width: 640px) {
   .content {
-    font-size: 15px;
+    font-size: 16px;
   }
 }
