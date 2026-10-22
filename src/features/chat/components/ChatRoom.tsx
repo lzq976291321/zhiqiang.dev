@@ -57,7 +57,7 @@ function AnswerActions({ message }: { message: ConversationMessage }) {
 }
 
 export function ChatRoom({ question, signedIn, authEnabled }: { question?: string; signedIn: boolean; authEnabled: boolean }) {
-  const { messages, pending, error, send, retry, reset, stop, draft, setDraft, ready } = useConversation({
+  const { messages, pending, error, send, retry, reset, stop, draft, setDraft, ready, loginSignal } = useConversation({
     initialDraft: question,
   })
   const roomRef = useChatViewport()
@@ -67,6 +67,7 @@ export function ChatRoom({ question, signedIn, authEnabled }: { question?: strin
   const returnFocusRef = useRef(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [loginOpen, setLoginOpen] = useState(false)
+  const [dismissedLoginSignal, setDismissedLoginSignal] = useState(0)
   const [memoryOpen, setMemoryOpen] = useState(false)
   const retryError = error || (messages.at(-1)?.status === "error" ? "上次回答未完成，可以重试。" : "")
   const started = messages.length > 0
@@ -96,6 +97,11 @@ export function ChatRoom({ question, signedIn, authEnabled }: { question?: strin
   function closeMenu(returnFocus = true) {
     returnFocusRef.current = returnFocus
     menuRef.current?.close()
+  }
+
+  function closeLoginGate() {
+    setLoginOpen(false)
+    setDismissedLoginSignal(loginSignal)
   }
 
   function ask(text: string): boolean {
@@ -220,7 +226,7 @@ export function ChatRoom({ question, signedIn, authEnabled }: { question?: strin
         </div>
       </dialog>
 
-      {loginOpen ? (
+      {loginOpen || loginSignal > dismissedLoginSignal ? (
         <div className={styles.loginGate} role="dialog" aria-modal="true" aria-labelledby="login-gate-title">
           <div className={styles.loginCard}>
             <p className={styles.loginEyebrow}>MORI / 继续聊</p>
@@ -228,7 +234,7 @@ export function ChatRoom({ question, signedIn, authEnabled }: { question?: strin
             <p>登录后可以继续聊。刚才的草稿还在，Mori 也会记住你说过的事。</p>
             <div className={styles.loginActions}>
               <Link href="/login?next=/chat">用邮箱登录</Link>
-              <button type="button" onClick={() => setLoginOpen(false)}>再想想</button>
+              <button type="button" onClick={closeLoginGate}>再想想</button>
             </div>
           </div>
         </div>

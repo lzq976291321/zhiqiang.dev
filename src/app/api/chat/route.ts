@@ -8,8 +8,21 @@ import { createChatStreamResponse } from "@/lib/chat/stream"
 import { recordChatQuestion, type ChatQuestionOutcome } from "@/lib/chat/question-log"
 import { checkChatRateLimit } from "@/lib/chat/rate-limit"
 import { ensureCompanionProfile, loadCompanionMemory, saveCompanionMemories } from "@/lib/companion/memory-store"
+import { ANONYMOUS_TRIAL_LIMIT, consumeAnonymousTrial } from "@/lib/companion/trial"
+import { TRIAL_BOOTSTRAP_COOKIE, TRIAL_COOKIE } from "@/lib/companion/trial-constants"
+import { parseTrialCookie, serializeTrialCookie } from "@/lib/companion/trial-cookie"
 import { createSupabaseAdminClient } from "@/lib/supabase/admin"
 import { createSupabaseServerClient, getChatUser } from "@/lib/supabase/server"
+
+function readCookie(request: NextRequest, name: string): string | undefined {
+  const header = request.headers.get("cookie")
+  if (!header) return undefined
+  for (const part of header.split(";")) {
+    const [key, ...rest] = part.trim().split("=")
+    if (key === name) return rest.join("=")
+  }
+  return undefined
+}
 
 export const runtime = "nodejs"
 // Agent 最多运行 55 秒，额外留出异步收集与一次重试的时间。
@@ -27,6 +40,13 @@ export async function POST(request: NextRequest) {
   }
 
   const { messages, sessionId, mode: chatMode, memory } = input
+
+  // 资料问答已退出公开入口；保留内部令牌是为了旧工具和回归测试，不作为访客能力。
+  const adminToken = process.env.ADMIN_ACCESS_TOKEN
+  if (chatMode === "knowledge" && (!adminToken || request.headers.get("authorization") !== `Bearer ${adminToken}`)) {
+    return Response.json({ error: "接口不存在。" }, { status: 404 })
+  }
+
   const clientId = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
     || request.headers.get("x-real-ip") || "local"
   const allowed = await checkChatRateLimit({ clientId, sessionId, windowMs: 60_000, maxRequests: 12 })
@@ -34,6 +54,55 @@ export async function POST(request: NextRequest) {
 
   // 登录用户的记忆以服务端为准，不采用客户端传来的内容。
   const user = chatMode === "companion" ? await getChatUser() : null
+
+  // 匿名体验只放行前 2 轮；直接调用接口也走同一计数，不依赖前端弹窗。
+  // 计数优先用数据库，数据库不可达时用签名 cookie；没有进入过聊天页的请求直接拒绝。
+  let trialRounds: number | null = null
+  if (chatMode === "companion" && !user) {
+    if (!sessionId) {
+      return Response.json(
+        { error: "请先登录，再继续和 Mori 聊天。", code: "login_required" },
+        { status: 401 },
+      )
+    }
+
+    const rawTrial = readCookie(request, TRIAL_COOKIE)
+    if (rawTrial === undefined) {
+      return Response.json(
+        { error: "请先登录，再继续和 Mori 聊天。", code: "login_required" },
+        { status: 401 },
+      )
+    }
+
+    const cookieRounds = parseTrialCookie(rawTrial) ?? (rawTrial === "0" ? 0 : null)
+    if (cookieRounds === null) {
+      return Response.json(
+        { error: "请重新进入聊天页，再继续。", code: "login_required" },
+        { status: 401, headers: { "Set-Cookie": TRIAL_BOOTSTRAP_COOKIE } },
+      )
+    }
+    if (cookieRounds >= ANONYMOUS_TRIAL_LIMIT) {
+      return Response.json(
+        { error: "先登录，再继续和 Mori 聊天。", code: "login_required" },
+        { status: 401 },
+      )
+    }
+
+    let rounds = cookieRounds + 1
+    try {
+      rounds = (await consumeAnonymousTrial(sessionId)).rounds
+    } catch {
+      // Supabase 短暂不可达时继续用 cookie 计数。
+    }
+    if (rounds > ANONYMOUS_TRIAL_LIMIT) {
+      return Response.json(
+        { error: "先登录，再继续和 Mori 聊天。", code: "login_required" },
+        { status: 401 },
+      )
+    }
+    trialRounds = rounds
+  }
+
   let companionMemory = memory
   if (user) {
     try {
@@ -89,7 +158,7 @@ export async function POST(request: NextRequest) {
     }
   })
 
-  return createChatStreamResponse(request.signal, async (send, signal) => {
+  const response = createChatStreamResponse(request.signal, async (send, signal) => {
     let outcome: ChatQuestionOutcome = { status: "failed", mode: streamMode, durationMs: 0 }
     // 保留给 after 使用的完整回答，同时不改变发给访客的流。
     const sendWithCapture: typeof send = (event) => {
@@ -119,4 +188,10 @@ export async function POST(request: NextRequest) {
       finish({ ...outcome, durationMs: Date.now() - startedAt })
     }
   })
+
+  if (trialRounds !== null) {
+    const cookie = serializeTrialCookie(trialRounds)
+    if (cookie) response.headers.append("Set-Cookie", cookie)
+  }
+  return response
 }

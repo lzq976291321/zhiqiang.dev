@@ -24,6 +24,7 @@ export function MemoryPanel({ open, onClose }: { open: boolean; onClose: () => v
   const [state, setState] = useState<"idle" | "loading" | "error">("idle")
   const [busyId, setBusyId] = useState("")
   const [clearing, setClearing] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   useEffect(() => {
     if (!open) return
@@ -80,14 +81,26 @@ export function MemoryPanel({ open, onClose }: { open: boolean; onClose: () => v
     }
   }
 
-  function exportJson() {
-    const blob = new Blob([JSON.stringify(memories, null, 2)], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const anchor = document.createElement("a")
-    anchor.href = url
-    anchor.download = "mori-memory.json"
-    anchor.click()
-    URL.revokeObjectURL(url)
+  async function exportJson() {
+    if (exporting) return
+    setExporting(true)
+    try {
+      // 面板只展示最近 60 条，导出单独取全量。
+      const response = await fetch("/api/companion/memory?all=1", { cache: "no-store" })
+      if (!response.ok) throw new Error("export")
+      const payload = await response.json()
+      const blob = new Blob([JSON.stringify(payload.memories ?? [], null, 2)], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement("a")
+      anchor.href = url
+      anchor.download = "mori-memory.json"
+      anchor.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      setState("error")
+    } finally {
+      setExporting(false)
+    }
   }
 
   if (!open) return null
@@ -102,7 +115,7 @@ export function MemoryPanel({ open, onClose }: { open: boolean; onClose: () => v
           </div>
           <button type="button" onClick={onClose} className={styles.close} aria-label="关闭记忆面板"><X size={18} /></button>
         </header>
-        <p className={styles.note}>这些是 Mori 从对话里记下的事。记错了，或者不想留，可以删掉。</p>
+        <p className={styles.note}>这些是 Mori 从对话里记下的事。列表显示最近 60 条，导出包含全部。记错了，或者不想留，可以删掉。</p>
 
         {state === "loading" ? <p className={styles.status}>正在读取…</p> : null}
         {state === "error" ? <p className={styles.status} role="alert">暂时读不到记忆，请稍后再试。</p> : null}
@@ -132,8 +145,8 @@ export function MemoryPanel({ open, onClose }: { open: boolean; onClose: () => v
         </ul>
 
         <footer className={styles.footer}>
-          <button type="button" onClick={exportJson} disabled={!memories.length} className={styles.action}>
-            <Download size={15} />导出
+          <button type="button" onClick={() => void exportJson()} disabled={!memories.length || exporting} className={styles.action}>
+            <Download size={15} />{exporting ? "导出中…" : "导出全部"}
           </button>
           <button type="button" onClick={() => void clearAll()} disabled={!memories.length || clearing} className={`${styles.action} ${styles.danger}`}>
             <Trash2 size={15} />{clearing ? "清空中…" : "全部清空"}

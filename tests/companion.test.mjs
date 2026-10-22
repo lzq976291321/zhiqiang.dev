@@ -62,7 +62,13 @@ test("伴侣请求只接受 companion 模式与受限记忆", async () => {
     method: "POST",
     body: JSON.stringify({ messages: [{ role: "user", content: "在吗" }] }),
   }))
-  assert.equal(legacy.mode, "knowledge")
+  assert.equal(legacy.mode, "companion")
+
+  const knowledge = await parseChatRequest(new Request("https://example.test/api/chat", {
+    method: "POST",
+    body: JSON.stringify({ mode: "knowledge", messages: [{ role: "user", content: "在吗" }] }),
+  }))
+  assert.equal(knowledge.mode, "knowledge")
 })
 
 test("伴侣运行时只做一次流式回答，不调用工具，并注入记忆", async () => {

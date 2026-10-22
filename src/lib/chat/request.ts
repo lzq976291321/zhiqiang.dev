@@ -40,8 +40,8 @@ export async function parseChatRequest(request: Request) {
   return {
     messages: normalizeChatMessages(body.messages),
     sessionId: typeof body.sessionId === "string" ? body.sessionId.slice(0, 64) : undefined,
-    // 未指定时保持原有的资料问答模式，避免旧客户端或测试静默改变行为。
-    mode: body.mode === "companion" ? "companion" as const : "knowledge" as const,
+    // 公开接口默认走伴侣；资料问答只在明确请求时启用，并由 Route 校验内部令牌。
+    mode: body.mode === "knowledge" ? "knowledge" as const : "companion" as const,
     memory: normalizeCompanionMemory(body.memory),
   }
 }

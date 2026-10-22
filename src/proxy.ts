@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 import { safeNextPath } from "@/lib/auth/next-path"
 import { createTimeoutFetch } from "@/lib/supabase/fetch"
+import { TRIAL_BOOTSTRAP_COOKIE, TRIAL_COOKIE } from "@/lib/companion/trial-constants"
 
 // 只刷新 /chat 与 /login 的会话，不拿 proxy 当完整鉴权层。
 export async function proxy(request: NextRequest) {
@@ -31,6 +32,12 @@ export async function proxy(request: NextRequest) {
     }
   } catch {
     // Supabase 暂时不可达时放行页面，聊天页会按未登录处理。
+  }
+
+  // 进入聊天页时先发一个计数 cookie；接口没有它就不放行。
+  // 这里不签名，避免在 Edge proxy 里使用 node:crypto；接口会把它升级为签名 cookie。
+  if (request.nextUrl.pathname.startsWith("/chat") && !request.cookies.get(TRIAL_COOKIE)) {
+    response.headers.append("Set-Cookie", TRIAL_BOOTSTRAP_COOKIE)
   }
 
   return response

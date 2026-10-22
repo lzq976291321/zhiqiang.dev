@@ -7,6 +7,7 @@ process.env.DEEPSEEK_API_KEY ??= "test-only-key"
 
 const { normalizeCompanionFacts } = await import("../src/lib/chat/companion-memory.ts")
 const { parseCompanionFacts, extractCompanionFacts } = await import("../src/lib/chat/memory-extraction.ts")
+const { listAllCompanionMemories } = await import("../src/lib/companion/memory-store.ts")
 
 test("抽取结果只保留合法类型、去重并限制三条", () => {
   const facts = normalizeCompanionFacts({
@@ -61,4 +62,30 @@ test("抽取使用非流式请求，空输入不调用模型", async () => {
   let called = false
   await extractCompanionFacts({ userMessage: "  ", assistantMessage: "x", fetcher: async () => { called = true; return new Response("") } })
   assert.equal(called, false)
+})
+
+test("导出分页读取全部记忆，不受面板 60 条上限影响", async () => {
+  const pages = [
+    [
+      { id: "1", kind: "preference", content: "a", created_at: "2026-01-05" },
+      { id: "2", kind: "event", content: "b", created_at: "2026-01-04" },
+    ],
+    [
+      { id: "3", kind: "person", content: "c", created_at: "2026-01-03" },
+      { id: "4", kind: "ongoing", content: "d", created_at: "2026-01-02" },
+    ],
+    [{ id: "5", kind: "boundary", content: "e", created_at: "2026-01-01" }],
+  ]
+  let pageIndex = 0
+  const query = {
+    select() { return query },
+    eq() { return query },
+    is() { return query },
+    order() { return query },
+    range() { return Promise.resolve({ data: pages[pageIndex++] ?? [], error: null }) },
+  }
+  const client = { from() { return query } }
+  const rows = await listAllCompanionMemories(client, "user-1", 2)
+  assert.deepEqual(rows.map((row) => row.content), ["a", "b", "c", "d", "e"])
+  assert.equal(pageIndex, 3)
 })

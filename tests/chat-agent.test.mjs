@@ -391,7 +391,7 @@ test("取消上游等待会取消 reader，浏览器取消 SSE 会中止 Agent",
 })
 
 test("模型未配置时返回可重试 error，不伪装成成功回答或引导不存在的入口", async () => {
-  const keys = ["DEEPSEEK_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "NODE_ENV"]
+  const keys = ["DEEPSEEK_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "NODE_ENV", "ADMIN_ACCESS_TOKEN"]
   const saved = Object.fromEntries(keys.map((key) => [key, process.env[key]]))
   const originalInfo = console.info
   console.info = () => {}
@@ -399,10 +399,11 @@ test("模型未配置时返回可重试 error，不伪装成成功回答或引�
   delete process.env.SUPABASE_URL
   delete process.env.SUPABASE_SERVICE_ROLE_KEY
   process.env.NODE_ENV = "production"
+  process.env.ADMIN_ACCESS_TOKEN = "admin-test"
   try {
     const response = await POST(new Request("https://example.test/api/chat", {
-      method: "POST", headers: { "x-real-ip": "test-fallback" },
-      body: JSON.stringify({ messages: [{ role: "user", content: "你好" }] }),
+      method: "POST", headers: { "x-real-ip": "test-fallback", authorization: "Bearer admin-test" },
+      body: JSON.stringify({ mode: "knowledge", messages: [{ role: "user", content: "你好" }] }),
     }))
     const text = await response.text()
     const events = text.trim().split("\n\n").map((event) => JSON.parse(event.slice(6)))

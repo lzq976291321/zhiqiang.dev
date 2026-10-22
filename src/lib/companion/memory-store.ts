@@ -54,6 +54,35 @@ export async function listCompanionMemories(
     .map((row) => ({ id: row.id, kind: row.kind, content: row.content, createdAt: row.created_at }))
 }
 
+// 导出必须覆盖全部记忆，不能用面板列表的 60 条上限。
+export async function listAllCompanionMemories(
+  supabase: SupabaseClient,
+  userId: string,
+  pageSize = 1000,
+): Promise<StoredCompanionMemory[]> {
+  const rows: StoredCompanionMemory[] = []
+  const maxRows = 50_000
+
+  for (let from = 0; from < maxRows; from += pageSize) {
+    const { data, error } = await supabase
+      .from("companion_memories")
+      .select("id, kind, content, created_at")
+      .eq("user_id", userId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
+      .range(from, from + pageSize - 1)
+
+    if (error) throw error
+    const page = ((data ?? []) as Array<{ id: string; kind: string; content: string; created_at: string }>)
+      .map((row) => ({ id: row.id, kind: row.kind, content: row.content, createdAt: row.created_at }))
+    rows.push(...page)
+    if (page.length < pageSize) break
+  }
+
+  return rows
+}
+
 export async function saveCompanionMemories(
   supabase: SupabaseClient,
   userId: string,

@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server"
-import { clearCompanionMemories, deleteCompanionMemory, listCompanionMemories } from "@/lib/companion/memory-store"
+import { clearCompanionMemories, deleteCompanionMemory, listAllCompanionMemories, listCompanionMemories } from "@/lib/companion/memory-store"
 import { createSupabaseServerClient, getChatUser } from "@/lib/supabase/server"
 
 export const runtime = "nodejs"
@@ -9,13 +9,16 @@ export const dynamic = "force-dynamic"
 const NO_STORE = { "Cache-Control": "no-store" }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const user = await getChatUser()
   if (!user) return Response.json({ error: "请先登录。" }, { status: 401, headers: NO_STORE })
 
   try {
     const supabase = await createSupabaseServerClient()
-    const memories = await listCompanionMemories(supabase, user.id)
+    const all = request.nextUrl.searchParams.get("all") === "1"
+    const memories = all
+      ? await listAllCompanionMemories(supabase, user.id)
+      : await listCompanionMemories(supabase, user.id)
     return Response.json({ memories }, { headers: NO_STORE })
   } catch {
     return Response.json({ error: "暂时读不到记忆，请稍后再试。" }, { status: 500, headers: NO_STORE })
