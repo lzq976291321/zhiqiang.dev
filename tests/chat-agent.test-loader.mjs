@@ -9,6 +9,7 @@ const sourceRoot = pathToFileURL(path.join(root, "src") + path.sep).href
 // module.register 在项目固定的 Node 22.11 中可用；复用 TypeScript，不生成临时构建目录。
 export function resolve(specifier, context, nextResolve) {
   if (specifier === "next/server") return { url: new URL("./next-server.test-stub.mjs", import.meta.url).href, shortCircuit: true }
+  if (specifier === "next/headers") return { url: new URL("./next-headers.test-stub.mjs", import.meta.url).href, shortCircuit: true }
   let resolved = specifier
   if (specifier.startsWith("@/")) resolved = pathToFileURL(path.join(root, "src", specifier.slice(2))).href
   else if (specifier.startsWith(".") && context.parentURL?.startsWith(sourceRoot)) {

@@ -18,6 +18,8 @@ export interface ChatQuestionOutcome {
 
 interface ChatQuestionLogInput {
   question: string
+  // 伴侣对话默认不保存正文，只记录长度与结果。
+  storeQuestion?: boolean
   createdAt: string
   sessionId?: string
   clientId: string
@@ -35,8 +37,8 @@ export async function recordChatQuestion(input: ChatQuestionLogInput, outcome: C
     created_at: input.createdAt,
     session_id: input.sessionId?.slice(0, 64) || "anonymous",
     client_id: input.clientId.trim().slice(0, 120) || "anonymous",
-    // 沿用已有 text 列，保存已通过请求校验的完整问题（最多 1600 字），保留换行。
-    question_preview: input.question,
+    // 沿用已有 text 列；伴侣模式留空，不把对话正文写进日志。
+    question_preview: input.storeQuestion === false ? "" : input.question,
     question_length: input.question.length,
     message_count: input.messageCount,
     total_message_length: input.totalMessageLength,

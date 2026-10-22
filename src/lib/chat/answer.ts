@@ -90,6 +90,39 @@ export function generateLocalAnswer() {
   return "这次没能接上，请稍后重试。"
 }
 
+// 记忆抽取等内部任务使用非流式请求，不占用访客的回答链路。
+export async function createDeepSeekCompletion({
+  messages, signal, fetcher = fetch, maxTokens = 400,
+}: {
+  messages: ModelMessage[]
+  signal: AbortSignal
+  fetcher?: typeof fetch
+  maxTokens?: number
+}) {
+  const apiKey = process.env.DEEPSEEK_API_KEY
+  if (!apiKey) throw new Error("DeepSeek API key is not configured")
+  const baseUrl = process.env.DEEPSEEK_BASE_URL ?? DEFAULT_DEEPSEEK_BASE_URL
+  const response = await fetcher(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
+    method: "POST",
+    signal,
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: process.env.DEEPSEEK_MODEL ?? DEFAULT_DEEPSEEK_MODEL,
+      messages,
+      max_tokens: maxTokens,
+      temperature: 0.2,
+      stream: false,
+      thinking: { type: "disabled" },
+    }),
+  })
+  if (!response.ok) {
+    await response.body?.cancel()
+    throw new DeepSeekApiError(response.status)
+  }
+  const payload = await response.json() as { choices?: Array<{ message?: { content?: string } }> }
+  return payload.choices?.[0]?.message?.content ?? ""
+}
+
 export async function createDeepSeekCompletionStream({
   messages, tools, toolChoice = "auto", signal, fetcher = fetch,
 }: {

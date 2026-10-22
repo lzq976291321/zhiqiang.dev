@@ -132,3 +132,15 @@
 @media(prefers-reduced-motion:reduce) { .room *,.room *::before { animation:none; transition:none; scroll-behavior:auto; } }
 
 .welcome h2 {font-family:"Songti SC","STSong",serif;font-weight:500;line-height:1.6;}
+
+.loginGate { position:fixed; inset:0; z-index:70; display:grid; place-items:center; padding:24px; background:rgba(39,44,37,.32); backdrop-filter:blur(6px); }
+.loginCard { width:min(100%,400px); padding:28px; border:1px solid var(--line); border-radius:22px; background:#fffef9; box-shadow:0 24px 80px -32px rgba(39,44,37,.45); }
+.loginEyebrow { margin:0 0 10px; color:var(--accent); font:11px/1 ui-monospace,monospace; letter-spacing:.14em; }
+.loginCard h2 { margin:0; font-size:24px; font-weight:600; letter-spacing:-.02em; }
+.loginCard p { margin:12px 0 0; color:#626b60; font-size:14px; line-height:1.7; }
+.loginActions { display:flex; align-items:center; gap:10px; margin-top:22px; }
+.loginActions a { flex:1; display:inline-flex; align-items:center; justify-content:center; min-height:46px; border-radius:14px; background:#2e362a; color:#fffef9; text-decoration:none; font-size:14px; }
+.loginActions button { min-height:46px; padding:0 16px; border:1px solid var(--line); border-radius:14px; background:transparent; color:#626b60; font-size:14px; }
+
+.memoryLink { display:flex; align-items:center; gap:10px; min-height:44px; margin-top:14px; padding:10px 12px; border:1px dashed var(--line); border-radius:12px; background:transparent; color:#56644f; font-size:13px; }
+.memoryLink:hover { background:#f2f3ed; }

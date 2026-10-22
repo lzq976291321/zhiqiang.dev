@@ -6,10 +6,11 @@ register(new URL('./chat-agent.test-loader.mjs', import.meta.url))
 const { POST } = await import('../src/app/api/chat/route.ts')
 const { recordChatQuestion } = await import('../src/lib/chat/question-log.ts')
 const { GET } = await import('../src/app/api/admin/chat-logs/route.ts')
+const { serializeTrialCookie } = await import('../src/lib/companion/trial-cookie.ts')
 
 function setup(t) {
  const saved = { ...process.env }
- Object.assign(process.env, { NODE_ENV: 'production', SUPABASE_URL: 'https://database.test', SUPABASE_SERVICE_ROLE_KEY: 'test-key', DEEPSEEK_API_KEY: 'test-key', ADMIN_ACCESS_TOKEN: 'admin-test' })
+ Object.assign(process.env, { NODE_ENV: 'production', SUPABASE_URL: 'https://database.test', SUPABASE_SERVICE_ROLE_KEY: 'test-key', DEEPSEEK_API_KEY: 'test-key', ADMIN_ACCESS_TOKEN: 'admin-test', COMPANION_TRIAL_SECRET: 'trial-test' })
  takeAfterCallbacks()
  t.after(() => { for(const k of Object.keys(process.env))if(!(k in saved))delete process.env[k];Object.assign(process.env,saved);takeAfterCallbacks() })
 }
@@ -17,7 +18,7 @@ const completion = content => new Response(`data: ${JSON.stringify({choices:[{de
 const question = '收集测试\n' + '问题全文'.repeat(220) + '\n结尾标记'
 const input = {question, createdAt:'2026-09-17T00:00:00.000Z',sessionId:'test',clientId:'test',messageCount:1,totalMessageLength:question.length}
 const outcome={status:'completed',mode:'deepseek',durationMs:100}
-const request = signal => new Request('https://example.test/api/chat',{method:'POST',signal,body:JSON.stringify({sessionId:'test-input',messages:[{role:'user',content:question}]})})
+const request = signal => new Request('https://example.test/api/chat',{method:'POST',signal,headers:{authorization:'Bearer admin-test'},body:JSON.stringify({mode:'knowledge',sessionId:'test-input',messages:[{role:'user',content:question}]})})
 
 for (const scenario of ['success','failure','cancel']) {
  test(`输入异步收集：${scenario}，完整正文只写一次且不等待写库`, async t => {
@@ -70,4 +71,24 @@ test('后台鉴权及历史分页、完整正文关键词检索',async t=>{
  assert.equal(body.total,161);assert.equal(body.hasMore,true);assert.equal(body.offset,80)
  assert.equal(urls[0].searchParams.get('offset'),'80');assert.equal(urls[0].searchParams.get('question_preview'),'ilike.*结尾标记*')
  assert.equal(response.headers.get('cache-control'),'no-store')
+})
+
+test('伴侣模式不记录问题正文，只保留长度与结果', async t => {
+ setup(t);const writes=[]
+ t.mock.method(globalThis,'fetch',async (url,init={})=>{
+  const path=String(url)
+  if(path.includes('/chat_rate_limit_events'))return init.method==='POST'?new Response(null,{status:201}):new Response('[]',{headers:{'content-range':'*/0'}})
+  if(path.includes('/chat_question_logs')){writes.push(JSON.parse(init.body));return new Response(null,{status:201})}
+  if(path.includes('/rpc/consume_companion_trial'))return new Response('1',{headers:{'content-type':'application/json'}})
+  return completion('收到。')
+ })
+ const cookie=serializeTrialCookie(0)?.split(';')[0]
+ const response=await POST(new Request('https://example.test/api/chat',{method:'POST',headers:{cookie},body:JSON.stringify({mode:'companion',sessionId:'test-companion',messages:[{role:'user',content:question}]})}))
+ await response.text()
+ const callbacks=takeAfterCallbacks();assert.equal(callbacks.length,1)
+ await callbacks[0]()
+ assert.equal(writes.length,1)
+ assert.equal(writes[0].question_preview,'')
+ assert.equal(writes[0].question_length,question.length)
+ assert.equal(writes[0].status,'completed')
 })

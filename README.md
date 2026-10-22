@@ -1,10 +1,10 @@
 # zhiqiang.chat
 
-围绕阅读、对话与设计的个人空间。`/knowledge` 按原书脉络整理读书笔记，`/chat` 可以与站内 AI 闲聊、吐槽、讨论，也能围绕读到的内容追问；`/lab` 把主题、真实 UI 场景和 Design Tokens 放在同一工作台，支持 CSS、JSON 和 Markdown 导出；`/projects` 以 RC Boat Arena 为首展示可体验的实际作品，完整项目档案位于 `/projects/archive`。
+围绕阅读、陪伴与设计的个人空间。`/knowledge` 按原书脉络整理读书笔记；`/chat` 是 Mori 的陪伴空间，可以聊日常、说说烦心事，也可以只是待一会儿；`/lab` 放屏幕补光灯和 LED 灯牌两个随手用的小工具；`/projects` 以 RC Boat Arena 为首展示可体验的实际作品，完整项目档案位于 `/projects/archive`。
 
-工程文章、MCP 与 Skills 精选已退出公开目录及聊天来源，旧入口跳转到阅读书架；原 `/design-lab` 入口统一跳转到 `/lab`。保留本地知识管理 MCP 与对话技能，它们不属于退役的精选目录。
+工程文章、MCP 与 Skills 精选已退出公开目录，旧入口跳转到阅读书架；原 `/design-lab` 入口统一跳转到 `/lab`。保留本地知识管理 MCP 与对话技能，它们不属于退役的精选目录。知识库只服务阅读空间，不再进入聊天运行时。
 
-知识阅读页与 Agent 共用发布边界：草稿、待发布和低置信度内容不会进入公开目录、阅读页或回答。书架只展示读书系列；已有公开实践笔记保留阅读地址与聊天来源，不再在书架或 sitemap 中推荐。知识条目有独立的 `/knowledge/[slug]` 阅读地址，对话来源链接回到该地址。UI Lab 的异步状态为明确标注的本地演示，不调用模型或保存业务数据。
+知识阅读页有自己的发布边界：草稿、待发布和低置信度内容不会进入公开目录和阅读页。书架只展示读书系列；已有公开实践笔记保留阅读地址，不再在书架或 sitemap 中推荐。知识条目有独立的 `/knowledge/[slug]` 阅读地址。Mori 的对话不检索站内资料，也不把对话写回知识库。
 
 网站地址：[zhiqiang.chat](https://zhiqiang.chat)。仓库改动和本地验证不代表线上版本已同步。
 
@@ -29,18 +29,18 @@ pnpm run start
 ## 核心目录
 
 - `src/app/`：首页、兼容路由和 API 入口。
-- `src/features/chat/`：聊天界面、交互与独立维护的 AI 表达风格。
-- `src/lib/chat/`：知识检索、Agent 编排、流式响应和问题日志。
+- `src/features/chat/`：Mori 的人格、聊天界面与交互。
+- `src/lib/chat/`：伴侣运行时、流式响应、请求校验和问题日志。
 - `src/content/profile/`：已确认的个人公开经历和项目事实。
 - `src/content/knowledge/`：可持续补充的判断、决策和知识条目。
 - `src/features/knowledge/`：阅读书架、全书搜索与章节阅读。
-- `src/features/lab/`：UI 场景、主题数据与 Design Tokens 导出。
+- `src/features/lab/`：屏幕补光灯、LED 灯牌等随手用的小工具。
 - `src/features/site/data/projects.ts`：首页和作品页共用的项目资料。
 - `src/content/agent/`、`src/content/mcp/`、`src/content/skills/`：保留的历史资料，不再进入公开目录或 Agent 检索。
 
-Agent 的知识工具只有只读的 `search_knowledge` 和 `read_knowledge`。知识文件中的内容作为回答依据，不作为可执行指令；公开对话不会直接写入知识库。
+公开 `/chat` 使用伴侣运行时：只带人格、记忆和当前对话，不检索站内资料。旧的资料问答 Agent 和只读知识工具保留在代码里，供阅读空间或后续功能使用，不进入 Mori 的上下文。
 
-默认对话风格在 `src/features/chat/server/response-style.ts` 中维护：有好奇心、有主见，表达自然，尊重当前对话里的偏好，按语境调整长短。站内 AI 不冒充作者，不编造真人经历，也不承诺跨会话记忆。闲聊与一般讨论直接回应，依赖站内文章或作者公开事实的问题才查阅知识。旧的 `sun-ge` 原始材料和版本出处保留供追溯，已退出运行时提示与工具，不作为当前人格或知识来源。修改后需重新构建和部署才在线上生效。
+Mori 的人格与表达在 `src/features/chat/server/companion-persona.ts` 中维护：温柔、具体、有分寸，可以不同意，但不为了亲近而附和。她不是真人，也不冒充作者，不编造现实经历；默认不保存对话正文。登录与长期记忆已接入（魔法链接；记忆只保存事实片段，可查看、删除、导出）；未登录时只保留本次标签页的对话。旧的 `sun-ge` 原始材料和版本出处保留供追溯，已退出运行时提示与工具，不作为当前人格或知识来源。修改后需重新构建和部署才在线上生效。
 
 ### 持续改进对话
 

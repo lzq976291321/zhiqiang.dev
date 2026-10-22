@@ -9,7 +9,7 @@ export function Composer({ value, onChange, pending, started, onSend, onStop, di
   onChange: (value: string) => void
   pending: boolean
   started: boolean
-  onSend: (question: string) => void
+  onSend: (question: string) => boolean
   onStop: () => void
   disabled?: boolean
 }) {
@@ -51,9 +51,8 @@ export function Composer({ value, onChange, pending, started, onSend, onStop, di
     blockPointerSubmitRef.current = false
     if (blockedByComposition || !value.trim() || pending || disabled || submittingRef.current) return
 
-    submittingRef.current = true
-    onSend(value)
-    onChange("")
+    // 发送是否被接受由调用方决定；被登录门拦下时保留草稿，并允许再次尝试。
+    submittingRef.current = onSend(value)
     textareaRef.current?.focus({ preventScroll: true })
   }
 

@@ -32,6 +32,7 @@ export function useConversation({ initialDraft }: { initialDraft?: string } = {}
   const [ready, setReady] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState("")
+  const [loginSignal, setLoginSignal] = useState(0)
   const stateRef = useRef(state)
   const initialDraftRef = useRef(initialDraft)
   const readyRef = useRef(false)
@@ -134,6 +135,7 @@ export function useConversation({ initialDraft }: { initialDraft?: string } = {}
         signal: controller.signal,
         body: JSON.stringify({
           sessionId: sessionRef.current,
+          mode: "companion",
           messages: normalizeChatMessages(
             [...history.filter((message) => message.content && message.status !== "error"), user]
               .slice(-12).map(({ role, content: text }) => ({ role, content: text }))
@@ -143,6 +145,17 @@ export function useConversation({ initialDraft }: { initialDraft?: string } = {}
       if (!isCurrent()) {
         await response.body?.cancel().catch(() => undefined)
         return
+      }
+      if (response.status === 401) {
+        const payload = await response.json().catch(() => null)
+        if (payload?.code === "login_required") {
+          // 服务端拒绝时回滚这一轮并保留草稿，避免留下没有回答的用户消息。
+          setMessages((current) => current.filter((message) => message.id !== assistantId && message.id !== user.id))
+          setDraft(content)
+          setLoginSignal((value) => value + 1)
+          return
+        }
+        throw new Error(payload?.error ?? "请先登录。")
       }
       if (!response.ok) {
         const payload = await response.json().catch(() => null)
@@ -225,6 +238,7 @@ export function useConversation({ initialDraft }: { initialDraft?: string } = {}
     if (!readyRef.current || controllerRef.current) return
     updateState(() => ({ messages: [], draft: "" }))
     setError("")
+    setLoginSignal(0)
     if (saveTimerRef.current !== null) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = null
     clearConversationState()
@@ -232,6 +246,6 @@ export function useConversation({ initialDraft }: { initialDraft?: string } = {}
 
   return {
     messages: state.messages, draft: state.draft, setDraft, ready,
-    pending, error, send, retry, reset, stop: () => controllerRef.current?.abort(),
+    pending, error, loginSignal, send, retry, reset, stop: () => controllerRef.current?.abort(),
   }
 }
