@@ -1,3 +1,4 @@
+import { normalizeCompanionMemory } from "./companion-memory"
 import { ChatRequestError, normalizeChatMessages } from "./messages"
 
 export { ChatRequestError, normalizeChatMessages } from "./messages"
@@ -39,5 +40,8 @@ export async function parseChatRequest(request: Request) {
   return {
     messages: normalizeChatMessages(body.messages),
     sessionId: typeof body.sessionId === "string" ? body.sessionId.slice(0, 64) : undefined,
+    // 未指定时保持原有的资料问答模式，避免旧客户端或测试静默改变行为。
+    mode: body.mode === "companion" ? "companion" as const : "knowledge" as const,
+    memory: normalizeCompanionMemory(body.memory),
   }
 }

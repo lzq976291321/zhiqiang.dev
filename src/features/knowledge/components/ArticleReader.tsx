@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowLeft, ArrowRight, MessageSquare } from "lucide-react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 import { AgentMdx } from "@/components/agent/AgentMdx"
 import { extractAgentHeadings } from "@/lib/agent-headings"
 import { ReaderShell, type ReadingLink } from "./ReaderShell"
@@ -36,7 +36,6 @@ export function ArticleReader({ href, title, description, category, tags, update
     </header>
     <div className={styles.body}><AgentMdx source={source} format={format} /></div>
     {(previous || next) && <nav className={styles.articleNav} aria-label="前后文章">{previous ? <Link href={previous.href}><span><ArrowLeft size={16} />上一篇</span><strong>{previous.title}</strong></Link> : <div />}{next ? <Link className={styles.next} href={next.href}><span>继续阅读<ArrowRight size={16} /></span><strong>{next.title}</strong></Link> : <div />}</nav>}
-    <div className={styles.discuss}><MessageSquare size={17} /><Link href={`/chat?topic=${encodeURIComponent(title)}`}>围绕本文聊聊 <ArrowRight size={15} /></Link></div>
     {related.length > 0 && <section className={styles.related}><h2>相关阅读</h2>{related.map((item) => <Link key={item.href} href={item.href}>{item.title}<ArrowRight size={14} /></Link>)}</section>}
   </ReaderShell>
 }

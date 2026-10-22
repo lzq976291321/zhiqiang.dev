@@ -1,23 +1,32 @@
 import type { Metadata } from "next"
 import { ChatRoom } from "@/features/chat/components/ChatRoom"
+import { getChatUser, hasSupabaseAuthConfig } from "@/lib/supabase/server"
 
 export const metadata: Metadata = {
-  title: "聊聊",
-  description: "和 AI 聊聊日常、开个脑洞、交换不同看法，也可以沿着正在读的文章继续讨论。",
+  title: "Mori · 陪伴",
+  description: "和 Mori 聊聊天。她记得你说过的事，也会在你想说话的时候陪着你。",
   alternates: { canonical: "/chat" },
+  openGraph: {
+    type: "website",
+    url: "/chat",
+    title: "Mori · 陪伴",
+    description: "和 Mori 聊聊天。她记得你说过的事，也会在你想说话的时候陪着你。",
+  },
 }
 
 export default async function ChatPage({
   searchParams,
 }: {
-  searchParams: Promise<{ topic?: string; question?: string }>
+  searchParams: Promise<{ question?: string }>
 }) {
-  const { topic, question } = await searchParams
+  const { question } = await searchParams
+  const signedIn = Boolean(await getChatUser())
   return (
     <ChatRoom
-      key={JSON.stringify([topic, question])}
-      topic={typeof topic === "string" ? topic.slice(0, 200) : undefined}
+      key={question ?? ""}
       question={typeof question === "string" ? question.slice(0, 1000) : undefined}
+      signedIn={signedIn}
+      authEnabled={hasSupabaseAuthConfig()}
     />
   )
 }

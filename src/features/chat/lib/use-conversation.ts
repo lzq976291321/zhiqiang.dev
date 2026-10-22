@@ -134,6 +134,7 @@ export function useConversation({ initialDraft }: { initialDraft?: string } = {}
         signal: controller.signal,
         body: JSON.stringify({
           sessionId: sessionRef.current,
+          mode: "companion",
           messages: normalizeChatMessages(
             [...history.filter((message) => message.content && message.status !== "error"), user]
               .slice(-12).map(({ role, content: text }) => ({ role, content: text }))

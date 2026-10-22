@@ -71,3 +71,21 @@ test('后台鉴权及历史分页、完整正文关键词检索',async t=>{
  assert.equal(urls[0].searchParams.get('offset'),'80');assert.equal(urls[0].searchParams.get('question_preview'),'ilike.*结尾标记*')
  assert.equal(response.headers.get('cache-control'),'no-store')
 })
+
+test('伴侣模式不记录问题正文，只保留长度与结果', async t => {
+ setup(t);const writes=[]
+ t.mock.method(globalThis,'fetch',async (url,init={})=>{
+  const path=String(url)
+  if(path.includes('/chat_rate_limit_events'))return init.method==='POST'?new Response(null,{status:201}):new Response('[]',{headers:{'content-range':'*/0'}})
+  if(path.includes('/chat_question_logs')){writes.push(JSON.parse(init.body));return new Response(null,{status:201})}
+  return completion('收到。')
+ })
+ const response=await POST(new Request('https://example.test/api/chat',{method:'POST',body:JSON.stringify({mode:'companion',sessionId:'test-companion',messages:[{role:'user',content:question}]})}))
+ await response.text()
+ const callbacks=takeAfterCallbacks();assert.equal(callbacks.length,1)
+ await callbacks[0]()
+ assert.equal(writes.length,1)
+ assert.equal(writes[0].question_preview,'')
+ assert.equal(writes[0].question_length,question.length)
+ assert.equal(writes[0].status,'completed')
+})
