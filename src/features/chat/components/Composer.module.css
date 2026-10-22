@@ -1,0 +1,64 @@
+.composer {
+  padding:8px;
+  border:1px solid #d9ddd3;
+  border-radius:22px;
+  background:#fffef9;
+  box-shadow:0 3px 14px #2a312705;
+  transition:border-color .18s,box-shadow .18s;
+}
+.composer:focus-within { border-color:#ccd4c9; box-shadow:0 0 0 3px #345c4308; }
+.inputRow { display:flex; align-items:flex-end; gap:8px; }
+.input {
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:44px;
+  max-height:var(--chat-input-max,150px);
+  padding:10px 8px;
+  resize:none;
+  border:0;
+  outline:none;
+  background:transparent;
+  color:var(--ink,#272c25);
+  font:inherit;
+  font-size:16px;
+  line-height:24px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+.input::placeholder { color:#626b60; }
+.input:disabled { opacity:.55; }
+.send {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  padding:0;
+  border:0;
+  border-radius:15px;
+  background:#345c43;
+  color:#fffef9;
+  cursor:pointer;
+  transition:background .15s,transform .15s;
+  touch-action:manipulation;
+}
+.send:disabled { background:#f2f3ed; color:#626b60; cursor:default; }
+.send:not(:disabled):active { transform:scale(.94); background:#345c43; }
+.composerBottom { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:4px 8px 2px; }
+.inputHint,.count { color:#626b60; font-size:11px; line-height:18px; }
+.count { margin-left:auto; font-variant-numeric:tabular-nums; }
+.keyboardDismiss { display:none; }
+.composer button:focus-visible { outline:2px solid #345c43; outline-offset:3px; }
+@media(pointer:coarse) {
+  .composerBottom { display:none; padding:0 4px; }
+  .inputHint { display:none; }
+  .composer[data-focused=true] .composerBottom,.composerBottom[data-has-count=true] { display:flex; }
+  .composerBottom[data-has-count=true] { min-height:24px; }
+  .composer[data-focused=true] .keyboardDismiss { display:flex; align-items:center; gap:6px; min-height:44px; padding:0 5px; border:0; border-radius:10px; background:transparent; color:#626b60; font:inherit; font-size:12px; cursor:pointer; touch-action:manipulation; }
+  .keyboardDismiss:active { background:#f2f3ed; }
+}
+@media(hover:hover) { .send:not(:disabled):hover { background:#345c43; } }
+@media(prefers-reduced-motion:reduce) { .composer,.send { transition:none; } }
