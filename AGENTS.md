@@ -59,7 +59,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - 提交前检查 `git status --short`，确认没有 `docs/`、`task_plan.md`、`findings.md`、`progress.md`、`test-results/`。
 - Commit message 使用中文，格式为 `type: 简短描述`。
 - 不添加 `Co-Authored-By`。
-- 默认走分支和 PR 流程；除非用户明确要求，不直接改主分支策略。
+- 个人项目不建分支、不建 PR：直接在 `main` 提交并推送，推送后由 Vercel 自动部署；提交前仍要检查 `git status`。
 
 ## 瘦身原则
 

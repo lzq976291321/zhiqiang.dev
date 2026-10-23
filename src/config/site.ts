@@ -6,10 +6,10 @@ export const siteConfig = {
   author: {
     name: "Lin Zhiqiang",
     email: "hi@zhiqiang.chat",
-    github: "https://github.com/linzhiqiang",
+    github: "https://github.com/lzq976291321",
     twitter: "https://x.com/linzhiqiang",
   },
   links: {
-    github: "https://github.com/linzhiqiang/zhiqiang.chat",
+    github: "https://github.com/lzq976291321/zhiqiang.dev",
   },
 }
